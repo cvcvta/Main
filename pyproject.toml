@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seedance25"
+version = "0.1.0"
+description = "Minimal client for Higgsfield's Seedance 2.5 reference-to-video API"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+seedance25 = "seedance25.__main__:main"
+
+[tool.setuptools]
+packages = ["seedance25"]
