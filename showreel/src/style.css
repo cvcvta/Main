@@ -1,0 +1,73 @@
+@font-face { font-family: 'Archivo'; src: url(../assets/fonts/Archivo-VF.ttf) format('truetype'); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; }
+@font-face { font-family: 'Instrument Serif'; src: url(../assets/fonts/InstrumentSerif-Regular.ttf) format('truetype'); font-style: normal; }
+@font-face { font-family: 'Instrument Serif'; src: url(../assets/fonts/InstrumentSerif-Italic.ttf) format('truetype'); font-style: italic; }
+@font-face { font-family: 'JetBrains Mono'; src: url(../assets/fonts/JetBrainsMono-VF.ttf) format('truetype'); font-weight: 100 900; }
+
+:root {
+  --bg: #0b0b0c;
+  --ink: #f3f0e8;
+  --dim: rgba(243, 240, 232, 0.5);
+  --faint: rgba(243, 240, 232, 0.14);
+  --red: #ff3b2f;
+}
+
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+body { -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+#cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 960px 540px; }
+#fx { position: absolute; left: 0; top: 0; }
+#fg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+#ui { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+#fg > *, #ui > * { position: absolute; will-change: transform, opacity; }
+
+.mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); white-space: pre; }
+
+/* chrome */
+.chrome b { color: var(--ink); font-family: 'Archivo'; font-weight: 800; font-stretch: 125%; letter-spacing: 0.12em; font-size: 13px; margin-right: 14px; }
+.chrome .sep { margin-right: 14px; opacity: 0.6; }
+.recdot { width: 12px; height: 12px; border-radius: 50%; background: var(--red); left: 0; top: 0; }
+.bars { display: flex; gap: 5px; }
+.bars i { display: block; width: 16px; height: 3px; background: var(--faint); }
+.bars i.on { background: var(--ink); }
+.corner { width: 22px; height: 22px; border-color: rgba(243, 240, 232, 0.32); border-style: solid; border-width: 0; }
+
+/* hook */
+.hook { left: 0; top: 176px; width: 1920px; display: flex; justify-content: center; gap: 0 24px; font: 400 94px/1.14 'Instrument Serif'; letter-spacing: -0.012em; color: var(--ink); }
+.hw { display: inline-block; overflow: hidden; padding: 0 12px 16px; margin: 0 -12px -16px; }
+.hwi { display: inline-block; }
+.hwi.ai { font-style: italic; color: var(--red); }
+.center { left: 0; width: 1920px; text-align: center; }
+
+/* cards */
+.clabel { font-size: 11px; }
+.clabel span { color: var(--ink); margin-right: 10px; }
+.vtag { height: 28px; line-height: 28px; padding: 0 12px; border-radius: 14px; font-size: 11px; color: var(--ink);
+  background: rgba(11, 11, 12, 0.62); border: 1px solid rgba(243, 240, 232, 0.35); }
+.vtag.ai { background: var(--red); border-color: var(--red); color: #140404; font-weight: 700; }
+
+/* montage columns */
+.col { top: 0; }
+.big { font-family: 'Archivo'; font-weight: 700; font-stretch: 100%; font-size: 232px; line-height: 1; color: var(--ink); letter-spacing: -0.04em; display: flex; }
+.odo { display: inline-block; height: 232px; overflow: hidden; }
+.odo > div { display: flex; flex-direction: column; }
+.cat { font: italic 400 60px/1 'Instrument Serif'; color: var(--ink); }
+.row { width: 480px; font-size: 14px; color: var(--ink); display: flex; }
+.row .lead { flex: 1; border-bottom: 1px dotted rgba(243, 240, 232, 0.3); margin: 0 10px 5px; }
+.row .val { color: var(--ink); }
+.track { height: 2px; background: rgba(243, 240, 232, 0.12); }
+.fill { height: 2px; background: var(--ink); transform-origin: 0 0; }
+.verdict { font-family: 'Archivo'; font-weight: 800; font-stretch: 112%; font-size: 104px; line-height: 0.9; color: var(--ink); letter-spacing: -0.02em; }
+.tele { width: 480px; }
+.tele .tr { display: flex; align-items: center; height: 26px; }
+.tele .tl { width: 110px; }
+.tele .tt { flex: 1; height: 5px; background: rgba(243, 240, 232, 0.1); margin-right: 14px; }
+.tele .tf { height: 5px; background: var(--ink); transform-origin: 0 0; }
+.tele .tv { width: 48px; text-align: right; color: var(--ink); }
+
+/* reveal + brand */
+.summary { font-size: 13px; color: var(--ink); }
+.slam { left: 0; width: 1920px; top: 430px; display: flex; justify-content: center; align-items: baseline; gap: 0 34px; color: var(--ink); }
+.slam .g { font-family: 'Archivo'; font-weight: 900; font-size: 196px; line-height: 1; letter-spacing: -0.02em; }
+.slam .s { font: italic 400 190px/1 'Instrument Serif'; }
+.slam .dot { color: var(--red); }
+.tag1 { font-size: 15px; letter-spacing: 0.42em; color: var(--dim); }
+.tag2 { font: italic 400 40px/1 'Instrument Serif'; color: var(--ink); letter-spacing: 0; text-transform: none; }
