@@ -1,0 +1,4 @@
+node_modules/
+build/
+out/*-video.mp4
+out/preview.mp4
