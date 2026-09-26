@@ -1,9 +1,12 @@
-// Scene D: the window lands as the app icon, the camera flies through it into brand green,
-// the wordmark rides out of the icon, then one line and the offer.
+// Scene D: the window lands as the app icon, the camera flies through it into the icon's green, and the
+// icon's own wordmark rides out to become the lockup. Then the homepage's chip, the line, and the offer.
 import { T, S16, COPY } from './config.js';
 import { E, clamp, lerp, seg, spring, el, css, words } from './engine.js';
+import { logoEl, iconMarkBox } from './brand.js';
 
 const ICON = { x: 860, y: 440, s: 200, r: 46 };
+const LOGO_H = 130; // final glyph height of the lockup
+const LOGO_Y = 340; // final centre of the lockup
 
 export function buildEnd(parent, brand) {
   const root = el('div', '', parent);
@@ -11,24 +14,29 @@ export function buildEnd(parent, brand) {
   const sq = el('div', 'sq', root);
   const bgEnd = el('div', 'ebg', sq);
   const sheen = el('div', 'sheen', sq);
-  const img = brand.icon ? el('img', '', sq) : null;
-  if (img) img.src = brand.icon;
   const gloss = el('div', 'gloss', sq);
 
   const content = el('div', 'abs', root);
-  css(content, { left: '0px', top: '0px', width: '1920px', height: '1080px', transformOrigin: '960px 520px' });
+  css(content, { left: '0px', top: '0px', width: '1920px', height: '1080px', transformOrigin: '960px 530px' });
   const box = el('div', 'wordbox', content);
-  const word = el('div', 'lock-word', box, brand.logo ? `<img src="${brand.logo}">` : COPY.brand);
-  if (brand.logo && brand.logoDark) css(word.firstChild, { filter: 'brightness(0) invert(1)' });
+  const word = logoEl(brand, box, LOGO_H, '#FFFFFF', 'lock-word');
 
+  // where the wordmark sits inside the 200 px icon, relative to the icon centre
+  const [mx, my, mh] = iconMarkBox(brand, ICON.s);
+  const s0 = mh / LOGO_H;
+
+  const chip = el('div', 'echip', content, `<span>${COPY.chip}</span>`);
   const one = el('div', 'oneliner', content);
   const ws = words(one, COPY.oneLiner);
-  ws.slice(-3).forEach((w) => w.classList.add('em')); // "does the work."
+  ws.forEach((w) => { if (w.textContent === COPY.oneLinerHi) w.classList.add('hi'); });
 
   const price = el('div', 'priceline', content, `<b>${COPY.price[0]}</b> ${COPY.price[1]} <b>${COPY.price[2]}</b>`);
   const row = el('div', 'trialrow', content);
   const trial = el('div', 'trial', row, COPY.trial);
   const url = el('div', 'url', row, COPY.url);
+
+  let mwPx = mh * 3; // wordmark width inside the icon, measured once laid out
+  function layout() { mwPx = s0 * word.offsetWidth; }
 
   function update(t) {
     const vis = t >= T.lockup;
@@ -43,40 +51,41 @@ export function buildEnd(parent, brand) {
     css(sq, {
       left: `${x.toFixed(2)}px`, top: `${y.toFixed(2)}px`, width: `${w.toFixed(2)}px`, height: `${h.toFixed(2)}px`,
       borderRadius: `${lerp(ICON.r, 0, E.inQuad(z)).toFixed(2)}px`, transform: `scale(${(z > 0 ? 1 : pulse).toFixed(4)})`,
+      boxShadow: `0 30px 60px -20px rgba(0,0,0,${(0.55 * (1 - z)).toFixed(3)})`,
     });
     css(bgEnd, { opacity: String(seg(t, T.zoom + 0.12, 0.45)) });
-    if (img) css(img, { opacity: String(1 - seg(t, T.zoom, 0.25)) });
     const gp = seg(t, T.lockup - 0.05, 0.4, E.inOutQuad);
     css(gloss, { transform: `translateX(${lerp(-120, 120, gp).toFixed(2)}%)`, opacity: String(1 - z) });
     css(sheen, { '--sx': `${lerp(18, 82, seg(t, T.zoom, T.end - T.zoom, E.inOutQuad)).toFixed(2)}%` });
 
-    // wordmark: from inside the icon to the lockup position
+    // the icon's wordmark rides out to the lockup
     const wz = seg(t, T.zoom + 0.04, 0.62, E.inOutCubic);
-    const ws0 = brand.logo ? 0.4 : 76 / 190;
-    css(word, {
-      transform: `translate3d(0, ${lerp(brand.logo ? 0 : -3, -178, wz).toFixed(2)}px, 0) scale(${lerp(ws0, 1, wz).toFixed(4)}) scale(${pulse.toFixed(4)})`,
-    });
+    const dx0 = mx + mwPx / 2 - ICON.s / 2, dy0 = my + mh / 2 - ICON.s / 2;
+    const sc = lerp(s0, 1, wz) * (wz > 0 ? 1 : pulse);
+    css(word, { transform: `translate3d(${(lerp(dx0 * pulse, 0, wz)).toFixed(2)}px, ${(lerp(dy0 * pulse, LOGO_Y - 540, wz)).toFixed(2)}px, 0) scale(${sc.toFixed(4)})` });
 
     // a slow push keeps the held end card alive
-    const push = 1 + 0.035 * seg(t, T.zoom + 0.3, T.end - T.zoom - 0.3, E.outQuad);
+    const push = 1 + 0.03 * seg(t, T.zoom + 0.3, T.end - T.zoom - 0.3, E.outQuad);
     css(content, { transform: `scale(${push.toFixed(5)})` });
 
-    // one line
-    css(one, { top: '508px' });
+    // the homepage's chip, then the line with "does" lit
+    const cp = spring(t, T.chip, 3, 0.6);
+    css(chip, { top: '452px', opacity: String(clamp(cp * 2)), transform: `translate3d(0, ${(18 * (1 - clamp(cp))).toFixed(2)}px, 0)` });
+    css(one, { top: '516px' });
     ws.forEach((wd, i) => {
-      const p = seg(t, T.tagline + i * S16 * 0.62, 0.55, E.snap);
+      const p = seg(t, T.tagline + i * S16 * 0.9, 0.55, E.snap);
       css(wd, { opacity: String(clamp(p * 1.6)), transform: `translate3d(0, ${(34 * (1 - p)).toFixed(2)}px, 0)`, filter: `blur(${(8 * (1 - p)).toFixed(2)}px)` });
     });
 
     // the offer
     const pp = seg(t, T.price, 0.55, E.snap);
-    css(price, { top: '618px', opacity: String(pp), transform: `translate3d(0, ${(26 * (1 - pp)).toFixed(2)}px, 0)` });
+    css(price, { top: '628px', opacity: String(pp), transform: `translate3d(0, ${(26 * (1 - pp)).toFixed(2)}px, 0)` });
     const tp = spring(t, T.trial, 3, 0.55);
-    css(row, { top: '716px' });
+    css(row, { top: '712px' });
     css(trial, { opacity: String(clamp(tp * 2)), transform: `scale(${lerp(0.8, 1, clamp(tp)).toFixed(4)})` });
     const up = seg(t, T.url, 0.5, E.snap);
     css(url, { opacity: String(up), transform: `translate3d(${(-16 * (1 - up)).toFixed(2)}px, 0, 0)` });
   }
 
-  return { root, update };
+  return { root, update, layout };
 }

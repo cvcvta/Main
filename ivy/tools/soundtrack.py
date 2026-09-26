@@ -1,9 +1,9 @@
 """Original score and sound design for the Ivy spot, synthesized from scratch in numpy.
 
     node tools/cues.mjs > build/cues.json
-    python3 tools/soundtrack.py            -> build/soundtrack.wav (48 kHz stereo, exactly 15.0 s)
+    python3 tools/soundtrack.py            -> build/soundtrack.wav (48 kHz stereo, same length as the picture)
 
-128 BPM, 8 bars. 11:48 PM sits in B minor over a clock and a drone; the cut opens into D major
+120 BPM, 10 bars. 11:48 PM sits in B minor over a clock and a drone; the cut opens into D major
 with a light house groove. Every UI hit is placed from the same cue sheet as the picture and
 panned to where it happens on screen. Ivy's two-note motif (D -> A) sounds on the approval and
 again on the offer.
@@ -397,28 +397,41 @@ verb.add(split + 0.02, glass, 0.5)
 sw = pad([62, 66, 69, 73, 76], b(1) + 0.05, cutoff=3200, attack=b(1), release=0.01, seed=4)
 swt = tt(len(sw) / SR)
 sw *= ((swt / swt[-1]) ** 2.2)[:, None]
-keys_bus.add(b(7), sw, 0.55)
+keys_bus.add(split - BEAT, sw, 0.55)
 
 # ================================================================== B + C: Ivy (D major groove)
-CH = {
-    3: [62, 66, 69, 73, 76],   # Dmaj9
-    4: [59, 62, 66, 69, 73],   # Bm9
-    5: [55, 59, 62, 66, 69],   # Gmaj9
-    6: [54, 57, 62, 66, 69],   # D/F#
-}
-ROOT = {3: 38, 4: 35, 5: 31, 6: 30}
-bar_t = lambda k: (k - 1) * BAR  # bar numbers from 1
+# Harmony follows the picture: home on the reveal, a lift under the typing, tension as the finger
+# comes in, home again on the tap, and an A11 pulling into the brand.
+Dmaj9, Bm9, Gmaj9, DF, Em9, A11 = [62, 66, 69, 73, 76], [59, 62, 66, 69, 73], [55, 59, 62, 66, 69], [54, 57, 62, 66, 69], [52, 55, 59, 62, 66], [57, 62, 64, 67, 71]
+CHORDS = [  # (start, end, notes, bass root)
+    (T["split"], b(12), Dmaj9, 38),
+    (b(12), b(16), Bm9, 35),
+    (b(16), b(20), Gmaj9, 31),
+    (b(20), b(24), DF, 30),
+    (b(24), T["tap"], Em9, 28),
+    (T["tap"], T["land"], Dmaj9, 38),
+    (T["land"], T["morph"], Gmaj9, 31),
+    (T["morph"], T["lockup"], A11, 33),
+]
+GROOVE_END = T["morph"]
+HELD = (T["finger"] + BEAT * 0.25, T["tap"] - 0.01)  # the breath before the tap
 
-# pads per bar (bars 3-6), the last half-bar turns to A11 for the lift into the brand
-for k in (3, 4, 5):
-    keys_bus.add(bar_t(k), pad(CH[k], BAR + 0.3, cutoff=2200, attack=0.05, release=0.3, seed=k), 0.36)
-keys_bus.add(bar_t(6), pad(CH[6], 3 * BEAT + 0.2, cutoff=2400, attack=0.03, release=0.2, seed=6), 0.36)
-keys_bus.add(b(23), pad([57, 62, 64, 67, 71], BEAT + 0.05, cutoff=1500, attack=0.02, release=0.05, seed=7), 0.3)
 
+def chord_at(t):
+    for a, e, notes, root in CHORDS:
+        if a - 1e-6 <= t < e:
+            return notes, root
+    return Dmaj9, 38
+
+
+for a, e, notes, _ in CHORDS:
+    keys_bus.add(a, pad(notes, e - a + 0.25, cutoff=2200, attack=0.04, release=0.25, seed=int(a * 10)), 0.34)
+
+beats = np.arange(T["split"], GROOVE_END - 1e-6, BEAT)
 kick_times = []
-for bt in np.arange(8, 23.01, 1.0):
-    tb = b(bt)
-    if bt == 19:  # a held breath before the tap
+for tb in beats:
+    bt = round(tb / BEAT)
+    if HELD[0] <= tb < HELD[1]:
         continue
     drums.add(tb, kick(1.0 if bt % 4 == 0 else 0.85), 0.75)
     kick_times.append(tb)
@@ -426,41 +439,29 @@ for bt in np.arange(8, 23.01, 1.0):
         drums.add(tb, clap(), 0.3)
         verb.add(tb, clap(), 0.12)
     drums.add(tb + BEAT / 2, hat(bt % 4 == 3, 0.5), 0.26, pan=0.2)
-    for s in (1, 3):
-        drums.add(tb + s * S16, shaker(), 0.15, pan=-0.3)
-
-# bass: root on the one, a push on the and-of-two
-for bt in np.arange(8, 23.01, 1.0):
-    if bt == 19:
-        continue
-    k = int(bt // 4) + 1
-    root = ROOT.get(k, 38)
+    for s16 in (1, 3):
+        drums.add(tb + s16 * S16, shaker(), 0.15, pan=-0.3)
+    # bass: root on the one, a push on the and-of-two, an octave pop on the and-of-four
+    _, root = chord_at(tb)
     if bt % 4 == 0:
-        bass_bus.add(b(bt), bass(root, BEAT * 1.4), 0.5)
-    if bt % 4 == 1:
-        bass_bus.add(b(bt) + BEAT / 2, bass(root, BEAT * 0.9, 0.8), 0.42)
-    if bt % 4 == 3:
-        bass_bus.add(b(bt) + BEAT / 2, bass(root + 12, S16 * 1.6, 0.6), 0.3)
-
-# keys: e-piano stabs on the offbeats
-for bt in np.arange(8, 23.01, 1.0):
-    if bt == 19:
-        continue
-    k = int(bt // 4) + 1
-    chord = CH.get(k, CH[3])
+        bass_bus.add(tb, bass(root, BEAT * 1.4), 0.5)
+    elif bt % 4 == 1:
+        bass_bus.add(tb + BEAT / 2, bass(root, BEAT * 0.9, 0.8), 0.42)
+    elif bt % 4 == 3:
+        bass_bus.add(tb + BEAT / 2, bass(root + 12, S16 * 1.6, 0.6), 0.3)
+    # e-piano stabs on the offbeats of one and three
     if bt % 2 == 0:
-        for j, m in enumerate(chord[1:4]):
-            keys_bus.add(b(bt) + BEAT / 2 + 0.004 * j, epiano(m + 12, 0.45, 0.8), 0.22, pan=-0.25 + 0.25 * j)
+        notes, _ = chord_at(tb + BEAT / 2)
+        for j, m in enumerate(notes[1:4]):
+            keys_bus.add(tb + BEAT / 2 + 0.004 * j, epiano(m + 12, 0.45, 0.8), 0.22, pan=-0.25 + 0.25 * j)
 
-# marimba arp over the reveal and the plan, thinned under the typing
+# marimba arp on eighths, out of the way of the typing and the held breath
 arp_pat = [0, 2, 4, 1, 3, 2, 4, 3]
-for bt in np.arange(8, 23.99, 0.5):
-    k = int(bt // 4) + 1
-    if 13 <= bt < 17 or bt == 19 or 19 < bt < 20:
+for k, te in enumerate(np.arange(T["split"], GROOVE_END - 1e-6, BEAT / 2)):
+    if T["typeStart"] - 0.1 <= te < T["send"] or HELD[0] - BEAT <= te < HELD[1]:
         continue
-    chord = CH.get(k, CH[3])
-    m = chord[arp_pat[int(bt * 2) % 8]] + 12
-    keys_bus.add(b(bt), pluck(m, 0.4, 3000, 9), 0.16, pan=0.35 if int(bt * 2) % 2 else -0.35)
+    notes, _ = chord_at(te)
+    keys_bus.add(te, pluck(notes[arp_pat[k % 8]] + 12, 0.4, 3000, 9), 0.16, pan=0.35 if k % 2 else -0.35)
 
 # ------------------------------------------------------------------ B/C sound design
 # the crane: one tick per menu item, up the scale
@@ -503,10 +504,10 @@ for j in range(2):
     sfx.add(T["chips"] + j * S16, tick(5200, 0.015, 0.7), 0.16, pan=0.1)
 # finger approaches, riser into the tap
 sfx.add(T["finger"], whoosh(0.4, 600, 1600, 1.4, "bell"), 0.1, pan=0.4)
-rd = T["tap"] - b(19)
+rd = T["tap"] - HELD[0]
 trr = tt(rd)
 riser = sweep(rng.standard_normal(len(trr)), 400, 6000, 1.0) * (trr / rd) ** 2.2
-sfx.add(b(19), fades(riser, 0.05, 0.003), 0.28)
+sfx.add(HELD[0], fades(riser, 0.05, 0.003), 0.28)
 
 # THE TAP: press, success, Ivy's motif (D -> A)
 tap = T["tap"]
@@ -546,9 +547,9 @@ for j, tw in enumerate(C["tagline"]):
     m = [67, 69, 71, 74, 76, 78, 79, 81, 83, 86][j % 10]
     keys_bus.add(tw, pluck(m + 12, 0.6, 3500, 7), 0.12, pan=-0.4 + 0.08 * j)
     verb.add(tw, pluck(m + 12, 0.6, 3500, 7), 0.08)
-for bt in (26, 27):
-    drums.add(b(bt), kick(0.7), 0.45)
-    drums.add(b(bt) + BEAT / 2, hat(False, 0.4), 0.14, pan=0.2)
+for tb in np.arange(T["chip"], T["trial"] - 1e-6, BEAT):
+    drums.add(tb, kick(0.7), 0.45)
+    drums.add(tb + BEAT / 2, hat(False, 0.4), 0.14, pan=0.2)
 sfx.add(T["price"], tick(3600, 0.02, 0.8), 0.14)
 for j, m in enumerate([74, 78, 81]):
     keys_bus.add(T["price"] + j * 0.02, epiano(m + 12, 0.8, 0.7), 0.18, pan=-0.2 + 0.2 * j)

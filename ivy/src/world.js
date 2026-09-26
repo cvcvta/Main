@@ -2,7 +2,8 @@
 // type the ask, Ivy summarizes, one tap to approve, the automation lands under Marketing.
 import { NAV, OWNER, T, S16, BEAT, COPY } from './config.js';
 import { E, clamp, lerp, seg, spring, keys, el, css, tr, chars, hash, shake, bezier } from './engine.js';
-import { icon, sparkSvg } from './icons.js';
+import { icon } from './icons.js';
+import { logoEl, iconImg, iconMarkBox } from './brand.js';
 import { typeSchedule, kfCrane } from './timing.js';
 
 const WIN = { x: -780, y: -450, w: 1560, h: 900 };
@@ -21,23 +22,23 @@ function worldPos(e, stop) {
 // camera target that puts world point (wx, wy) at screen point (sx, sy) at scale s
 const frame = (wx, wy, s, sx, sy) => [wx - (sx - 960) / s, wy - (sy - 540) / s];
 
-const statusBar = `<svg viewBox="0 0 70 14" width="70" height="14"><g fill="#0F1A15"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6.5" width="3" height="7.5" rx="1"/><rect x="10" y="4" width="3" height="10" rx="1"/><rect x="15" y="1.5" width="3" height="12.5" rx="1"/>
+const statusBar = `<svg viewBox="0 0 70 14" width="70" height="14"><g fill="#ECF0F1"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6.5" width="3" height="7.5" rx="1"/><rect x="10" y="4" width="3" height="10" rx="1"/><rect x="15" y="1.5" width="3" height="12.5" rx="1"/>
   <path d="M31 13.2a1.6 1.6 0 1 0 0.01 0zM26.6 9.4a6.2 6.2 0 0 1 8.8 0l-1.3 1.3a4.4 4.4 0 0 0-6.2 0zM23.8 6.6a10.2 10.2 0 0 1 14.4 0l-1.3 1.3a8.4 8.4 0 0 0-11.8 0z"/>
-  <rect x="44" y="1.5" width="22" height="11" rx="3.2" fill="none" stroke="#0F1A15" stroke-opacity=".45" stroke-width="1.2"/><rect x="46" y="3.5" width="16" height="7" rx="1.8"/><rect x="67.2" y="5" width="1.8" height="4" rx=".8" fill-opacity=".45"/></g></svg>`;
+  <rect x="44" y="1.5" width="22" height="11" rx="3.2" fill="none" stroke="#ECF0F1" stroke-opacity=".45" stroke-width="1.2"/><rect x="46" y="3.5" width="16" height="7" rx="1.8"/><rect x="67.2" y="5" width="1.8" height="4" rx=".8" fill-opacity=".45"/></g></svg>`;
 
 export function buildWorld(parent, brand) {
   const world = el('div', '', parent);
   world.id = 'world';
   const cam = el('div', '', world);
   cam.id = 'cam';
-  const mark = brand.icon ? `<img src="${brand.icon}">` : sparkSvg(brand.palette.ivy500, brand.palette.ivy800);
 
   // ------------------------------------------------------------ window
   const win = el('div', 'win', cam);
   const winIn = el('div', 'abs', win);
   css(winIn, { left: '0px', top: '0px', width: `${WIN.w}px`, height: `${WIN.h}px` });
   const side = el('div', 'side', winIn);
-  el('div', 'logo-slot', side, brand.logo ? `<img class="logo-img" src="${brand.logo}">` : `<span class="wordmark">${COPY.brand}</span>`);
+  const logoSlot = el('div', 'logo-slot', side);
+  const sideLogo = logoEl(brand, logoSlot, 30, 'var(--mist)');
   const hl = el('div', 'nav-hl', side);
   const nav = el('div', 'nav', side);
   const items = [];
@@ -86,7 +87,11 @@ export function buildWorld(parent, brand) {
 
   // Ivy's summary card
   const msg = el('div', 'ivy-msg', chat);
-  const head = el('div', 'ivy-head', msg, `<div class="ivy-av">${mark}</div><span class="nm">Ivy</span><span>Here’s the plan. Approve to turn it on.</span>`);
+  const head = el('div', 'ivy-head', msg);
+  iconImg(brand, el('div', 'ivy-av', head));
+  el('span', 'nm', head, 'Ivy');
+  el('span', 'on', head, '<i></i>online');
+  el('span', '', head, 'Here’s the plan. Approve to turn it on.');
   const pwrap = el('div', 'plan-wrap', msg);
   const pbg = el('div', 'plan-bg', pwrap);
   const plan = el('div', 'plan', pwrap);
@@ -107,25 +112,30 @@ export function buildWorld(parent, brand) {
   const goL2 = el('span', 'lbl2', go, `${icon('check')}Approved`);
 
   const composer = el('div', 'composer', chat);
-  el('div', 'spark', composer, sparkSvg(brand.palette.ivy500, brand.palette.ivy800));
-  const ph = el('div', 'ph', composer, 'Ask Ivy to do anything');
+  iconImg(brand, el('div', 'spark', composer));
+  const ph = el('div', 'ph', composer, COPY.placeholder);
   const typed = el('div', 'typed', composer);
   const cs = chars(typed, COPY.prompt);
   const caret = el('div', 'caret', composer);
   el('div', 'send', composer, icon('send'));
   const ring = el('div', 'ring', composer);
 
-  // the app icon the window collapses into
-  const skin = el('div', 'skin', win, brand.icon ? `<img src="${brand.icon}">` : `<span class="wordmark">${COPY.brand}</span>`);
-  const skinMark = skin.firstChild;
+  // the app icon the window collapses into, rebuilt from the icon's own field colour and the wordmark
+  // so it hands off exactly to the end card (see end.js)
+  const skin = el('div', 'skin', win);
+  const [mx, my, mh] = iconMarkBox(brand, 200);
+  const skinMark = logoEl(brand, skin, mh, '#FFFFFF');
+  css(skinMark, { left: `calc(50% + ${(mx - 100).toFixed(2)}px)`, top: `calc(50% + ${(my - 100).toFixed(2)}px)`, transformOrigin: '50% 50%' });
 
   // ------------------------------------------------------------ phone
   const phone = el('div', 'phone', cam);
   phone.innerHTML = `<div class="scr"><div class="island"></div><div class="sb"><span>7:42</span>${statusBar}</div>
-    <div class="ph-body"><div class="ph-logo">${brand.logo ? `<img class="logo-img" style="height:30px" src="${brand.logo}">` : `<span class="wordmark" style="font-size:30px">${COPY.brand}</span>`}</div>
+    <div class="ph-body"><div class="ph-logo"></div>
     <div class="ph-hello">Good evening, ${OWNER.first}</div>
     <div class="grid">${NAV.slice(1).map((n, i) => `<div class="tile" ${i === 6 ? 'style="grid-column: span 2"' : ''}>${icon(n.toLowerCase())}<span>${n}</span></div>`).join('')}</div></div>
-    <div class="ph-comp"><span class="sp">${sparkSvg(brand.palette.ivy500, brand.palette.ivy800)}</span>Ask Ivy</div></div>`;
+    <div class="ph-comp"><span class="sp"></span>${COPY.placeholder}</div></div>`;
+  logoEl(brand, phone.querySelector('.ph-logo'), 22, 'var(--mist)');
+  iconImg(brand, phone.querySelector('.sp'));
   const tiles = [...phone.querySelectorAll('.tile')];
 
   // ------------------------------------------------------------ flyer, ghosts, finger, burst
@@ -159,6 +169,8 @@ export function buildWorld(parent, brand) {
     L.lines = lines.length;
     L.composerBottom = WIN.y + WIN.h - 38;
     L.chatX = worldPos(chat, win)[0];
+    const lp = worldPos(sideLogo, win);
+    L.logoC = [lp[0] + sideLogo.offsetWidth / 2, lp[1] + sideLogo.offsetHeight / 2];
     L.chatW = chat.offsetWidth;
     css(sub, { height: '58px' });
     L.subRow = worldPos(subRow, win);
@@ -182,7 +194,7 @@ export function buildWorld(parent, brand) {
     if (t < T.pullOut) {
       const kf = kfCrane(t);
       const k = E.inOutQuad(clamp((kf + 1.72) / 2.4));
-      c = [lerp(-676, -552, k), itemY(0) + ROW * kf, lerp(4.7, 3.35, k), 0, 0, lerp(-2.2, 0, clamp((kf + 1.72) / 8.7))];
+      c = [lerp(L.logoC[0], -552, k), lerp(L.logoC[1], itemY(0) + ROW * kf, clamp((kf + 1.72) / 1.72)), lerp(4.4, 3.35, k), 0, 0, lerp(-2.2, 0, clamp((kf + 1.72) / 8.7))];
     } else {
       c = keys(t, [
         [T.pullOut, [-552, itemY(7), 3.35, 0, 0, 0]],
@@ -224,15 +236,15 @@ export function buildWorld(parent, brand) {
     css(hl, { top: `${(NAV_TOP + ROW * hlK).toFixed(2)}px`, opacity: String(hlVis) });
     items.forEach((it, k) => {
       const on = clamp(1 - Math.abs(hlK - k) * 1.6) * hlVis;
-      css(it, { color: `rgb(${Math.round(lerp(52, 238, on))},${Math.round(lerp(64, 240, on))},${Math.round(lerp(58, 231, on))})` });
+      css(it, { color: `rgb(${Math.round(lerp(169, 236, on))},${Math.round(lerp(179, 240, on))},${Math.round(lerp(180, 241, on))})` });
     });
     const subP = seg(t, T.land - 0.06, 0.4, E.snap);
     css(sub, { height: `${(58 * subP).toFixed(2)}px` });
     const tg = seg(t, T.toggle, 0.22, E.snap);
     css(knob, { transform: `translateX(${(14 * tg).toFixed(2)}px)` });
-    css(sw, { background: `rgb(${Math.round(lerp(201, 31, tg))},${Math.round(lerp(207, 115, tg))},${Math.round(lerp(203, 82, tg))})` });
+    css(sw, { background: `rgb(${Math.round(lerp(58, 69, tg))},${Math.round(lerp(69, 191, tg))},${Math.round(lerp(70, 124, tg))})` });
     const shine = seg(t, T.toggle, 0.7, E.inOutQuad);
-    css(subRow, { boxShadow: `0 0 0 ${(7 * Math.sin(Math.PI * shine)).toFixed(2)}px rgba(31,115,82,${(0.2 * Math.sin(Math.PI * shine)).toFixed(3)})` });
+    css(subRow, { boxShadow: `inset 0 0 0 1px rgba(69,191,124,.35), 0 0 0 ${(7 * Math.sin(Math.PI * shine)).toFixed(2)}px rgba(69,191,124,${(0.22 * Math.sin(Math.PI * shine)).toFixed(3)})` });
 
     // --- dashboard assembles on the pull-out
     const dIn = (d) => seg(t, T.pullOut + 0.1 + d, 0.55, E.snap);
@@ -244,7 +256,7 @@ export function buildWorld(parent, brand) {
 
     // --- focus mode for the hero
     const focus = seg(t, T.pushIn, 0.5, E.inOutQuad) * (1 - seg(t, T.land + 0.2, 0.5));
-    css(veil, { background: `rgba(252,251,248,${(0.86 * focus).toFixed(3)})` });
+    css(veil, { background: `rgba(13,18,17,${(0.82 * focus).toFixed(3)})` });
     css(dash, { filter: `blur(${(5 * focus).toFixed(2)}px)` });
 
     // --- composer: glow on arrival, typing, send
@@ -340,7 +352,7 @@ export function buildWorld(parent, brand) {
         opacity: String(1 - p),
       });
     });
-    css(pbg, { borderColor: approved ? `rgba(31,115,82,${(0.55 * (1 - seg(t, T.fly, 0.2))).toFixed(3)})` : '#E4E1D8' });
+    css(pbg, { borderColor: approved ? `rgba(69,191,124,${(0.7 * (1 - seg(t, T.fly, 0.2))).toFixed(3)})` : 'rgba(236,240,241,0.14)' });
 
     // --- the automation flies into Marketing
     const flyP = seg(t, T.fly, T.land - T.fly, E.inOutCubic);
@@ -379,6 +391,7 @@ export function buildWorld(parent, brand) {
     css(win, {
       left: `${(-sz[0] / 2).toFixed(2)}px`, top: `${(-sz[1] / 2).toFixed(2)}px`, width: `${sz[0].toFixed(2)}px`, height: `${sz[1].toFixed(2)}px`,
       borderRadius: `${lerp(30, 46, m).toFixed(2)}px`,
+      boxShadow: `0 0 0 1px rgba(236,240,241,${(0.09 * (1 - m)).toFixed(3)}), 0 60px 120px -30px rgba(0,0,0,${(0.85 * (1 - m)).toFixed(3)}), 0 30px 60px -20px rgba(0,0,0,${(0.55 * m).toFixed(3)})`,
     });
     css(winIn, { opacity: String(1 - seg(t, T.morph, 0.16, E.outQuad)), transform: `translate(${((sz[0] - WIN.w) / 2).toFixed(2)}px, ${((sz[1] - WIN.h) / 2).toFixed(2)}px) scale(${lerp(1, 0.4, m).toFixed(4)})`, transformOrigin: '50% 50%' });
     const wipe = seg(t, T.morph + 0.04, 0.3, E.inOutCubic);

@@ -32,10 +32,10 @@ export function buildNight(parent) {
     svg.appendChild(p);
     return p;
   };
-  const halo = mk({ fill: 'none', stroke: 'rgba(238,240,231,0.07)', 'stroke-width': '9', 'stroke-linecap': 'round' });
+  const halo = mk({ fill: 'none', stroke: 'rgba(236,240,241,0.07)', 'stroke-width': '9', 'stroke-linecap': 'round' });
   const shadow = mk({ fill: 'none', stroke: 'rgba(0,0,0,0.45)', 'stroke-width': '3.2', 'stroke-dasharray': '13 9', 'stroke-linecap': 'round' });
-  const thread = mk({ fill: 'none', stroke: 'rgba(238,240,231,0.78)', 'stroke-width': '3', 'stroke-dasharray': '13 9', 'stroke-linecap': 'round' });
-  const needle = mk({ fill: 'none', stroke: '#F4F6F0', 'stroke-width': '3', 'stroke-linecap': 'round' });
+  const thread = mk({ fill: 'none', stroke: 'rgba(236,240,241,0.78)', 'stroke-width': '3', 'stroke-dasharray': '13 9', 'stroke-linecap': 'round' });
+  const needle = mk({ fill: 'none', stroke: '#ECF0F1', 'stroke-width': '3', 'stroke-linecap': 'round' });
 
   const cards = STACK.map((s, i) => {
     const c = el('div', 'app', cam);
@@ -158,7 +158,7 @@ export function buildNight(parent) {
       needle.setAttribute('opacity', '1');
     } else needle.setAttribute('opacity', '0');
     const flick = t > T.slam && t < T.slam + 0.25 ? 0.55 + 0.45 * Math.abs(noise(t * 60, 9)) : 1;
-    thread.setAttribute('stroke', `rgba(238,240,231,${(0.78 * flick * lerp(1, 0.42, slamK)).toFixed(3)})`);
+    thread.setAttribute('stroke', `rgba(236,240,241,${(0.78 * flick * lerp(1, 0.42, slamK)).toFixed(3)})`);
     shadow.setAttribute('opacity', String(lerp(1, 0.5, slamK)));
 
     // odometer: the stack's monthly total rolls up as apps land, then slams to centre stage
@@ -206,7 +206,7 @@ export function buildNight(parent) {
     css(cA, { transform: `translateY(${(32 * (1 - kp)).toFixed(2)}px)`, opacity: String(kp) });
     css(cB, { transform: `translateY(${(-32 * kp).toFixed(2)}px)`, opacity: String(k === 0 ? 0 : 1 - kp) });
     const glowK = k > 0 ? 1 - seg(t, T.clock(k), 0.2) : 0;
-    css(clock, { borderColor: `rgba(238,240,231,${(0.1 + 0.25 * glowK).toFixed(3)})` });
+    css(clock, { borderColor: `rgba(236,240,241,${(0.1 + 0.25 * glowK).toFixed(3)})` });
   }
 
   return { root, update, layout };

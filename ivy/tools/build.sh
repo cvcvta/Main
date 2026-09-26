@@ -16,6 +16,6 @@ ffmpeg -hide_banner -loglevel error -y -i out/ivy-spot.mp4 -c:v libx264 -preset 
 rm -f out/ivy-spot-video.mp4
 
 # poster (the approval) and the end card, pulled from the finished file
-ffmpeg -hide_banner -loglevel error -y -ss 9.47 -i out/ivy-spot.mp4 -frames:v 1 -q:v 2 out/poster.jpg
-ffmpeg -hide_banner -loglevel error -y -ss 14.9 -i out/ivy-spot.mp4 -frames:v 1 -q:v 2 out/endcard.jpg
+ffmpeg -hide_banner -loglevel error -y -ss 13.47 -i out/ivy-spot.mp4 -frames:v 1 -q:v 2 out/poster.jpg
+ffmpeg -hide_banner -loglevel error -y -ss 19.9 -i out/ivy-spot.mp4 -frames:v 1 -q:v 2 out/endcard.jpg
 echo "done: out/ivy-spot.mp4"

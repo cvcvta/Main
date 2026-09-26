@@ -30,7 +30,4 @@ const P = {
 
 export const icon = (name) => `<svg viewBox="0 0 24 24">${P[name]}</svg>`;
 
-// Ivy's assistant mark inside the composer: a small leaf-and-spark, drawn not borrowed.
-export const sparkSvg = (c1, c2) => `<svg viewBox="0 0 34 34"><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><rect width="34" height="34" rx="11" fill="url(#sg)"/><path d="M17 8.5c.9 4.4 2.6 6.1 7 7-4.4.9-6.1 2.6-7 7-.9-4.4-2.6-6.1-7-7 4.4-.9 6.1-2.6 7-7z" fill="#EEF0E7"/></svg>`;
-
 export const moonSvg = '<svg viewBox="0 0 24 24"><path d="M20 14.6A8.5 8.5 0 0 1 9.4 4a8.5 8.5 0 1 0 10.6 10.6z"/></svg>';

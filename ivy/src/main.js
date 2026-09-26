@@ -1,78 +1,46 @@
-// Ivy, 15 s. Every frame is a pure function of time: window.seek(t).
-import { PALETTE, COPY, T, CAPTIONS, S16, DURATION } from './config.js';
+// Ivy spot. Every frame is a pure function of time: window.seek(t).
+import { COPY, T, CAPTIONS, S16, DURATION } from './config.js';
 import { E, clamp, lerp, seg, el, css, words } from './engine.js';
+import { loadBrand } from './brand.js';
 import { buildNight } from './night.js';
 import { buildWorld } from './world.js';
 import { buildEnd } from './end.js';
 
-// Optional official assets: assets/brand/{logo,app-icon}.{svg,png} and brand.json {"palette": {...}}
-async function loadBrand() {
-  const brand = { palette: { ...PALETTE }, logo: null, icon: null };
-  try {
-    const r = await fetch('assets/brand/brand.json');
-    if (r.ok) Object.assign(brand.palette, (await r.json()).palette || {});
-  } catch { /* defaults */ }
-  for (const [key, file] of [['logo', 'logo'], ['icon', 'app-icon']]) {
-    for (const ext of ['svg', 'png']) {
-      const url = `assets/brand/${file}.${ext}`;
-      try {
-        const r = await fetch(url, { method: 'HEAD' });
-        if (r.ok) { brand[key] = url; break; }
-      } catch { /* not provided */ }
-    }
-  }
-  // A dark logo gets reversed on the dark end card (drop logo-light.* to control this yourself).
-  if (brand.logo) brand.logoDark = await darkness(brand.logo);
-  return brand;
-}
-
-async function darkness(url) {
-  const im = new Image();
-  im.src = url;
-  await im.decode();
-  const c = document.createElement('canvas');
-  c.width = 64; c.height = Math.max(1, Math.round((64 * im.naturalHeight) / im.naturalWidth));
-  const g = c.getContext('2d');
-  g.drawImage(im, 0, 0, c.width, c.height);
-  const d = g.getImageData(0, 0, c.width, c.height).data;
-  let lum = 0, n = 0;
-  for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 128) { lum += 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]; n++; }
-  return n ? lum / n / 255 < 0.5 : true;
-}
-
 const brand = await loadBrand();
-for (const [k, v] of Object.entries(brand.palette)) document.documentElement.style.setProperty(`--${k}`, v);
+const root = document.documentElement.style;
+for (const [k, v] of Object.entries(brand.palette)) root.setProperty(`--${k}`, v);
+if (brand.iconBg) root.setProperty('--iconBg', brand.iconBg);
 
 const stage = el('div', '', document.body);
 stage.id = 'stage';
 const bg = el('div', '', stage);
 bg.id = 'bg';
-css(bg, { background: 'radial-gradient(1500px 1000px at 50% 38%, #F8F7F2 0%, #F1EEE6 60%, #E7E3D8 100%)' });
+// the homepage's near-black with deep green light pooling in, as on joinivy.ai
+css(bg, { background: 'radial-gradient(1100px 760px at 74% 26%, rgba(0, 66, 37, .55), rgba(0, 66, 37, 0) 70%), radial-gradient(1300px 900px at 24% 86%, rgba(1, 43, 36, .7), rgba(1, 43, 36, 0) 72%), #151515' });
 
 const world = buildWorld(stage, brand);
 
 // "One platform." rides the crane down the sidebar
 const sup = el('div', 'super', stage);
-const supLines = ['One', 'platform.'].map((w) => {
+const supLines = COPY.platform.map((w, i) => {
   const m = el('div', '', sup);
   css(m, { overflow: 'hidden', paddingBottom: '14px', marginBottom: '-14px' });
-  const s = el('div', 'w', m, w);
-  return s;
+  return el('div', i === 1 ? 'w hi' : 'w', m, w);
 });
 
-// hero captions (screen space) over a soft paper fade
+// hero captions (screen space) over a soft fade to the page colour; one word lit in leaf green
 const capBg = el('div', 'abs', stage);
-css(capBg, { left: '0px', top: '0px', width: '1920px', height: '1080px', background: 'linear-gradient(90deg, rgba(244,242,236,.97) 0%, rgba(244,242,236,.93) 25%, rgba(244,242,236,0) 40%)' });
-const caps = COPY.captions.map((txt) => {
+css(capBg, { left: '0px', top: '0px', width: '1920px', height: '1080px', background: 'linear-gradient(90deg, rgba(21,21,21,.95) 0%, rgba(21,21,21,.88) 25%, rgba(21,21,21,0) 40%)' });
+const caps = COPY.captions.map(([lines, hot]) => {
   const c = el('div', 'caption', stage);
-  const parts = txt === 'It already knows your business.' ? ['It already knows', 'your business.'] : txt === 'One tap to approve.' ? ['One tap', 'to approve.'] : ['Just ask', 'Ivy.'];
   const ws = [];
-  parts.forEach((line) => {
+  lines.forEach((line) => {
     const m = el('div', '', c);
     css(m, { overflow: 'hidden', paddingBottom: '10px', marginBottom: '-10px' });
     const inner = el('div', '', m);
     ws.push(...words(inner, line));
   });
+  ws.forEach((w) => { if (w.textContent === hot) w.classList.add('hi'); });
   return { c, ws };
 });
 
@@ -89,6 +57,7 @@ const end = buildEnd(stage, brand);
 await document.fonts.ready;
 await Promise.all([...document.images].map((i) => (i.complete ? 0 : new Promise((r) => { i.onload = i.onerror = r; }))));
 world.layout();
+end.layout();
 nightA.layout();
 nightB.layout();
 
@@ -130,7 +99,7 @@ function seek(t) {
   const fl = seg(t, T.split, 0.04) * (1 - seg(t, T.split + 0.04, 0.45, E.outQuad));
   css(flash, {
     display: fl > 0.001 ? 'block' : 'none',
-    background: `linear-gradient(${(90 + TH * 180 / Math.PI).toFixed(2)}deg, rgba(255,255,255,0) ${(46 - 20 * fl).toFixed(1)}%, rgba(255,255,255,${(0.95 * fl).toFixed(3)}) 50%, rgba(255,255,255,0) ${(54 + 20 * fl).toFixed(1)}%)`,
+    background: `linear-gradient(${(90 + TH * 180 / Math.PI).toFixed(2)}deg, rgba(255,255,255,0) ${(46 - 20 * fl).toFixed(1)}%, rgba(214,242,226,${(0.9 * fl).toFixed(3)}) 50%, rgba(255,255,255,0) ${(54 + 20 * fl).toFixed(1)}%)`,
   });
 
   world.update(t);
@@ -165,8 +134,8 @@ function post(t) {
   const endc = t > T.zoom + 0.25;
   const hit = (t0, a, k) => (t >= t0 ? a * Math.exp(-(t - t0) * k) : 0);
   return {
-    vignette: night ? 0.62 : endc ? 0.5 : 0.16,
-    grain: night ? 0.05 : endc ? 0.035 : 0.022,
+    vignette: night ? 0.62 : endc ? 0.5 : 0.34,
+    grain: night ? 0.05 : endc ? 0.035 : 0.03,
     ca: hit(T.slam, 3.2, 7) + hit(T.split, 4.5, 6) + hit(T.tap, 1.6, 9) + hit(T.zoom + 0.3, 2.2, 6),
   };
 }

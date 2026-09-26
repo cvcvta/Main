@@ -1,11 +1,11 @@
-# Official brand files go here
+# Brand files
 
-The spot renders with stand-ins until these exist. Drop them in and run `tools/build.sh`:
+The render uses whatever is here. To update, replace the files and run `tools/build.sh`:
 
 | File | Used for |
 | --- | --- |
-| `logo.svg` or `logo.png` | Wordmark on a transparent background. Appears in the sidebar, on the iPhone, and as the end-card lockup. If it's dark, it's reversed to white on the green end card automatically. |
-| `app-icon.svg` or `app-icon.png` | Square app icon (1024×1024 is ideal). The window collapses into it, and Ivy's chat avatar uses it. |
-| `brand.json` | Optional palette override, for example `{"palette": {"ivy700": "#0F3D2C", "ivy500": "#1F7352", "paper": "#F3F1EA"}}`. The keys are the ones in `PALETTE` in `src/config.js`. |
+| `logo.png` (or `.svg`) | The IVY wordmark on a transparent background. It's used as an alpha mask, cropped to its glyphs, and recoloured per context: the sidebar, the iPhone, and the end-card lockup. |
+| `app-icon.png` (or `.svg`) | The square app icon. It's used for Ivy's chat avatar and the composer. It's also measured (field colour and wordmark position), so the window can collapse into an exact rebuild of it. |
+| `brand.json` | Optional palette override, for example `{"palette": {"leaf": "#45BF7C"}}`. The keys are the ones in `PALETTE` in `src/config.js`. |
 
-Nothing else needs to change. The page checks for these files each time it loads.
+The page checks for these files each time it loads.

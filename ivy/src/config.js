@@ -4,47 +4,59 @@
 export const W = 1920;
 export const H = 1080;
 export const FPS = 30;
-export const DURATION = 15;
-export const BPM = 128;
-export const BEAT = 60 / BPM; // 0.46875 s. 8 bars of 4/4 = exactly 15.0 s
+export const BPM = 120;
+export const BEAT = 60 / BPM; // 0.5 s
+export const BARS = 10;
+export const DURATION = BARS * 4 * BEAT; // 20.0 s
 export const S16 = BEAT / 4;
 export const b = (n) => n * BEAT; // beat number -> seconds
 
 // ---------------------------------------------------------------- brand
-// Swap these for the official values (or drop assets/brand/brand.json next to the logo files).
+// Official palette: #012B24, #004225, #7F8C8D, #ECF0F1, #151515. `leaf` is the bright accent green
+// sampled from the joinivy.ai homepage (headline highlight and primary buttons). Everything else is a
+// tone derived from these. assets/brand/brand.json can override any key.
 export const PALETTE = {
-  ivy900: '#07170F', // night / end card base
-  ivy800: '#0B2A1F',
-  ivy700: '#0F3D2C', // primary dark green
-  ivy400: '#2A8A61', // icon highlight
-  ivy600: '#17573F',
-  ivy500: '#1F7352',
-  ivy300: '#8ED3AE',
-  ivy100: '#E3F1E8',
-  glow: '#52D69A', // light, used sparingly for glows
-  fieldHi: '#185A3E', // end-card field, centre to edge
-  fieldMid: '#0E3A28',
-  fieldLo: '#071A10',
-  paper: '#F3F1EA',
-  card: '#FFFFFF',
-  ink: '#0F1A15',
-  ink2: '#5B6660',
-  line: '#E4E1D8',
-  alert: '#FF7A59',
-  cream: '#EEF0E7',
+  deep: '#012B24', // official
+  green: '#004225', // official
+  grey: '#7F8C8D', // official
+  mist: '#ECF0F1', // official
+  ink: '#151515', // official
+  leaf: '#45BF7C', // homepage accent
+  // dark UI tones
+  page: '#151515',
+  surface: '#111716',
+  surface2: '#0D1211',
+  surface3: '#161E1C',
+  panel: '#0C2823',
+  edge: 'rgba(236, 240, 241, 0.08)',
+  edge2: 'rgba(236, 240, 241, 0.14)',
+  dim: '#5F6B6C',
+  // end-card field, centre to edge (rebuilt from the app icon's own green)
+  fieldHi: '#0B3D34',
+  fieldMid: '#042B25',
+  fieldLo: '#011C18',
+  alert: '#FF6B57',
 };
 
 export const COPY = {
   brand: 'Ivy',
   oneLiner: 'The business platform with an AI that does the work.',
+  oneLinerHi: 'does', // highlighted in leaf green, as on the homepage
+  chip: 'ALL-IN-ONE, FOR SOLOPRENEURS',
   price: ['$8.99/week', 'or', '$374.99/year'],
   trial: '14 days free, $0 today.',
   url: 'joinivy.ai',
   stack: '$138', // the site's number
   admin: 'Plus hours of admin at night.',
-  platform: 'One platform.',
+  platform: ['One', 'platform.'],
   prompt: 'When a new client signs up, send them my welcome packet to sign and ask them to book a 15 minute intro call.',
-  captions: ['Just ask Ivy.', 'It already knows your business.', 'One tap to approve.'],
+  placeholder: 'Ask Ivy anything…',
+  // [lines, highlighted word]
+  captions: [
+    [['Just ask', 'Ivy.'], 'Ivy.'],
+    [['She already knows', 'your business.'], 'knows'],
+    [['One tap', 'to approve.'], 'approve.'],
+  ],
 };
 
 // The cast: one real solo, never a team.
@@ -70,49 +82,51 @@ export const STACK = [
 export const NAV = ['Home', 'Clients', 'Bookings', 'Invoices', 'Contracts', 'Messages', 'Marketing', 'Website'];
 
 // ---------------------------------------------------------------- beat map (see README cue sheet)
+// 120 BPM, 10 bars of 4/4. Bar n starts at b(4 * (n - 1)).
 export const T = {
-  // A: 11:48 PM
+  // A: 11:48 PM (bars 1-2)
   card: (i) => b(0.5 * i), // one app per eighth note
   taut: b(3.5),
-  slam: b(4), // bar 2 downbeat
-  admin: b(4.5),
-  clock: (i) => b(5.5) + i * S16, // time-lapse steps on sixteenths
-  slice: b(6.5),
-  split: b(7),
-  // B: one platform
-  crane: b(7.25), // camera on the logo, then down the sidebar
-  craneEnd: b(9.75),
-  platform: b(8), // bar 3 downbeat
-  pullOut: b(9.75),
-  phone: b(10.5),
-  // C: the hero moment
-  pushIn: b(12), // bar 4
-  typeStart: b(13),
-  typeEnd: b(17),
-  send: b(17.25),
-  think: b(17.5),
-  plan: b(17.75),
-  rows: [b(18), b(18.25), b(18.5)],
-  chips: b(18.75),
-  finger: b(19.25),
-  tap: b(20), // bar 6 downbeat
-  fly: b(20.5),
-  land: b(21.25),
-  toggle: b(21.75),
-  // D: brand
-  morph: b(23),
-  lockup: b(24), // bar 7 downbeat: the icon lands
-  zoom: b(24.5),
-  tagline: b(25.5),
-  price: b(27),
-  trial: b(28), // bar 8 downbeat
-  url: b(28.5),
+  slam: b(4), // bar 2
+  admin: b(5),
+  clock: (i) => b(6) + i * S16, // time-lapse steps on sixteenths
+  slice: b(7.5),
+  split: b(8), // bar 3: the night falls away, the groove drops
+  // B: one platform (bars 3-4)
+  crane: b(8.75), // camera holds on the logo, then runs down the sidebar
+  craneEnd: b(11.5),
+  platform: b(9.5),
+  pullOut: b(11.5),
+  phone: b(12.25),
+  // C: the hero moment (bars 4-8)
+  pushIn: b(14),
+  typeStart: b(15),
+  typeEnd: b(19.5),
+  send: b(20), // bar 6
+  think: b(20.5),
+  plan: b(21),
+  rows: [b(21.5), b(22), b(22.5)],
+  chips: b(23),
+  finger: b(24.5),
+  tap: b(26),
+  fly: b(26.75),
+  land: b(28), // bar 8
+  toggle: b(28.5),
+  // D: brand (bars 8-10)
+  morph: b(30),
+  lockup: b(31), // the icon lands
+  zoom: b(31.5),
+  chip: b(32.75),
+  tagline: b(33),
+  price: b(35),
+  trial: b(36), // bar 10
+  url: b(36.5),
   end: DURATION,
 };
 
-// Supers (screen-space captions) during the hero moment.
+// Supers (screen-space captions) during the hero moment: [in, out, index].
 export const CAPTIONS = [
-  [b(12.5), b(17.25), 0],
-  [b(17.5), b(19.25), 1],
-  [b(19.25), b(21), 2],
+  [b(14.5), b(20), 0],
+  [b(20.5), b(24.5), 1],
+  [b(24.5), b(27.5), 2],
 ];
