@@ -1,6 +1,10 @@
 // Pure timing helpers shared by the picture (world.js) and the soundtrack cue export (tools/cues.mjs).
-import { T, COPY } from './config.js';
+import { T, COPY, S16 } from './config.js';
 import { lerp, inv, hash } from './engine.js';
+
+// Word-by-word reveals: when word i of "Plus hours of admin at night." and of the end line starts.
+export const adminAt = (i) => T.admin + i * S16 * 0.8;
+export const taglineAt = (i) => T.tagline + i * S16 * 0.62;
 
 // Typing: word bursts with human-ish gaps, normalised to the typing window. Returns one time per character.
 export function typeSchedule() {

@@ -4,10 +4,10 @@
 export const W = 1920;
 export const H = 1080;
 export const FPS = 30;
-export const BPM = 120;
-export const BEAT = 60 / BPM; // 0.5 s
-export const BARS = 10;
-export const DURATION = BARS * 4 * BEAT; // 20.0 s
+export const BPM = 96;
+export const BEAT = 60 / BPM; // 0.625 s
+export const BARS = 12;
+export const DURATION = BARS * 4 * BEAT; // 30.0 s
 export const S16 = BEAT / 4;
 export const b = (n) => n * BEAT; // beat number -> seconds
 
@@ -82,51 +82,52 @@ export const STACK = [
 export const NAV = ['Home', 'Clients', 'Bookings', 'Invoices', 'Contracts', 'Messages', 'Marketing', 'Website'];
 
 // ---------------------------------------------------------------- beat map (see README cue sheet)
-// 120 BPM, 10 bars of 4/4. Bar n starts at b(4 * (n - 1)).
+// 96 BPM, 12 bars of 4/4 (bar = 2.5 s). Paced so every line can be read and every move breathes.
 export const T = {
-  // A: 11:48 PM (bars 1-2)
-  card: (i) => b(0.5 * i), // one app per eighth note
-  taut: b(3.5),
-  slam: b(4), // bar 2
-  admin: b(5),
-  clock: (i) => b(6) + i * S16, // time-lapse steps on sixteenths
-  slice: b(7.5),
-  split: b(8), // bar 3: the night falls away, the groove drops
-  // B: one platform (bars 3-4)
-  crane: b(8.75), // camera holds on the logo, then runs down the sidebar
-  craneEnd: b(11.5),
-  platform: b(9.5),
-  pullOut: b(11.5),
-  phone: b(12.25),
-  // C: the hero moment (bars 4-8)
-  pushIn: b(14),
-  typeStart: b(15),
-  typeEnd: b(19.5),
-  send: b(20), // bar 6
-  think: b(20.5),
-  plan: b(21),
-  rows: [b(21.5), b(22), b(22.5)],
-  chips: b(23),
-  finger: b(24.5),
-  tap: b(26),
-  fly: b(26.75),
-  land: b(28), // bar 8
-  toggle: b(28.5),
-  // D: brand (bars 8-10)
-  morph: b(30),
-  lockup: b(31), // the icon lands
-  zoom: b(31.5),
-  chip: b(32.75),
-  tagline: b(33),
-  price: b(35),
-  trial: b(36), // bar 10
-  url: b(36.5),
+  // A: 11:48 PM (bars 1-3)
+  intro: b(2), // the opening title (time, name) settles into the corners
+  card: (i) => b(3 + 0.5 * i), // one app per eighth note
+  taut: b(6.5),
+  slam: b(7),
+  admin: b(8), // bar 3
+  clock: (i) => b(9) + i * S16, // time-lapse steps on sixteenths
+  slice: b(11),
+  split: b(12), // bar 4: the night falls away, the groove drops
+  // B: one platform (bars 4-5)
+  crane: b(13), // camera holds on the logo, then runs down the sidebar
+  craneEnd: b(15.5),
+  platform: b(13),
+  pullOut: b(15.5),
+  phone: b(16.25),
+  // C: the hero moment (bars 5-10)
+  pushIn: b(19),
+  typeStart: b(20.5),
+  typeEnd: b(25.25),
+  send: b(25.75),
+  think: b(26.25),
+  plan: b(26.75),
+  rows: [b(27.25), b(27.75), b(28.25)],
+  chips: b(28.75),
+  finger: b(30.5),
+  tap: b(32), // bar 9
+  fly: b(33),
+  land: b(34.5),
+  toggle: b(35),
+  // D: brand (bars 10-12)
+  morph: b(37.5),
+  lockup: b(39), // the icon lands, a beat of air
+  zoom: b(40), // bar 11: through the icon
+  chip: b(41),
+  tagline: b(41.25),
+  price: b(43),
+  trial: b(44), // bar 12
+  url: b(44.5),
   end: DURATION,
 };
 
 // Supers (screen-space captions) during the hero moment: [in, out, index].
 export const CAPTIONS = [
-  [b(14.5), b(20), 0],
-  [b(20.5), b(24.5), 1],
-  [b(24.5), b(27.5), 2],
+  [b(19.5), b(25.75), 0],
+  [b(26.25), b(30.5), 1],
+  [b(30.5), b(34), 2],
 ];

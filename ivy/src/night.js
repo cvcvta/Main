@@ -1,9 +1,12 @@
 // Scene A: 11:48 PM. Seven apps stitched together with one thread, the monthly bill, the hours.
-import { STACK, OWNER, T, S16, COPY } from './config.js';
+import { STACK, OWNER, T, COPY } from './config.js';
 import { E, clamp, lerp, seg, spring, el, css, tr, words, noise, shake } from './engine.js';
 import { icon, moonSvg } from './icons.js';
+import { adminAt } from './timing.js';
 
 const CX = 960, CY = 540;
+// opening title: the time and the name, centred, before they settle into the corners
+const TITLE = { clockY: 482, clockScale: 2.8, nameY: 612, nameScale: 1.6 };
 const CLOCK = ['11:48 PM', '11:57 PM', '12:09 AM', '12:22 AM', '12:36 AM', '12:51 AM', '1:04 AM', '1:12 AM'];
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -70,15 +73,36 @@ export function buildNight(parent) {
     M.pw = per.firstChild.offsetWidth / fs;
     probe.remove();
     cols.forEach((c) => css(c.o, { width: `${M.cw}em` }));
+    layoutTitle();
   }
 
   const admin = el('div', 'admin', cam);
   const adminWords = words(admin, COPY.admin);
 
-  const chy = el('div', 'chyron', cam, `${OWNER.name.toUpperCase()}<br><span class="r">${OWNER.role.toUpperCase()}</span>`);
+  const chy = el('div', 'chyron', cam);
+  const chyLines = [el('div', 'l', chy, OWNER.name.toUpperCase()), el('div', 'l r', chy, OWNER.role.toUpperCase())];
   const clock = el('div', 'clock', cam, moonSvg);
   const ctx = el('div', 'tx', clock);
   const cA = el('span', '', ctx), cB = el('span', '', ctx);
+
+  // Where the title sits: measured once, untransformed. The clock scales about its visible content
+  // (moon + time), the name about its block, and the name's lines are centred while it is a title.
+  const TT = {};
+  function layoutTitle() {
+    cA.textContent = CLOCK[0];
+    const cr = clock.getBoundingClientRect(), mr = clock.querySelector('svg').getBoundingClientRect(), xr = cA.getBoundingClientRect();
+    const ccx = (mr.left + xr.right) / 2, ccy = cr.top + cr.height / 2;
+    TT.clockOrigin = `${(ccx - cr.left).toFixed(2)}px ${(cr.height / 2).toFixed(2)}px`;
+    TT.clockD = [960 - ccx, TITLE.clockY - ccy];
+    const track = parseFloat(getComputedStyle(chy).letterSpacing) || 0; // trailing tracking isn't ink
+    const lw = chyLines.map((l) => l.getBoundingClientRect().width - track);
+    const hr = chy.getBoundingClientRect();
+    const wMax = Math.max(...lw);
+    TT.lineDx = lw.map((w) => (wMax - w) / 2);
+    TT.nameOrigin = `${(wMax / 2).toFixed(2)}px ${(hr.height / 2).toFixed(2)}px`;
+    TT.nameD = [960 - (hr.left + wMax / 2), TITLE.nameY - (hr.top + hr.height / 2)];
+    TT.nameW = wMax;
+  }
 
   function anchor(k, pos) {
     const s = STACK[k];
@@ -182,22 +206,41 @@ export function buildNight(parent) {
     const big = spring(t, T.slam - 0.03, 2.6, 0.5);
     const sc = lerp(0.3, 1, big) * (1 + 0.025 * seg(t, T.slam + 0.3, 1.2, E.outQuad));
     const cy = lerp(CY + 4, CY - 64, clamp(big));
-    css(counter, { transform: `translate3d(0, ${(cy - CY).toFixed(2)}px, 0)`, opacity: String(clamp((t - 0.12) / 0.12)) });
+    // (it only shows once the total is already rolling, so it never reads $0)
+    css(counter, { transform: `translate3d(0, ${(cy - CY).toFixed(2)}px, 0)`, opacity: String(clamp((t - T.card(0) - 0.15) / 0.15)) });
     css(inner, { transform: `scale(${sc.toFixed(4)})` });
-    css(lbl, { opacity: String((1 - clamp((t - T.slam + 0.12) / 0.1)) * clamp((t - 0.05) / 0.2)) });
+    css(lbl, { opacity: String((1 - clamp((t - T.slam + 0.12) / 0.1)) * clamp((t - T.card(0) + 0.05) / 0.3)) });
     css(num, { color: big > 0.02 ? '#F7F8F2' : '#E9ECE3' });
 
     // the hours
     css(admin, { top: '650px' });
     adminWords.forEach((w, i) => {
-      const p = seg(t, T.admin + i * S16 * 0.6, 0.5, E.snap);
+      const p = seg(t, adminAt(i), 0.6, E.snap);
       css(w, { opacity: String(clamp(p * 2)), transform: `translate3d(0, ${(28 * (1 - p)).toFixed(2)}px, 0)`, filter: `blur(${(6 * (1 - p)).toFixed(2)}px)` });
     });
 
-    // chyron + clock, time-lapsing past midnight
-    const cp = seg(t, 0, 0.45, E.snap);
-    css(chy, { opacity: String(cp), transform: `translate3d(${(-16 * (1 - cp)).toFixed(2)}px, 0, 0)`, clipPath: `inset(0 ${(100 - cp * 100).toFixed(1)}% 0 0)` });
-    css(clock, { opacity: String(cp), transform: `translate3d(${(16 * (1 - cp)).toFixed(2)}px, 0, 0)` });
+    // the opening title: the time rises in, the name opens out beneath it; on T.intro both settle
+    // into the corners and the time picks up its pill, becoming part of the night's UI
+    const fly = seg(t, T.intro, 0.72, E.inOutCubic);
+    const q = 1 - fly;
+    const ci = seg(t, 0.12, 0.75, E.snap);
+    const cs = lerp(1, TITLE.clockScale, q);
+    css(clock, {
+      transformOrigin: TT.clockOrigin,
+      transform: `translate3d(${(TT.clockD[0] * q).toFixed(2)}px, ${(TT.clockD[1] * q + 22 * (1 - ci)).toFixed(2)}px, 0) scale(${cs.toFixed(4)})`,
+      opacity: String(ci), filter: ci < 1 ? `blur(${(6 * (1 - ci)).toFixed(2)}px)` : 'none',
+      background: `rgba(236,240,241,${(0.06 * clamp((fly - 0.35) / 0.65)).toFixed(4)})`,
+    });
+    const ni = seg(t, 0.4, 0.62, E.snap);
+    const ns = lerp(1, TITLE.nameScale, q);
+    const open = 50 * (1 - ni);
+    css(chy, {
+      transformOrigin: TT.nameOrigin,
+      transform: `translate3d(${(TT.nameD[0] * q).toFixed(2)}px, ${(TT.nameD[1] * q).toFixed(2)}px, 0) scale(${ns.toFixed(4)})`,
+      opacity: String(clamp(ni * 1.5)), width: `${TT.nameW.toFixed(2)}px`,
+      clipPath: ni < 1 ? `inset(-40% ${open.toFixed(2)}% -40% ${open.toFixed(2)}%)` : 'none',
+    });
+    chyLines.forEach((l, i) => css(l, { transform: `translate3d(${(TT.lineDx[i] * q).toFixed(2)}px, 0, 0)` }));
     let k = 0;
     for (let i = 1; i < CLOCK.length; i++) if (t >= T.clock(i)) k = i;
     const kp = k === 0 ? 1 : seg(t, T.clock(k), 0.1, E.outCubic);
@@ -206,7 +249,7 @@ export function buildNight(parent) {
     css(cA, { transform: `translateY(${(32 * (1 - kp)).toFixed(2)}px)`, opacity: String(kp) });
     css(cB, { transform: `translateY(${(-32 * kp).toFixed(2)}px)`, opacity: String(k === 0 ? 0 : 1 - kp) });
     const glowK = k > 0 ? 1 - seg(t, T.clock(k), 0.2) : 0;
-    css(clock, { borderColor: `rgba(236,240,241,${(0.1 + 0.25 * glowK).toFixed(3)})` });
+    css(clock, { borderColor: `rgba(236,240,241,${((0.1 + 0.25 * glowK) * clamp((fly - 0.35) / 0.65)).toFixed(4)})` });
   }
 
   return { root, update, layout };

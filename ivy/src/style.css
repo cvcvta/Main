@@ -167,7 +167,8 @@ body {
 .num .per span { font-size: .42em; }
 .admin { position: absolute; left: 0; right: 0; text-align: center; font-size: 56px; font-weight: 400; letter-spacing: -0.025em; color: rgba(236, 240, 241, .9); }
 .admin .w { display: inline-block; }
-.chyron { position: absolute; left: 96px; top: 76px; font-size: 16px; letter-spacing: .2em; font-weight: 700; color: rgba(236, 240, 241, .85); line-height: 1.6; }
+.chyron { position: absolute; left: 96px; top: 76px; font-size: 16px; letter-spacing: .2em; font-weight: 700; color: rgba(236, 240, 241, .85); line-height: 1.6; white-space: nowrap; }
+.chyron .l { width: max-content; }
 .chyron .r { font-weight: 400; color: var(--grey); }
 .clock { position: absolute; right: 96px; top: 70px; height: 58px; display: flex; align-items: center; gap: 12px; padding: 0 22px 0 18px; border-radius: 29px; background: rgba(236, 240, 241, .06); border: 1px solid rgba(236, 240, 241, .1); font-size: 27px; font-weight: 600; color: var(--mist); letter-spacing: -0.01em; }
 .clock svg { width: 22px; height: 22px; fill: var(--mist); }

@@ -198,9 +198,9 @@ export function buildWorld(parent, brand) {
     } else {
       c = keys(t, [
         [T.pullOut, [-552, itemY(7), 3.35, 0, 0, 0]],
-        [T.pullOut + 0.72, [60, 30, 0.9, 7, -10, 0], PULL],
+        [T.pullOut + 0.95, [60, 30, 0.9, 7, -10, 0], PULL],
         [T.pushIn, [45, 22, 0.93, 6.2, -8.8, 0], E.lin],
-        [T.pushIn + BEAT * 1.1, [typing[0], typing[1], 1.66, 0, 0, 0], E.glide],
+        [T.pushIn + BEAT * 1.4, [typing[0], typing[1], 1.66, 0, 0, 0], E.glide],
         [T.send, [typing[0] + 8, typing[1] - 6, 1.72, 0, 0, 0], E.inOutQuad],
         [T.plan + BEAT * 0.5, [conv[0], conv[1], 1.38, 0, 0, 0], LEAD],
         [T.tap - BEAT * 0.5, [appr[0], appr[1], 1.48, 0, 0, 0], E.inOutQuad],
@@ -230,7 +230,7 @@ export function buildWorld(parent, brand) {
     // --- sidebar highlight: rides the crane, returns Home once wide, later lands on Marketing
     let hlK;
     if (t < T.pullOut) hlK = clamp(Math.round(kfCrane(t)), 0, 7);
-    else if (t < T.land - 0.12) hlK = 7 - 7 * seg(t, T.pullOut + 0.55, 0.4, E.snap);
+    else if (t < T.land - 0.12) hlK = 7 - 7 * seg(t, T.pullOut + 0.7, 0.5, E.snap);
     else hlK = 6 * seg(t, T.land - 0.12, 0.28, E.snap);
     const hlVis = t < T.pullOut ? clamp((kfCrane(t) + 0.9) * 3) : 1;
     css(hl, { top: `${(NAV_TOP + ROW * hlK).toFixed(2)}px`, opacity: String(hlVis) });
@@ -247,9 +247,9 @@ export function buildWorld(parent, brand) {
     css(subRow, { boxShadow: `inset 0 0 0 1px rgba(69,191,124,.35), 0 0 0 ${(7 * Math.sin(Math.PI * shine)).toFixed(2)}px rgba(69,191,124,${(0.22 * Math.sin(Math.PI * shine)).toFixed(3)})` });
 
     // --- dashboard assembles on the pull-out
-    const dIn = (d) => seg(t, T.pullOut + 0.1 + d, 0.55, E.snap);
+    const dIn = (d) => seg(t, T.pullOut + 0.15 + d, 0.65, E.snap);
     [hello, helloSub, ...statEls, today].forEach((e, i) => {
-      const p = dIn(i * 0.045);
+      const p = dIn(i * 0.06);
       css(e, { opacity: String(clamp(p * 1.4)), transform: `translate3d(0, ${(40 * (1 - p)).toFixed(2)}px, 0)` });
     });
     css(me, { opacity: String(dIn(0.1)) });
@@ -286,7 +286,7 @@ export function buildWorld(parent, brand) {
 
     // --- Ivy reads the ask: a highlighter sweeps each phrase, which then flies into the plan
     hls.forEach((hh, i) => {
-      const p = seg(t, T.think + i * S16 * 1.1, 0.2, E.outCubic);
+      const p = seg(t, T.think + i * S16 * 1.1, 0.26, E.outCubic);
       css(hh, { backgroundSize: `${(p * 100).toFixed(2)}% 78%` });
     });
     const planIn = spring(t, T.plan, 2.8, 0.7);
@@ -385,18 +385,19 @@ export function buildWorld(parent, brand) {
       css(tl, { opacity: String(p), transform: `translate3d(0, ${(18 * (1 - p)).toFixed(2)}px, 0)` });
     });
 
-    // --- morph into the app icon
-    const m = seg(t, T.morph, T.lockup - T.morph - 0.02, E.inOutQuart);
+    // --- morph into the app icon (sub-steps scale with the morph's length)
+    const md = T.lockup - T.morph;
+    const m = seg(t, T.morph, md - 0.02, E.inOutQuart);
     const sz = [lerp(WIN.w, 200, m), lerp(WIN.h, 200, m)];
     css(win, {
       left: `${(-sz[0] / 2).toFixed(2)}px`, top: `${(-sz[1] / 2).toFixed(2)}px`, width: `${sz[0].toFixed(2)}px`, height: `${sz[1].toFixed(2)}px`,
       borderRadius: `${lerp(30, 46, m).toFixed(2)}px`,
       boxShadow: `0 0 0 1px rgba(236,240,241,${(0.09 * (1 - m)).toFixed(3)}), 0 60px 120px -30px rgba(0,0,0,${(0.85 * (1 - m)).toFixed(3)}), 0 30px 60px -20px rgba(0,0,0,${(0.55 * m).toFixed(3)})`,
     });
-    css(winIn, { opacity: String(1 - seg(t, T.morph, 0.16, E.outQuad)), transform: `translate(${((sz[0] - WIN.w) / 2).toFixed(2)}px, ${((sz[1] - WIN.h) / 2).toFixed(2)}px) scale(${lerp(1, 0.4, m).toFixed(4)})`, transformOrigin: '50% 50%' });
-    const wipe = seg(t, T.morph + 0.04, 0.3, E.inOutCubic);
+    css(winIn, { opacity: String(1 - seg(t, T.morph, 0.3 * md, E.outQuad)), transform: `translate(${((sz[0] - WIN.w) / 2).toFixed(2)}px, ${((sz[1] - WIN.h) / 2).toFixed(2)}px) scale(${lerp(1, 0.4, m).toFixed(4)})`, transformOrigin: '50% 50%' });
+    const wipe = seg(t, T.morph + 0.08 * md, 0.6 * md, E.inOutCubic);
     css(skin, { display: wipe > 0 ? 'grid' : 'none', clipPath: `circle(${(wipe * 75).toFixed(2)}% at 50% 50%)` });
-    css(skinMark, { transform: `scale(${lerp(0.55, 1, seg(t, T.morph + 0.12, 0.34, E.snap)).toFixed(4)})`, opacity: String(seg(t, T.morph + 0.12, 0.15)) });
+    css(skinMark, { transform: `scale(${lerp(0.55, 1, seg(t, T.morph + 0.24 * md, 0.68 * md, E.snap)).toFixed(4)})`, opacity: String(seg(t, T.morph + 0.24 * md, 0.3 * md)) });
   }
 
   return { root: world, update, layout, L, camera };

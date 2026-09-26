@@ -1,17 +1,18 @@
-# Ivy · brand spot (20 s)
+# Ivy · brand spot (30 s)
 
-A 20-second, 16:9 motion piece for [Ivy](http://joinivy.ai), the business platform with an AI that does the work.
+A 30-second, 16:9 motion piece for [Ivy](http://joinivy.ai), the business platform with an AI that does the work.
 
-**Watch:** [`out/ivy-spot.mp4`](out/ivy-spot.mp4) (master, 1920×1080, 30 fps, H.264 + AAC, 20.0 s, −14 LUFS) ·
+**Watch:** [`out/ivy-spot.mp4`](out/ivy-spot.mp4) (master, 1920×1080, 30 fps, H.264 + AAC, 30.0 s, −14 LUFS) ·
 [`out/ivy-spot-web.mp4`](out/ivy-spot-web.mp4) (light copy for sharing) ·
 poster [`out/poster.jpg`](out/poster.jpg) · end card [`out/endcard.jpg`](out/endcard.jpg)
 
 ## The idea
 
-One night in a one-person business, fixed in 20 seconds.
+One night in a one-person business, fixed in 30 seconds. It's paced so every line can be read.
 
-It's 11:48 PM for Maya Reyes, a portrait photographer who works alone. Seven apps land one per
-eighth note in cold greys, and a single stitched thread laces them together while the monthly bill
+It's 11:48 PM for Maya Reyes, a portrait photographer who works alone. The spot opens on the time
+and her name, centred like a title card, before they settle into the corners of the frame. Seven
+apps land one per eighth note in cold greys, and a single stitched thread laces them together while the monthly bill
 rolls up. The thread pulls taut, **$138/mo** slams in, and the clock time-lapses past 1 AM. Then a
 line of Ivy green cuts the night in two, the halves fall away, and the IVY wordmark is behind them.
 
@@ -29,37 +30,38 @@ To close, the window collapses into the real app icon and the camera flies throu
 icon's green. The icon's own wordmark rides out as the lockup, followed by the homepage's chip, the
 line with "does" lit green, and the offer.
 
-## Cue sheet (120 BPM, 10 bars = exactly 20.0 s)
+## Cue sheet (96 BPM, 12 bars = exactly 30.0 s)
 
 | Time | Beat | Picture | Sound |
 | --- | --- | --- | --- |
-| 0.00 | 0 | Seven apps land, one per eighth; one thread stitches them; the monthly total rolls | Clock tick-tock, a different ping per app, the thread zips card to card |
-| 1.75 | 3.5 | The thread pulls taut | String twang |
-| 2.00 | 4 | **$138/mo** slams to centre, apps pushed back out of focus | Reverse swell, impact |
-| 2.50 | 5 | "Plus hours of admin at night." | Type ticks, a heartbeat |
-| 3.13 | 6.25 | The clock time-lapses to 1:12 AM | Ratcheting ticks |
-| 3.75 | 7.5 | Ivy-green light draws across the frame | Laser shing, left to right |
-| 4.00 | 8 | The night splits along the light; IVY behind it | Crack, glass shimmer, the D major groove drops |
-| 4.38 | 8.75 | Camera runs down the sidebar | One tick per menu item, up the scale |
-| 4.75 | 9.5 | "One platform." | Bell chord |
-| 5.75 | 11.5 | Pull back: the whole workspace, the iPhone slides in | Whoosh, phone swoosh |
-| 7.00 | 14 | Push into the composer. "Just ask Ivy." | Whoosh |
-| 7.50 | 15 | Maya types the ask | Laptop keys |
-| 10.00 | 20 | Sent. Ivy highlights three phrases | Send pop, sparkle |
-| 10.50 | 21 | The plan builds row by row as the phrases fly in; chips show her Contracts and Bookings. "She already knows your business." | Rising plucks |
-| 12.25 | 24.5 | The finger comes in. "One tap to approve." | The groove holds its breath, riser |
-| 13.00 | 26 | One tap: **Approved** | Button tock, Ivy's two-note motif (D to A), crash |
-| 13.38 | 26.75 | The automation flies to the sidebar | Whoosh, right to left |
-| 14.00 | 28 | It lands under **Marketing** | Thunk |
-| 14.25 | 28.5 | It switches on | Toggle click |
-| 15.00 | 30 | The window collapses into the app icon | Riser, low-pass closes on the groove |
-| 15.50 | 31 | The icon lands | Bloop, half a beat of air |
-| 15.75 | 31.5 | The camera flies through the icon; its wordmark rides out | Whoosh, impact, Gmaj9 bloom |
-| 16.38 | 32.75 | "ALL-IN-ONE, FOR SOLOPRENEURS" | |
-| 16.50 | 33 | "The business platform with an AI that does the work." | A note per word |
-| 17.50 | 35 | $8.99/week or $374.99/year | Keys |
-| 18.00 | 36 | 14 days free, $0 today. | Home to Dmaj9, the motif again |
-| 18.25 | 36.5 | joinivy.ai, held to the end | Tail to 20.0 |
+| 0.00 | 0 | Up from black. "11:48 PM" rises in at centre; "Maya Reyes, portrait photographer" opens out beneath it | Clock tick-tock, a soft low B minor chord |
+| 1.25 | 2 | The title settles into the corners; the time becomes the clock pill | Air, left and right; a soft tock |
+| 1.88 | 3 | Seven apps land, one per eighth; one thread stitches them; the monthly total rolls | A different ping per app, the thread zips card to card |
+| 4.06 | 6.5 | The thread pulls taut | String twang |
+| 4.38 | 7 | **$138/mo** slams to centre, apps pushed back out of focus | Reverse swell, impact |
+| 5.00 | 8 | "Plus hours of admin at night." | Type ticks, a heartbeat |
+| 5.63 | 9 | The clock time-lapses to 1:12 AM | Ratcheting ticks |
+| 6.88 | 11 | Ivy-green light draws across the frame | Laser shing, left to right |
+| 7.50 | 12 | The night splits along the light; IVY behind it | Crack, glass shimmer, the D major groove drops |
+| 8.13 | 13 | "One platform." as the camera runs down the sidebar | Bell chord, then one tick per menu item, up the scale |
+| 9.69 | 15.5 | Pull back: the whole workspace; the iPhone slides in | Whoosh, phone swoosh |
+| 11.88 | 19 | Push into the composer. "Just ask Ivy." | Whoosh |
+| 12.81 | 20.5 | Maya types the ask | Laptop keys |
+| 16.09 | 25.75 | Sent. Ivy highlights three phrases | Send pop, sparkle |
+| 16.72 | 26.75 | The plan builds row by row as the phrases fly in; chips show her Contracts and Bookings. "She already knows your business." | Rising plucks |
+| 19.06 | 30.5 | The finger comes in. "One tap to approve." | The groove holds its breath, riser |
+| 20.00 | 32 | One tap: **Approved** | Button tock, Ivy's two-note motif (D to A), crash |
+| 20.63 | 33 | The automation flies to the sidebar | Whoosh, right to left |
+| 21.56 | 34.5 | It lands under **Marketing** | Thunk |
+| 21.88 | 35 | It switches on, and holds | Toggle click |
+| 23.44 | 37.5 | The window collapses into the app icon | Riser, low-pass closes on the groove |
+| 24.38 | 39 | The icon lands and breathes for a beat | Bloop, a beat of air |
+| 25.00 | 40 | The camera flies through the icon; its wordmark rides out | Whoosh |
+| 25.63 | 41 | "ALL-IN-ONE, FOR SOLOPRENEURS" | Impact, Gmaj9 bloom |
+| 25.78 | 41.25 | "The business platform with an AI that does the work." | A note per word |
+| 26.88 | 43 | $8.99/week or $374.99/year | Keys |
+| 27.50 | 44 | 14 days free, $0 today. | Home to Dmaj9, the motif again |
+| 27.81 | 44.5 | joinivy.ai, held to the end | Tail to 30.0 |
 
 ## Against the brief
 
@@ -97,7 +99,7 @@ line with "does" lit green, and the offer.
   - Grain, vignette and a touch of lateral chromatic aberration on the hits are applied in the same pass.
   - Frames pipe straight into x264.
 - **Sound:** [`tools/soundtrack.py`](tools/soundtrack.py) synthesizes the score and every effect in numpy. There are no samples.
-  - The night is a B minor drone and clock. The groove is D major, with a round kick, clap, e-piano stabs, a marimba arp and a sub bass. Its harmony follows the picture's cue windows.
+  - The night is a B minor drone and clock. The groove is a laid-back D major at 96 BPM: kick on 1, the and-of-2 and the and-of-3, clap on 2 and 4, lightly swung sixteenths, e-piano stabs, a marimba arp and a sub bass. Its harmony moves a bar at a time, following the picture's cue windows.
   - Every UI hit is placed from the same cue sheet as the picture ([`tools/cues.mjs`](tools/cues.mjs) exports it) and panned to where it happens on screen.
   - Mastered to −14 LUFS with a −1.2 dBFS ceiling.
 
@@ -115,7 +117,7 @@ tools/build.sh            # cues, soundtrack, render, mux, stills -> out/ivy-spo
 Useful while iterating:
 
 ```bash
-node tools/render.mjs --stills 4.2,13.4             # PNG stills to build/stills/
+node tools/render.mjs --stills 7.8,20.4             # PNG stills to build/stills/
 node tools/render.mjs --sheet 0.5                   # contact sheet of the whole spot
 node tools/render.mjs --noblur --fast --out out/preview.mp4   # quick preview, no motion blur
 ```
