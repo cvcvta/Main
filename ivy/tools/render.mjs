@@ -3,7 +3,7 @@
 //   node tools/render.mjs                      full render -> out/ivy-spot-video.mp4 (no audio)
 //   node tools/render.mjs --stills 1.2,3.5     PNG stills -> build/stills/
 //   node tools/render.mjs --sheet 0.5          contact sheet every 0.5 s -> build/stills/sheet.png
-//   options: --workers 3  --sub 1 (force motion-blur subframes)  --from 0 --to 15  --crf 16  --blur (stills with blur)
+//   options: --workers 3  --sub 1 (force motion-blur subframes)  --from 0 --to 15  --crf 17  --blur (stills with blur)
 import { chromium } from 'playwright-core';
 import sharp from 'sharp';
 import http from 'node:http';
@@ -165,7 +165,7 @@ if (args.stills || args.sheet) {
   const ff = spawn('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error',
     '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', `${W}x${H}`, '-r', String(FPS), '-i', '-',
     '-vf', 'scale=out_color_matrix=bt709:out_range=tv:flags=accurate_rnd+full_chroma_int',
-    '-c:v', 'libx264', '-preset', args.fast ? 'veryfast' : 'slow', '-crf', String(args.crf || 16), '-x264-params', 'aq-mode=3:psy-rd=1.0,0.0',
+    '-c:v', 'libx264', '-preset', args.fast ? 'veryfast' : 'slow', '-crf', String(args.crf || 17), '-x264-params', 'aq-mode=3:psy-rd=1.0,0.0',
     '-pix_fmt', 'yuv420p', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709',
     '-movflags', '+faststart', outFile], { stdio: ['pipe', 'inherit', 'inherit'] });
   const pages = await Promise.all([...Array(WORKERS)].map(openPage));

@@ -2,7 +2,8 @@
 
 A 15-second, 16:9 motion piece for [Ivy](http://joinivy.ai), the business platform with an AI that does the work.
 
-**Watch:** [`out/ivy-spot.mp4`](out/ivy-spot.mp4) (1920×1080, 30 fps, H.264 + AAC, 15.0 s) ·
+**Watch:** [`out/ivy-spot.mp4`](out/ivy-spot.mp4) (master, 1920×1080, 30 fps, H.264 + AAC, 15.0 s, −14 LUFS) ·
+[`out/ivy-spot-web.mp4`](out/ivy-spot-web.mp4) (about 10 MB, for sharing) ·
 poster [`out/poster.jpg`](out/poster.jpg) · end card [`out/endcard.jpg`](out/endcard.jpg)
 
 ## The idea
@@ -112,7 +113,7 @@ Requires Node 22+, Python 3.10+, ffmpeg, and Chromium via Playwright.
 cd ivy
 npm install
 pip install numpy scipy soundfile pyloudnorm
-tools/build.sh            # cues, soundtrack, render, mux, stills -> out/ivy-spot.mp4
+tools/build.sh            # cues, soundtrack, render, mux, stills -> out/ivy-spot.mp4 + ivy-spot-web.mp4
 ```
 
 Useful while iterating:
