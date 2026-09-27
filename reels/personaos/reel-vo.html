@@ -5,8 +5,10 @@
 <title>Mo Voiceover Reel</title>
 <meta name="viewport" content="width=1080">
 <!--
-  personaos, voiceover cut: 9:16 reel (1080x1920, 27.5 s) timed to assets/vo.mp3, with a pause
+  personaos, voiceover cut: 9:16 reel (1080x1920, 30.3 s) timed to assets/vo.mp3, with a pause
   after each line (assets/vo-edit.json) so every animation has time to land before the next.
+  Every scene sits on the same paper white. After the last line, a search-bar outro types
+  www.personaos.com, clicks it, and turns it into the personaos logo.
   Every headline word appears as it is spoken (timings in assets/vo-words.json), and each
   visual illustrates the line being said. Same engine as reel.html: window.__render(t) is a
   pure function of time. music-vo.py cuts the pauses into the voiceover and mixes it with the
@@ -17,16 +19,16 @@
 <style>
 @font-face{font-family:'Inter';font-weight:100 900;src:url(node_modules/@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2) format('woff2')}
 :root{
-  --paper:#FAFAF7; --stone:#EFEEE9; --lav:#EEEBF7; --ink:#111115; --purple:#623AEC; --lime:#EBFDA0; --limebtn:#E7FE94;
-  --grey:#656569; --line:#D9D7CF; --dark:#111116; --card:#1C1B25; --lavtext:#C8B5FF; --mutedDark:#B7B4C3; --red:#E5484D;
+  --paper:#FAFAF7; --ink:#111115; --purple:#623AEC; --lime:#EBFDA0;
+  --line:#D9D7CF; --red:#E5484D;
   --grad:linear-gradient(90deg,#3B2669 0%,#6141B3 55%,#8A74D0 100%);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:#000;overflow:hidden}
 body.preview{display:grid;place-items:center;height:100vh}
-#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--stone);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;transform-origin:0 0}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;transform-origin:0 0}
 .scene{position:absolute;inset:0;display:none}
-.sbg{position:absolute;inset:0}
+.sbg{position:absolute;inset:0;background:var(--paper)}      /* every scene sits on the same paper white */
 .abs{position:absolute;left:0;top:0}
 svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 
@@ -37,7 +39,6 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 .wi{display:inline-block}
 .w.g .wi{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .w.p .wi{color:var(--purple)}
-.w.l .wi{color:var(--lime)}
 .lbl{position:absolute;font-size:28px;font-weight:650;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
 
 /* Mo */
@@ -132,20 +133,26 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 #hired{position:absolute;left:520px;top:1010px;padding:10px 30px;border:8px solid var(--purple);border-radius:22px;color:var(--purple);font-size:92px;font-weight:850;letter-spacing:.08em;background:rgba(255,255,255,.78)}
 
 /* F · finale */
-#brand{position:absolute;left:90px;top:690px;display:flex;align-items:center;gap:20px;color:#fff}
+#brand{position:absolute;left:90px;top:690px;display:flex;align-items:center;gap:20px;color:var(--ink)}
 #brand svg{width:58px;height:58px}
 #brand b{font-size:74px;font-weight:700;letter-spacing:-.035em}
-#url{position:absolute;left:92px;top:790px;font-size:36px;font-weight:600;color:var(--lavtext)}
-#cta{position:absolute;left:90px;top:1010px;width:900px;height:140px;border-radius:28px;background:var(--limebtn);display:flex;align-items:center;padding:0 22px 0 52px;font-size:52px;font-weight:750;letter-spacing:-.025em;color:var(--ink);white-space:nowrap}
-#cta .arr{margin-left:auto;width:100px;height:100px;border-radius:50%;background:var(--ink);display:grid;place-items:center}
-#cta .arr svg{width:50px;height:50px;fill:none;stroke:var(--limebtn);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-#tap{position:absolute;left:0;top:0;width:96px;height:96px;color:#fff;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5))}
-#tap svg{width:96px;height:96px;fill:#fff;stroke:var(--ink);stroke-width:1.2}
-.chev{position:absolute;left:510px;width:60px;height:60px;color:var(--lime)}
+#url{position:absolute;left:92px;top:790px;font-size:36px;font-weight:600;color:var(--purple)}
+#cta{position:absolute;left:90px;top:1010px;width:900px;height:140px;border-radius:28px;background:var(--ink);box-shadow:0 22px 48px rgba(17,17,21,.18);display:flex;align-items:center;padding:0 22px 0 52px;font-size:52px;font-weight:750;letter-spacing:-.025em;color:#fff;white-space:nowrap}
+#cta .arr{margin-left:auto;width:100px;height:100px;border-radius:50%;background:var(--lime);display:grid;place-items:center}
+#cta .arr svg{width:50px;height:50px;fill:none;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#tap,#gcur{position:absolute;left:0;top:0;width:96px;height:96px;filter:drop-shadow(0 8px 14px rgba(17,17,21,.28))}
+#tap svg,#gcur svg{width:96px;height:96px;fill:#fff;stroke:var(--ink);stroke-width:1.4;stroke-linejoin:round}
+.chev{position:absolute;left:510px;width:60px;height:60px;color:var(--purple)}
 .chev svg{width:60px;height:60px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-#below{position:absolute;left:0;right:0;top:1450px;text-align:center;font-size:26px;font-weight:700;letter-spacing:.22em;color:var(--lavtext)}
+#below{position:absolute;left:0;right:0;top:1450px;text-align:center;font-size:26px;font-weight:700;letter-spacing:.22em;color:var(--purple)}
 
-#vig{position:absolute;inset:0;pointer-events:none;z-index:60;background:radial-gradient(ellipse 85% 70% at 50% 46%,rgba(0,0,0,0) 55%,rgba(0,0,0,.5) 100%);opacity:0}
+/* G · outro: the address typed into a search bar turns into the logo */
+#gbar{position:absolute;left:160px;top:898px;width:760px;height:124px;border-radius:38px;background:#fff;box-shadow:0 18px 50px rgba(60,40,120,.12),0 0 0 1.5px rgba(98,58,236,.07)}
+#gicon{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:visible}
+.gt{position:absolute;left:0;top:0;font-size:50px;font-weight:700;letter-spacing:-.01em;line-height:1;white-space:nowrap;color:var(--ink)}
+#gcaret{position:absolute;left:0;top:0;width:4px;height:58px;border-radius:2px;background:var(--purple)}
+#gcur{transform-origin:16px 19px}
+
 #grain{position:absolute;inset:0;pointer-events:none;z-index:61;opacity:.5;background-size:256px 256px}
 </style>
 </head>
@@ -162,7 +169,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 <div id="stage">
   <!-- A · "Stop wasting your money on overseas agencies." -->
   <section class="scene" id="sA">
-    <div class="sbg" style="background:var(--stone)"></div>
+    <div class="sbg"></div>
     <h1 class="hl" id="hA" style="top:300px;font-size:104px"><b class="p">Stop</b> wasting your money<br>on overseas agencies.</h1>
     <div class="card" id="inv">
       <div class="ih"><div class="glb" id="glb"></div><div><div class="in">Overseas agency</div><div class="is">INVOICE #2047 · MONTHLY</div></div></div>
@@ -179,7 +186,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 
   <!-- B · "Meet Mo, the AI growth agent for HVAC companies." -->
   <section class="scene" id="sB">
-    <div class="sbg" style="background:radial-gradient(ellipse 90% 45% at 50% 22%,#fff 0%,rgba(255,255,255,0) 70%),var(--paper)"></div>
+    <div class="sbg"></div>
     <h1 class="hl c" id="hB1" style="top:270px;font-size:150px">Meet Mo.</h1>
     <h1 class="hl c" id="hB2" style="top:450px;font-size:78px">The AI growth agent<br>for <b class="g">HVAC companies.</b></h1>
     <div class="floor" id="flB"></div>
@@ -188,7 +195,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 
   <!-- C · "He writes your ads, runs them, and fills your calendar with booked jobs." -->
   <section class="scene" id="sC">
-    <div class="sbg" style="background:linear-gradient(180deg,#FBFAFD 0%,#EEEBF7 100%)"></div>
+    <div class="sbg"></div>
     <h1 class="hl" id="hC1" data-max="780" style="top:300px;font-size:100px">He writes your ads,<br>runs them,</h1>
     <h1 class="hl" id="hC2" data-max="780" style="top:300px;font-size:100px">and fills your calendar<br>with <b class="g">booked jobs.</b></h1>
     <div class="card" id="ad">
@@ -206,7 +213,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 
   <!-- D · "Works 24/7, never asks for a raise, never runs out of ideas." -->
   <section class="scene" id="sD">
-    <div class="sbg" style="background:var(--stone)"></div>
+    <div class="sbg"></div>
     <div id="rowsD"></div>
     <div class="floor" id="flD"></div>
     <div class="orb" id="sun" style="background:#FFE38A;color:#B7791F"></div>
@@ -217,7 +224,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 
   <!-- E · "He's the best team member you'll ever find, the best hire you'll ever make." -->
   <section class="scene" id="sE">
-    <div class="sbg" style="background:linear-gradient(180deg,#FBFAFD 0%,#EEEBF7 100%)"></div>
+    <div class="sbg"></div>
     <h1 class="hl" id="hE1" style="top:292px;font-size:96px">He’s the best<br>team member<br>you’ll ever find.</h1>
     <h1 class="hl" id="hE2" style="top:300px;font-size:112px">The best hire<br><b class="g">you’ll ever make.</b></h1>
     <div class="card" id="prof">
@@ -238,9 +245,9 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
 
   <!-- F · "Click the link below to get started today." -->
   <section class="scene" id="sF">
-    <div class="sbg" id="fbg" style="background:var(--dark)"></div>
-    <h1 class="hl" id="hF" style="top:300px;font-size:104px;color:#fff">Click the link below<br>to get started <b class="l">today.</b></h1>
-    <div id="brand"><svg viewBox="-1 -1 2 2"><path id="sparkP" fill="#C8B5FF"/></svg><b>personaos</b></div>
+    <div class="sbg"></div>
+    <h1 class="hl" id="hF" style="top:300px;font-size:104px">Click the link below<br>to get started <b class="g">today.</b></h1>
+    <div id="brand"><svg viewBox="-1 -1 2 2"><path id="sparkP" fill="#623AEC"/></svg><b>personaos</b></div>
     <div id="url">personaos.com</div>
     <div id="cta">Get started today<div class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></div></div>
     <div id="tap"><svg viewBox="0 0 24 24"><path d="M4.04 4.69a.5.5 0 0 1 .65-.65l16 6.5a.5.5 0 0 1-.06.95l-6.12 1.58a2 2 0 0 0-1.44 1.43l-1.58 6.13a.5.5 0 0 1-.95.06z"/></svg></div>
@@ -248,8 +255,19 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-l
     <div id="below">LINK BELOW</div>
   </section>
 
+  <!-- G · outro: www.personaos.com is typed into a search bar, clicked, and turns into the logo -->
+  <section class="scene" id="sG">
+    <div class="sbg"></div>
+    <div id="gbar"></div>
+    <svg id="gicon" viewBox="0 0 1080 1920"><path id="gHandle" fill="none" stroke-linecap="round"/><path id="gLens"/></svg>
+    <div class="gt" id="gW">www.</div>
+    <div class="gt" id="gP">personaos</div>
+    <div class="gt" id="gC">.com</div>
+    <div id="gcaret"></div>
+    <div id="gcur"><svg viewBox="0 0 24 24"><path d="M4.04 4.69a.5.5 0 0 1 .65-.65l16 6.5a.5.5 0 0 1-.06.95l-6.12 1.58a2 2 0 0 0-1.44 1.43l-1.58 6.13a.5.5 0 0 1-.95.06z"/></svg></div>
+  </section>
+
   <div id="mo"><div class="halo"></div><img src="assets/mo-body.png"><svg viewBox="0 0 1050 1050"></svg></div>
-  <div id="vig"></div>
   <div id="grain"></div>
 </div>
 
@@ -309,6 +327,7 @@ const END = VO[64].t1;                            // "…get started today."
 // scene changes start this long before the first word of the next line
 const LEAD = .3;
 const [XAB, XBC, XCD, XDE, XEF] = [7, 16, 29, 43, 57].map(i => VO[i].t0 - LEAD);
+const XFG = END + .85;                            // then the logo outro
 
 /* ---------- sound cue sheet (music-vo.py reads it through render.mjs) ---------- */
 const SFX = [];
@@ -380,7 +399,7 @@ function fit(el, max = 900) {
 const SPARK = (() => { let d = ''; for (let k = 0; k < 360; k++) { const a = k * Math.PI / 180; d += (k ? 'L' : 'M') + (Math.cos(a) ** 3).toFixed(4) + ' ' + (Math.sin(a) ** 3).toFixed(4); } return d + 'Z'; })();
 $('#sparkP').setAttribute('d', SPARK);
 
-const grain = $('#grain'), vig = $('#vig'), grainTiles = [];
+const grain = $('#grain'), grainTiles = [];
 {
   const R = rng(7);
   for (let k = 0; k < 6; k++) {
@@ -438,10 +457,10 @@ const KEYS = [
   [XDE + .35, 308, 882, 236, .35, .05, 0], [XEF - .02, 308, 882, 236, .35, .05, 0],
   [XEF + .35, 800, 840, 290, 0, 0, 1], [DUR, 800, 840, 290, 0, 0, 1],
 ];
-const BLINKS = [VO[8].t1 + .2, VO[25].t0 + .06, VO[32].t1 + .12, VO[46].t0 + .35, VO[62].t0 + .12, END + .91];
+const BLINKS = [VO[8].t1 + .2, VO[25].t0 + .06, VO[32].t1 + .12, VO[46].t0 + .35, VO[62].t0 + .12];
 // Mo smiles as each line lands and through the pause after it
 const HAPPY = [[VO[15].t1 - .36, XBC + .08], [VO[28].t1 - .38, XCD + .04], [at(40) - .1, XDE - .05], [VO[49].t0 + .13, at(51) - .09],
-  [at(53) + .27, XEF - .1], [END + .01, END + .76], [END + 1.06, DUR + .1]];
+  [at(53) + .27, XEF - .1], [END + .01, XFG + .3]];
 function moAt(t) {
   const s = { x: 540, y: 1160, d: 480, gx: 0, gy: 0, blink: 0, happy: 0, glow: 0, sx: 1, sy: 1, rot: 0, o: 1 };
   if (t < MO_IN + .38) {
@@ -458,6 +477,8 @@ function moAt(t) {
     if (A !== B && (A[1] !== B[1] || A[2] !== B[2])) s.y -= Math.sin(Math.PI * u) * 70;
     s.y += Math.sin(t * 2.3) * s.d * .016;
   }
+  const out = P(t, XFG - .1, .3);                                       // pops out as the outro starts
+  if (out > 0) { const k = Math.max(0, 1 - out * out * (2.7 * out - 1.7)); s.sx *= k; s.sy *= k; s.glow *= k; if (!k) s.o = 0; }
   const look = (a, d, gx, gy) => { const w = clamp(P(t, a, .18)) * (1 - clamp(P(t, a + d, .18))); s.gx = lerp(s.gx, gx, w); s.gy = lerp(s.gy, gy, w); };
   look(at(14) + .08, .28, .9, -.7); look(at(14) + .38, .25, -.9, -.7);   // glances at the HVAC icons
   look(at(16) + .2, 1.0, -.8, .8);                                      // watches the ad being written
@@ -647,7 +668,7 @@ const starEls = $$('svg', stars), stats = $$('#prof .st'), hired = $('#hired');
 sfx(XDE + .1, 'swish', { g: .5 });
 starEls.forEach((_, i) => sfx(at(45) + i * .07, 'pop', { g: .25, p: 1.3 + i * .08 }));
 sfx(at(53) + .06, 'stamp', { g: .8 });
-sfx(XEF, 'portal', { g: .7 });
+sfx(XEF + .05, 'swish', { g: .5 });
 function renderE(t) {
   if (!show(sE, t, XDE + .05, XEF + .25)) return;
   $('.sbg', sE).style.opacity = E.outCubic(P(t, XDE + .05, .25)).toFixed(3);
@@ -669,23 +690,105 @@ const chevs = [0, 1, 2].map(k => { const e = document.createElement('div'); e.cl
 const tap = $('#tap');
 const PRESS = VO[57].t1 - .03;                   // the button is pressed as "click" finishes
 sfx(PRESS, 'click', { g: .6 });
-sfx(END + .06, 'shimmer', { g: .6 });
 function renderF(t) {
-  if (!show(sF, t, XEF - .05, DUR + 1)) return;
-  $('#fbg').style.clipPath = `circle(${(1500 * E.inOutCubic(P(t, XEF - .02, .45))).toFixed(1)}px at 308px 882px)`;
-  vig.style.opacity = clamp(P(t, XEF + .2, .4)).toFixed(3);
-  HF.render(t, range(57, 64));
-  io($('#brand'), t, XEF + .45, 1e9, { y: 30, d: .6, blur: 8 });
-  io($('#url'), t, XEF + .6, 1e9, { y: 30, d: .6, blur: 8 });
+  if (!show(sF, t, XEF - .05, XFG + .45)) return;
+  $('.sbg', sF).style.opacity = E.outCubic(P(t, XEF - .02, .3)).toFixed(3);
+  HF.render(t, range(57, 64), XFG);
+  io($('#brand'), t, XEF + .45, XFG, { y: 30, d: .6, blur: 8, oy: -40 });
+  io($('#url'), t, XEF + .6, XFG + .03, { y: 30, d: .6, blur: 8, oy: -40 });
   const cta = $('#cta');
-  io(cta, t, XEF + .1, 1e9, { y: 60, s0: .9, d: .5, ease: E.outBack, blur: 8 });
+  io(cta, t, XEF + .1, XFG + .06, { y: 60, s0: .9, d: .5, ease: E.outBack, blur: 8, oy: -40 });
   const press = t >= PRESS && t < PRESS + .3 ? Math.sin(P(t, PRESS, .3) * Math.PI) : 0;
   cta.style.transform += ` scale(${(1 - press * .045).toFixed(4)})`;
   // a cursor taps the button on "click"
   const tp = E.outCubic(P(t, PRESS - .34, .32)), tl = E.inCubic(P(t, PRESS + .8, .3));
   put(tap, { x: 700 + (1 - tp) * 180, y: 1090 + (1 - tp) * 220 + press * 10, s: 1 - press * .12, o: clamp(P(t, PRESS - .34, .12)) * (1 - tl) });
-  chevs.forEach((e, k) => { const a = at(60) + k * .1, ph = (t - a) * 2.2 - k * .18, b = Math.max(0, Math.sin(ph * Math.PI * 2)); put(e, { y: b * 16, o: clamp(P(t, a, .2)) * (.45 + .55 * b) }); });
-  io($('#below'), t, at(60) + .2, 1e9, { y: 20, d: .6 });
+  chevs.forEach((e, k) => { const a = at(60) + k * .1, ph = (t - a) * 2.2 - k * .18, b = Math.max(0, Math.sin(ph * Math.PI * 2)); put(e, { y: b * 16, o: clamp(P(t, a, .2)) * (.45 + .55 * b) * (1 - P(t, XFG + .04, .2)) }); });
+  io($('#below'), t, at(60) + .2, XFG + .08, { y: 20, d: .6 });
+}
+
+/* =====================================================================
+   G · outro: www.personaos.com is typed into a search bar, clicked, and turns into the logo
+   ===================================================================== */
+const sG = $('#sG'), gbar = $('#gbar'), gicon = $('#gicon'), gLens = $('#gLens'), gHandle = $('#gHandle');
+const gW = $('#gW'), gP = $('#gP'), gC = $('#gC'), gcaret = $('#gcaret'), gcur = $('#gcur');
+const ADDR = 'www.personaos.com', GF = 50;                 // typed at 50 px
+const KEY0 = XFG + .7, KEY_DT = .034;                      // typed quickly: a key every 34 ms
+const CUR0 = KEY0 + ADDR.length * KEY_DT + .08;            // the cursor pops in,
+const CLICK = CUR0 + .66, MORPH = CLICK + .06, MORPH_D = .75;   // clicks, and the bar turns into the logo
+sfx(XFG, 'swish', { g: .45 });
+sfx(XFG, 'pop', { g: .3, p: .8 });                         // Mo pops out
+sfx(XFG + .2, 'pop', { g: .3, p: 1.1 });                   // the bar appears
+[...ADDR].forEach((_, k) => sfx(KEY0 + k * KEY_DT, 'key', { g: .26, p: k }));
+sfx(CUR0, 'pop', { g: .2, p: 1.5 });
+sfx(CLICK, 'click', { g: .6 });
+sfx(MORPH + .05, 'whoosh', { dur: .5, g: .3 });
+sfx(MORPH + MORPH_D - .15, 'shimmer', { g: .7 });
+const G = {};                                              // layout, measured once the fonts are in
+function layoutG() {
+  const m = document.createElement('div'); m.className = 'gt'; m.style.visibility = 'hidden'; sG.appendChild(m);
+  const w = (txt, ls = '', wt = '') => { m.textContent = txt; m.style.letterSpacing = ls; m.style.fontWeight = wt; return m.getBoundingClientRect().width; };
+  G.pre = [...Array(ADDR.length + 1)].map((_, n) => w(ADDR.slice(0, n)));   // caret positions while typing
+  G.wW = w('www.'); G.wP = w('personaos'); G.wP1 = w('personaos', '-.035em', '600');   // the logo's weight and tracking
+  m.remove();
+  G.x0 = 568 - G.pre[ADDR.length] / 2;                     // the address sits centred in the bar, clear of the icon
+  G.top = 960 - .591 * GF;                                 // Inter's x-height centre is .591 em below the line top
+  gP.style.transformOrigin = `0 ${(.591 * GF).toFixed(1)}px`;
+  // the logo: sparkle + wordmark, 700 px wide and centred, in the brand logo's proportions
+  // (sparkle .81 em across, .43 em gap, the sparkle's centre .08 em above the x-height centre)
+  const F1 = 700 / (1.24 + G.wP1 / GF);
+  G.S = F1 / GF; G.R1 = .405 * F1;
+  const left = 540 - (1.24 * F1 + G.wP1 * G.S) / 2;
+  G.sx1 = left + G.R1; G.sy1 = 960 - .08 * F1; G.px1 = left + 1.24 * F1;
+}
+const INK = [17, 17, 21], PURPLE = [98, 58, 236];
+const mixRGB = (a, b, k) => `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], k))).join(',')})`;
+function renderG(t) {
+  if (!show(sG, t, XFG, DUR + 1)) return;
+  $('.sbg', sG).style.opacity = E.outCubic(P(t, XFG + .08, .3)).toFixed(3);
+  const u = P(t, MORPH, MORPH_D);                                      // 0 → 1 across the transformation
+  const drop = E.outCubic(clamp(u / .22));                             // "www." and ".com" leave first,
+  const move = E.inOutCubic(clamp((u - .08) / .92)), grow = E.inOutCubic(clamp((u - .12) / .88));   // then "personaos" moves and grows
+  const tin = clamp(P(t, XFG + .2, .15));
+  // the bar pops in, dips on the click, and folds away as the logo forms
+  const bi = E.outBack(P(t, XFG + .2, .45)), press = Math.sin(Math.PI * P(t, CLICK - .02, .18)), bo = E.inOutCubic(clamp((u - .1) / .4));
+  const bs = (.92 + .08 * bi) * (1 - .02 * press);
+  gbar.style.opacity = (tin * (1 - bo)).toFixed(3);
+  gbar.style.transform = `scale(${(bs * (1 - .06 * bo)).toFixed(4)},${(bs * (1 - .15 * bo)).toFixed(4)})`;
+  // the address, typed one key at a time
+  const n = t < KEY0 ? 0 : Math.min(ADDR.length, Math.floor((t - KEY0) / KEY_DT) + 1), typed = ADDR.slice(0, n), po = typed.slice(4, 13);
+  gW.textContent = typed.slice(0, 4);
+  gP.innerHTML = po.slice(0, 7) + (po.length > 7 ? `<span style="color:${mixRGB(PURPLE, INK, E.inOutCubic(clamp((u - .35) / .45)))}">${po.slice(7)}</span>` : '');
+  gC.textContent = typed.slice(13);
+  put(gW, { x: G.x0 - 12 * drop, y: G.top, o: tin * (1 - drop), blur: 3 * drop });
+  put(gC, { x: G.x0 + G.wW + G.wP + 12 * drop, y: G.top, o: tin * (1 - drop), blur: 3 * drop });
+  put(gP, { x: lerp(G.x0 + G.wW, G.px1, move), y: G.top, s: lerp(1, G.S, grow), o: tin });
+  gP.style.letterSpacing = `${lerp(-.01, -.035, grow).toFixed(4)}em`;
+  gP.style.fontWeight = Math.round(lerp(700, 600, grow));
+  // the caret blinks until the typing starts and after it ends, and goes with the click
+  const typing = t >= KEY0 && t < KEY0 + ADDR.length * KEY_DT + .05, blink = (t - XFG) % .9 < .5;
+  put(gcaret, { x: G.x0 + G.pre[n] + 3, y: 931, o: tin * (t < CLICK && (typing || blink) ? 1 : 0) });
+  // the magnifier: its lens pinches into the sparkle (circle → diamond → astroid) while the handle retracts
+  const cx = lerp(244, G.sx1, move), cy = lerp(954, G.sy1, move), R = lerp(13, G.R1, grow);
+  const pw = 1 + 2 * E.inOutCubic(clamp((u - .1) / .75)), col = mixRGB(INK, PURPLE, E.inOutCubic(clamp((u - .1) / .5)));
+  const sw = 5.5 * (1 - clamp((u - .15) / .45));
+  let d = '';
+  for (let k = 0; k <= 120; k++) {
+    const th = k / 60 * Math.PI, c = Math.cos(th), sn = Math.sin(th);
+    const px = Math.sign(c) * Math.abs(c) ** pw * R, py = Math.sign(sn) * Math.abs(sn) ** pw * R;
+    d += `${k ? 'L' : 'M'}${(cx + px).toFixed(2)} ${(cy + py).toFixed(2)}`;
+  }
+  gLens.setAttribute('d', d + 'Z');
+  gLens.setAttribute('fill', '#623AEC'); gLens.setAttribute('fill-opacity', E.inOutCubic(clamp((u - .15) / .45)).toFixed(3));
+  gLens.setAttribute('stroke', col); gLens.setAttribute('stroke-width', sw.toFixed(2));
+  const hl = 12 * (1 - E.inCubic(clamp(u / .4))), hx = cx - R * .7071, hy = cy + R * .7071;
+  gHandle.setAttribute('d', `M${hx.toFixed(2)} ${hy.toFixed(2)}L${(hx - hl * .7071).toFixed(2)} ${(hy + hl * .7071).toFixed(2)}`);
+  gHandle.setAttribute('stroke', col); gHandle.setAttribute('stroke-width', (hl > .2 ? sw : 0).toFixed(2));
+  gicon.style.opacity = tin.toFixed(3);
+  // the cursor pops in below the bar, glides onto the address and clicks it
+  const cp = E.outBack(P(t, CUR0, .25)), cg = E.inOutCubic(P(t, CUR0 + .16, .42)), gone = clamp(u / .3);
+  const tx = G.x0 + G.wW + G.wP * .56, ty = 978;
+  put(gcur, { x: lerp(830, tx, cg) - 16 + 10 * gone, y: lerp(1170, ty, cg) - 19 + 14 * gone, s: cp * (1 - .14 * press), o: clamp(P(t, CUR0, .08)) * (1 - E.inCubic(gone)) });
 }
 
 /* ---------- master ---------- */
@@ -693,9 +796,8 @@ function render(t) {
   const f = Math.floor(t * 30);
   grain.style.backgroundImage = grainTiles[f % grainTiles.length];
   grain.style.backgroundPosition = `${(f * 97) % 256}px ${(f * 61) % 256}px`;
-  vig.style.opacity = 0;
   const mo = moAt(t);
-  renderA(t); renderB(t, mo); renderC(t); renderD(t, mo); renderE(t); renderF(t);
+  renderA(t); renderB(t, mo); renderC(t); renderD(t, mo); renderE(t); renderF(t); renderG(t);
   renderMo(mo);
 }
 window.__render = render;
@@ -707,7 +809,8 @@ await document.fonts.ready;
 await Promise.all($$('img').map(im => im.decode().catch(() => {})));
 $$('.scene').forEach(s => (s.style.display = 'block'));
 $$('.hl').forEach(h => fit(h, +(h.dataset.max || 900)));
-[HB2, HC2, HE2].forEach(w => w.layoutGradient());
+[HB2, HC2, HE2, HF].forEach(w => w.layoutGradient());
+layoutG();
 $$('.scene').forEach(s => (s.style.display = 'none'));
 render(0);
 window.__READY = true;

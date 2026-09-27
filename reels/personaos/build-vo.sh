@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the voiceover cut: out/personaos-reel-vo.mp4 (1080x1920, 30 fps, H.264 + AAC, 27.5 s)
+# Builds the voiceover cut: out/personaos-reel-vo.mp4 (1080x1920, 30 fps, H.264 + AAC, 30.3 s)
 # and out/cover-vo.jpg, from reel-vo.html + assets/vo.mp3 (with the pauses in assets/vo-edit.json).
 #   SUB=1 ./build-vo.sh     quick build without motion blur
 #   MUSIC=1 ./build-vo.sh   with a synthesized music bed under the voice (no music by default)
