@@ -2,3 +2,5 @@ node_modules/
 out/*
 !out/personaos-reel.mp4
 !out/cover.jpg
+!out/personaos-reel-vo.mp4
+!out/cover-vo.jpg

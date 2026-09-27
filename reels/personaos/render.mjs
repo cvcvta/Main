@@ -1,10 +1,11 @@
-// Renders reel.html frame by frame with headless Chromium.
+// Renders a reel page frame by frame with headless Chromium.
 //
 //   node render.mjs --stills 0.5,2.3,8.4        PNG stills → out/stills/
 //   node render.mjs --cues                      sound cue sheet only → out/sfx.json
 //   node render.mjs                             full render → out/frames/ + out/sfx.json
 //
-// Options: --fps 30  --sub 4 (motion-blur samples per frame)  --shutter 0.5
+// Options: --page reel.html (reel-vo.html writes out/sfx-reel-vo.json)
+//          --fps 30  --sub 4 (motion-blur samples per frame)  --shutter 0.5
 //          --workers 3  --scale 1 (0.5 for a quick half-res preview)  --from/--to (seconds)
 import { chromium } from 'playwright';
 import http from 'node:http';
@@ -20,8 +21,10 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) =>
 const FPS = +(args.fps || 30), SUB = +(args.sub || 1), SHUTTER = +(args.shutter || .5);
 const WORKERS = +(args.workers || 3), SCALE = +(args.scale || 1);
 const OUT = path.join(ROOT, 'out');
+const PAGE = args.page || 'reel.html';
+const SFX_FILE = path.join(OUT, PAGE === 'reel.html' ? 'sfx.json' : `sfx-${path.basename(PAGE, '.html')}.json`);
 
-const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.woff': 'font/woff', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.json': 'application/json' };
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.woff2': 'font/woff2', '.woff': 'font/woff', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.json': 'application/json', '.mp3': 'audio/mpeg' };
 const server = http.createServer((req, res) => {
   const p = path.join(ROOT, decodeURIComponent(new URL(req.url, 'http://x').pathname));
   if (!p.startsWith(ROOT) || !fs.existsSync(p) || fs.statSync(p).isDirectory()) { res.writeHead(404); return res.end(); }
@@ -29,7 +32,7 @@ const server = http.createServer((req, res) => {
   fs.createReadStream(p).pipe(res);
 });
 await new Promise(r => server.listen(0, '127.0.0.1', r));
-const URL_ = `http://127.0.0.1:${server.address().port}/reel.html`;
+const URL_ = `http://127.0.0.1:${server.address().port}/${PAGE}`;
 
 const browser = await chromium.launch({ args: ['--font-render-hinting=none', '--disable-lcd-text'] });
 async function openPage() {
@@ -48,8 +51,8 @@ try {
   if (args.cues) {
     fs.mkdirSync(OUT, { recursive: true });
     const page = await openPage();
-    fs.writeFileSync(path.join(OUT, 'sfx.json'), JSON.stringify(await page.evaluate(() => window.__SFX), null, 1));
-    console.log('wrote out/sfx.json');
+    fs.writeFileSync(SFX_FILE, JSON.stringify(await page.evaluate(() => window.__SFX), null, 1));
+    console.log('wrote', path.relative(ROOT, SFX_FILE));
   } else if (args.stills) {
     const dir = path.join(OUT, 'stills');
     fs.mkdirSync(dir, { recursive: true });
@@ -65,7 +68,7 @@ try {
     fs.mkdirSync(dir, { recursive: true });
     const first = await openPage();
     const dur = await first.evaluate(() => window.__DUR);
-    fs.writeFileSync(path.join(OUT, 'sfx.json'), JSON.stringify(await first.evaluate(() => window.__SFX), null, 1));
+    fs.writeFileSync(SFX_FILE, JSON.stringify(await first.evaluate(() => window.__SFX), null, 1));
     const from = +(args.from || 0), to = +(args.to || dur);
     const f0 = Math.round(from * FPS), f1 = Math.round(to * FPS);
     // every output frame f is the average of SUB samples spread across the shutter interval
