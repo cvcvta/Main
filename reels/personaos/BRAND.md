@@ -10,11 +10,15 @@ and growth. The examples are aimed at local and home-service businesses, using a
 bathroom and floor remodeler, stone & oak: "You handle the homes." "Handled while you're
 out handling the job."
 
-| Plan | Price | What's included |
-| --- | --- | --- |
-| Website + SEO | $49/month | "Web design. Fresh content. SEO. All included." |
-| One agent. All of it handled. | $99/month | Website built, updated + SEO managed · Social content created, scheduled + posted · Industry research + comment monitoring · "Instagram + Facebook + TikTok. All included." |
-| Your whole growth team (complete AI CMO) | $499/month | "Website, SEO, and organic social. Plus ads, lead follow-up, and appointments booked. Mo runs it all. You own the system." Ads: made + managed · Follow-up · Bookings: followed through · "EVERYTHING. ALL IN." |
+"ONE AGENT. FOUR WAYS TO GROW." / "Big capability. At every stage." / "Start with what you need.
+Give Mo more when you're ready."
+
+| Plan | Price | Tagline | Includes |
+| --- | --- | --- | --- |
+| Website | $49/month | Your first great impression. | Custom business website · Ongoing updates and maintenance · Search engine optimization · Mo handles it all (black button "Hire Mo for $49/mo →") |
+| Social, THE EVERYDAY ESSENTIAL | $99/month | Show up. Stand out. | Everything in Website · Instagram, Facebook, and TikTok management · Posts, captions, and scheduling · AI images and video content · One consistent brand, everywhere (purple card, lime banner, white button) |
+| Growth | $499/month | Your full AI CMO. | Everything in Social · Ad creative and campaign management · Lead generation and follow-up · Appointment and reservation scheduling, plus campaigns for walk-in traffic (black card, lime button). "Ad spend separate. You set the budget." |
+| Enterprise | custom | (cut off in the screenshots) | pale blue-lavender card with Mo |
 
 ## Copy inventory
 
@@ -43,6 +47,10 @@ out handling the job."
 | Comment monitoring | A customer comment, "We'd love a quote for ours.", tagged "Flagged for you" · ILLUSTRATIVE CONTENT & PUBLISHING PREVIEW |
 | $99 plan | YOUR WEBSITE. YOUR SEO. YOUR SOCIAL. · One agent. All of it handled. · Hire Mo — $99/month → · Instagram + Facebook + TikTok. All included. |
 | $499 plan | MO / YOUR COMPLETE AI CMO · Your whole growth team. · EVERYTHING. ALL IN. · Ads (Made + managed) · Follow-up · Bookings (Followed through) |
+| Ads → bookings | CAMPAIGNS (Google, Facebook, Instagram, YouTube) → Mo "Mo follows through" → FRIDAY 10:00 ✓ BOOKED · From first click to a confirmed consultation. |
+| 01 / RESEARCH. CREATE. LAUNCH. | Big-agency work. One very good hire. · Mo studies competitor ads, then makes and runs your campaigns on Facebook and Google. · COMPETITOR AD INTELLIGENCE (MONITORING): Local remodelers, Sponsored, "Free design consultation"; Nationwide, Sponsored, "Before & after transformations"; each tagged Offer + creative · Offers · hooks · visuals · landing pages · ↓ TURNED INTO YOUR NEXT CAMPAIGN: VIDEO ADS "See what's under the tile.", IMAGE ADS stone & oak "Your daily upgrade." BOOK A DESIGN VISIT →, MEMES "We'll just change the tap." Also us: |
+| Campaigns, managed. | ● ON · Google Ads, Facebook Ads, Instagram Ads, YouTube Ads, each RUNNING · Audiences · budgets · placements · creative tests · Video, images, memes, copy, and campaign setup. Mo makes the assets and runs the work. · Illustrative campaigns and competitor ad concepts. |
+| 02 / BUILT TO TURN INTEREST INTO ACTION | Every click. Closer to booked. · From the ad they see to the visit you book. Mo builds, and improves, the path between. · Landing card: "Bathroom remodels. Beautifully done." "Thoughtfully designed. Expertly installed." "Book your complimentary design visit" |
 
 ## Palette (sampled)
 
@@ -91,3 +99,9 @@ out handling the job."
 - Thin lavender connector lines and arrows converging on Mo ("Mo connects the dots.").
 - The $499 section uses a dark background with lime labels, and Mo orbited by Google and
   Facebook icons.
+- Growth flow: an icon tile of ad channels, a line to Mo in a dark ring, a line to a booking
+  card (lime "FRIDAY" header, big "10:00", "✓ BOOKED").
+- "RUNNING" status pills in pale sage on a white card, plus a green ● ON.
+- Pricing cards: white (Website), purple with a lime "THE EVERYDAY ESSENTIAL" banner (Social),
+  and black with a lime CTA (Growth). Each has a huge price, "/ month", a bold tagline and a
+  check list.
