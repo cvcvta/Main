@@ -1,0 +1,7 @@
+node_modules/
+out/*
+!out/CVCVTA_reel_1080p.mp4
+!out/mix.wav
+!out/storyboard.png
+assets/baked/
+shot.mjs

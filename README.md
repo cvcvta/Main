@@ -89,3 +89,9 @@ estimates as approximate. Prices are before any customer discount.
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## CVCVTA.AI motion reel
+
+`reel/` holds the 30-second CVCVTA.AI agency reel and the code-based motion
+engine and soundtrack composer that render it. The finished film is at
+`reel/out/CVCVTA_reel_1080p.mp4`. See [`reel/README.md`](reel/README.md).
