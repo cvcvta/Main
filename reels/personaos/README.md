@@ -25,7 +25,7 @@ Copy, colors, type and the Mo mascot come from the site. See [BRAND.md](BRAND.md
 
 ## Voiceover cut
 
-`out/personaos-reel-vo.mp4` (30.3 s, cover `out/cover-vo.jpg`) is cut to the voiceover in
+`out/personaos-reel-vo.mp4` (34 s, cover `out/cover-vo.jpg`) is cut to the voiceover in
 `assets/vo.mp3`. Every scene sits on the same paper white (`#FAFAF7`). Every headline word appears as it is spoken. Word timings come from an
 offline forced alignment (pocketsphinx), stored in `assets/vo-words.json`.
 
@@ -44,7 +44,7 @@ next line.
 | 13.3–17.9 s | "Works 24/7, never asks for a raise, never runs out of ideas." | Three lime-check rows: a sun and moon orbit Mo, "Raise? Nah." with a head shake, then a burst of content ideas |
 | 19.3–22.9 s | "He's the best team member you'll ever find, the best hire you'll ever make." | Mo's Top Performer profile card, stamped HIRED on "hire" |
 | 23.8–25.4 s | "Click the link below to get started today." | The finale: a cursor taps the black "Get started today" button on "click", and arrows point down to the link |
-| 26.2–30.3 s | (no voiceover) | Outro: www.personaos.com types into a search bar and a cursor clicks it. "www." and ".com" fold away, the magnifier lens pinches into the sparkle, and "personaos" grows into the logo |
+| 26.2–34 s | (no voiceover) | Outro: www.personaos.com types into a search bar over about 4 s, and a cursor clicks it. "www." and ".com" fold away, the magnifier lens pinches into the sparkle, and "personaos" grows into the logo |
 
 Build it with `./build-vo.sh` (same options as `build.sh`). `music-vo.py` cuts the pauses
 into the voiceover, evens out the line levels, and adds the sound effects. There is no

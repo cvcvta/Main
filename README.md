@@ -94,5 +94,5 @@ python -m unittest discover -s tests -v
 
 - [`reels/personaos`](reels/personaos) — "Meet Mo", a 34-second 9:16 promo reel for personaos.com,
   rendered from HTML with Playwright and ffmpeg, with a synthesized soundtrack. The finished video
-  is `reels/personaos/out/personaos-reel.mp4`. A 30-second cut synced to a voiceover, with a
+  is `reels/personaos/out/personaos-reel.mp4`. A 34-second cut synced to a voiceover, with a
   pause after each line and a logo outro, is `reels/personaos/out/personaos-reel-vo.mp4`.

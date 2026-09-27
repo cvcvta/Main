@@ -5,7 +5,7 @@
 <title>Mo Voiceover Reel</title>
 <meta name="viewport" content="width=1080">
 <!--
-  personaos, voiceover cut: 9:16 reel (1080x1920, 30.3 s) timed to assets/vo.mp3, with a pause
+  personaos, voiceover cut: 9:16 reel (1080x1920, 34 s) timed to assets/vo.mp3, with a pause
   after each line (assets/vo-edit.json) so every animation has time to land before the next.
   Every scene sits on the same paper white. After the last line, a search-bar outro types
   www.personaos.com, clicks it, and turns it into the personaos logo.
@@ -713,13 +713,16 @@ function renderF(t) {
 const sG = $('#sG'), gbar = $('#gbar'), gicon = $('#gicon'), gLens = $('#gLens'), gHandle = $('#gHandle');
 const gW = $('#gW'), gP = $('#gP'), gC = $('#gC'), gcaret = $('#gcaret'), gcur = $('#gcur');
 const ADDR = 'www.personaos.com', GF = 50;                 // typed at 50 px
-const KEY0 = XFG + .7, KEY_DT = .034;                      // typed quickly: a key every 34 ms
-const CUR0 = KEY0 + ADDR.length * KEY_DT + .08;            // the cursor pops in,
+// the address types out over 4 s at a person's pace, with a beat after "www." and before ".com"
+const TYPE_S = 4, GAPS = [.8, .8, .9, 1.5, 1, .9, 1, .9, 1, .9, 1.1, .9, 1.3, 1, .9, .9];   // relative gaps between the 17 keys
+const KEYT = [XFG + .7];                                   // the time of each key
+GAPS.forEach(g => KEYT.push(KEYT[KEYT.length - 1] + g * TYPE_S / GAPS.reduce((a, b) => a + b)));
+const CUR0 = KEYT[KEYT.length - 1] + .35;                  // the cursor pops in once it's typed,
 const CLICK = CUR0 + .66, MORPH = CLICK + .06, MORPH_D = .75;   // clicks, and the bar turns into the logo
 sfx(XFG, 'swish', { g: .45 });
 sfx(XFG, 'pop', { g: .3, p: .8 });                         // Mo pops out
 sfx(XFG + .2, 'pop', { g: .3, p: 1.1 });                   // the bar appears
-[...ADDR].forEach((_, k) => sfx(KEY0 + k * KEY_DT, 'key', { g: .26, p: k }));
+KEYT.forEach((kt, k) => sfx(kt, 'key', { g: .3, p: k }));
 sfx(CUR0, 'pop', { g: .2, p: 1.5 });
 sfx(CLICK, 'click', { g: .6 });
 sfx(MORPH + .05, 'whoosh', { dur: .5, g: .3 });
@@ -756,7 +759,7 @@ function renderG(t) {
   gbar.style.opacity = (tin * (1 - bo)).toFixed(3);
   gbar.style.transform = `scale(${(bs * (1 - .06 * bo)).toFixed(4)},${(bs * (1 - .15 * bo)).toFixed(4)})`;
   // the address, typed one key at a time
-  const n = t < KEY0 ? 0 : Math.min(ADDR.length, Math.floor((t - KEY0) / KEY_DT) + 1), typed = ADDR.slice(0, n), po = typed.slice(4, 13);
+  const n = KEYT.filter(kt => t >= kt).length, typed = ADDR.slice(0, n), po = typed.slice(4, 13);
   gW.textContent = typed.slice(0, 4);
   gP.innerHTML = po.slice(0, 7) + (po.length > 7 ? `<span style="color:${mixRGB(PURPLE, INK, E.inOutCubic(clamp((u - .35) / .45)))}">${po.slice(7)}</span>` : '');
   gC.textContent = typed.slice(13);
@@ -766,7 +769,7 @@ function renderG(t) {
   gP.style.letterSpacing = `${lerp(-.01, -.035, grow).toFixed(4)}em`;
   gP.style.fontWeight = Math.round(lerp(700, 600, grow));
   // the caret blinks until the typing starts and after it ends, and goes with the click
-  const typing = t >= KEY0 && t < KEY0 + ADDR.length * KEY_DT + .05, blink = (t - XFG) % .9 < .5;
+  const typing = t >= KEYT[0] && t < KEYT[KEYT.length - 1] + .05, blink = (t - XFG) % .9 < .5;
   put(gcaret, { x: G.x0 + G.pre[n] + 3, y: 931, o: tin * (t < CLICK && (typing || blink) ? 1 : 0) });
   // the magnifier: its lens pinches into the sparkle (circle → diamond → astroid) while the handle retracts
   const cx = lerp(244, G.sx1, move), cy = lerp(954, G.sy1, move), R = lerp(13, G.R1, grow);
