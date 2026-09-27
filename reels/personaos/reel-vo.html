@@ -573,10 +573,16 @@ const rows = ROWS.map(([txt, icon, a, b], i) => {
 });
 const sun = $('#sun'), moon = $('#moon'), bub = $('#bub');
 sun.innerHTML = ic(IC.sun); moon.innerHTML = ic(IC.moon);
-const IDEAS = ['Summer tune-up promo', '5 signs your AC is failing', 'Before & after: new furnace', 'Heat pump rebate explainer', 'Thermostat wars meme', 'Customer review reel', 'Holiday heating check', 'Filter reminder email'];
-const ideas = IDEAS.map(txt => { const e = document.createElement('div'); e.className = 'idea'; e.innerHTML = ic(IC.bulb) + txt; $('#ideas').appendChild(e); return e; });
-const IDEA0 = at(40);
-ideas.forEach((_, i) => sfx(IDEA0 + i * .07, 'pop', { g: .28, p: 1.2 + i * .06 }));
+// [idea, anchor x, center y, side]: 'r' puts the chip's right edge on x, 'l' its left edge. The slots
+// (clockwise from top left) stay clear of Mo (r 165 at 540,1330), his shadow, the rows and each other.
+const IDEAS = [
+  ['Summer tune-up promo', 520, 900, 'r'], ['5 signs your AC is failing', 572, 935, 'l'],
+  ['Before & after: new furnace', 630, 1100, 'l'], ['5-star review reel', 735, 1250, 'l'],
+  ['Filter reminder email', 560, 1620, 'l'], ['Holiday heating check', 505, 1585, 'r'],
+  ['Thermostat meme', 345, 1420, 'r'], ['Heat pump rebate explainer', 452, 1062, 'r']];
+const ideas = IDEAS.map(([txt]) => { const e = document.createElement('div'); e.className = 'idea'; e.innerHTML = ic(IC.bulb) + txt; $('#ideas').appendChild(e); return e; });
+const IDEA0 = at(40) - .12;                       // "…runs out of ideas": the burst peaks on "ideas"
+ideas.forEach((_, i) => sfx(IDEA0 + i * .045, 'pop', { g: .28, p: 1.2 + i * .06 }));
 sfx(13.05, 'whoosh', { dur: .35, g: .45 });
 function renderD(t, mo) {
   if (!show(sD, t, 9.15, 13.4)) return;
@@ -603,11 +609,13 @@ function renderD(t, mo) {
   // never asks for a raise
   const bp = P(t, at(33) + .1, .3), bo = E.inCubic(P(t, VO[37].t1 + .05, .2));
   put(bub, { x: 560, y: 1070 - (1 - E.outBack(bp)) * 30, s: .6 + .4 * E.outBack(bp), o: clamp(bp * 3) * (1 - bo) });
-  // never runs out of ideas: a burst of content ideas
+  // never runs out of ideas: content ideas fly out of Mo, each to its own slot
   ideas.forEach((e, i) => {
-    const a = IDEA0 + i * .07, u = E.outCubic(P(t, a, .9)), ang = -Math.PI / 2 + i * Math.PI / 4 + .2;
-    const w = e.offsetWidth, cx = 540 + Math.cos(ang) * (90 + 310 * u), cy = 1330 + Math.sin(ang) * (90 + 330 * u);
-    put(e, { x: clamp(cx - w / 2, 40, 1040 - w), y: cy - 32, s: .5 + .5 * u, o: clamp(P(t, a, .1)) * (1 - out) });
+    const [, ax, ay, side] = IDEAS[i], w = e.offsetWidth, a = IDEA0 + i * .045;
+    const u = E.outQuart(P(t, a, .45)), sx = (side === 'r' ? ax - w / 2 : ax + w / 2) - 540, sy = ay - 1330;
+    const drift = 1 + Math.max(0, t - a) * .03;                       // keeps floating outward once it lands
+    put(e, { x: 540 + sx * u * drift - w / 2, y: 1330 + sy * u * drift - 31, s: .45 + .55 * E.outBack(P(t, a, .4)),
+      r: (1 - u) * (sx < 0 ? -12 : 12), o: clamp(P(t, a, .08)) * (1 - out) });
   });
 }
 
