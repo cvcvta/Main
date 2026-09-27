@@ -32,7 +32,7 @@ offline forced alignment (pocketsphinx), stored in `assets/vo-words.json`.
 A pause after each line gives every animation time to land before the next one: about 1–1.4 s
 between sections and 0.5–0.8 s between clauses. The pauses are listed in `assets/vo-edit.json`.
 They are cut into the silence between words, and sized so each line starts on a beat of the
-music. Each scene holds its finished animation through the pause, then changes just before the
+optional music bed. Each scene holds its finished animation through the pause, then changes just before the
 next line.
 
 | Time | Voiceover | On screen |
@@ -46,9 +46,12 @@ next line.
 | 23.8–25.4 s | "Click the link below to get started today." | A dark finale: a cursor taps "Get started today" on "click", and arrows point down to the link |
 
 Build it with `./build-vo.sh` (same options as `build.sh`). `music-vo.py` cuts the pauses
-into the voiceover, evens out the line levels, and reuses the instruments in `music.py`. The
-drop lands on "Meet Mo" and the final chord on the bar after "today". The music sits 10–14 dB
-under the voice and comes part of the way back up in the pauses.
+into the voiceover, evens out the line levels, and adds the sound effects. There is no
+background music: the soundtrack is the voice and the sound effects only.
+
+`MUSIC=1 ./build-vo.sh` adds a music bed built from the instruments in `music.py`. Its drop
+lands on "Meet Mo" and its final chord on the bar after "today". The music sits 10–14 dB under
+the voice and comes part of the way back up in the pauses.
 
 To change the pacing, edit the `add` values in `assets/vo-edit.json`, and `dur` if the ending
 moves. The page and the soundtrack both follow. To use a new voiceover, replace `assets/vo.mp3`,

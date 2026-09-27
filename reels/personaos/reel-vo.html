@@ -10,7 +10,7 @@
   Every headline word appears as it is spoken (timings in assets/vo-words.json), and each
   visual illustrates the line being said. Same engine as reel.html: window.__render(t) is a
   pure function of time. music-vo.py cuts the pauses into the voiceover and mixes it with the
-  music bed and the sound cues.
+  sound cues (no background music unless MUSIC=1).
   Preview: `npx serve .` then open /reel-vo.html (add ?t=6&still to freeze a frame). Clicking
   plays out/audio-vo.wav, so run music-vo.py first.
 -->

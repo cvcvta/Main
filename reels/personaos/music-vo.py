@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-"""Audio for the voiceover cut (reel-vo.html): voiceover + music bed + sound cues.
+"""Audio for the voiceover cut (reel-vo.html): voiceover + sound cues, with no music by default.
 
 The voiceover is assets/vo.mp3 with the pauses from assets/vo-edit.json cut in, so each line
-has room to land. The music reuses the synth instruments from music.py: the drop lands on
+has room to land, and with its lines evened out in level. The sound cues come from
+out/sfx-reel-vo.json and are kept light under the voice.
+
+MUSIC=1 adds a music bed built from the synth instruments in music.py. Its drop lands on
 "Meet Mo", every line starts on a beat, and the final chord lands on the bar after
 "…get started today". The music ducks under the voice and comes part of the way back up in
-the pauses. The cues from out/sfx-reel-vo.json are kept light.
+the pauses.
 
-    python3 music-vo.py         -> out/audio-vo.wav (48 kHz stereo, 24-bit, unmastered)
+    python3 music-vo.py            -> out/audio-vo.wav (48 kHz stereo, 24-bit, unmastered)
+    MUSIC=1 python3 music-vo.py    -> the same with the music bed
 """
 import json
 import math
@@ -35,6 +39,7 @@ M.DUR, M.N = DUR, int(M.SR * DUR)          # music.py's helpers read these modul
 SR, N = M.SR, M.N
 OUT = M.OUT
 VO_FILE = os.path.join(ASSETS, 'vo.mp3')
+MUSIC = os.environ.get('MUSIC') == '1'
 
 DROP = VO[7]['t0']                         # "Meet Mo"
 BAR0 = DROP - 2.0                          # downbeat of bar 0; bars are 2 s at 120 BPM
@@ -97,8 +102,9 @@ def level_lines(vo, amount=.6, limit=2.0):
 
 
 def vo_duck(vo, depth=.66, floor=.6):
-    """Gain curve that pulls the music down while the voice is talking. In the pauses between
-    lines the music only comes part of the way back up (`floor`); after the last word it is released."""
+    """Gain curve that pulls the music (and, a little, the sound cues) down while the voice is talking.
+    In the pauses between lines it only comes part of the way back up (`floor`); after the last word
+    it is released."""
     x = np.abs(vo.mean(0))
     win = int(.03 * SR)
     rms = np.sqrt(np.convolve(x ** 2, np.ones(win) / win, 'same') + 1e-12)
@@ -116,17 +122,12 @@ def vo_duck(vo, depth=.66, floor=.6):
     return 1 - depth * env
 
 
-def build():
-    vo = level_lines(load_vo())
-    vo *= 10 ** ((-16.5 - vo_loudness(vo)) / 20)          # voice alone ≈ -16.5 LUFS before mastering
-    duck = vo_duck(vo)
-
+def music_bed(verb):
+    """The optional music (MUSIC=1). Adds its reverb sends to `verb`."""
     music = np.zeros((2, N))
     pads = np.zeros((2, N))
     pads_hi = np.zeros((2, N))
     lead = np.zeros((2, N))
-    verb = np.zeros((2, N))
-    fx = np.zeros((2, N))
 
     groove = lambda t: DROP <= t < FINAL
     kicks = [(bar_start(1) + k * .5, 1.0) for k in range(4 * LAST) if groove(bar_start(1) + k * .5)] + [(FINAL, 1.15)]
@@ -195,8 +196,12 @@ def build():
     M.mix(music, M.crash(.12), bar_start(FINALE), 1.0, -.1)          # light: "Click the link below" is spoken softly
     M.mix(music, M.crash(.34), FINAL, 1.0, .1)
     M.mix(verb, M.crash(.18), FINAL)
+    return music + .25 * M.filt(music, 'highpass', 3000)
 
-    # sound cues from the page
+
+def cue_sounds(verb):
+    """The sound cues from the page's cue sheet. Adds their reverb sends to `verb`."""
+    fx = np.zeros((2, N))
     for c in json.load(open(os.path.join(OUT, 'sfx-reel-vo.json'))):
         t, kind, g, p = c['t'], c['type'], c.get('g', 1.0), c.get('p', 0)
         if kind == 'bloop':
@@ -242,8 +247,17 @@ def build():
             for k, m in enumerate((84, 88, 91, 95, 100)):
                 M.mix(fx, M.bell(m, .045 * g, .9), t + k * .045, 1.0, (-.4, -.2, 0, .2, .4)[k])
                 M.mix(verb, M.bell(m, .045 * g, .9), t + k * .045)
+    return fx
 
-    music = music + .25 * M.filt(music, 'highpass', 3000)
+
+def build():
+    vo = level_lines(load_vo())
+    vo *= 10 ** ((-16.5 - vo_loudness(vo)) / 20)          # voice alone ≈ -16.5 LUFS before mastering
+    duck = vo_duck(vo)
+    verb = np.zeros((2, N))
+    music = music_bed(verb) if MUSIC else np.zeros((2, N))
+    fx = cue_sounds(verb)
+
     end = VO[-1]['t1']
     lift = M.ramp([0, end - .04, end + .46, DUR], [.22, .22, .44, .44])    # the music comes up once the last word is out
     bed = (music + M.apply_reverb(verb, M.reverb_ir()) * .28) * lift * duck + fx * .5 * (.6 + .4 * duck)
@@ -263,4 +277,5 @@ def vo_loudness(x):
 if __name__ == '__main__':
     audio = build()
     M.write_wav(os.path.join(OUT, 'audio-vo.wav'), audio)
-    print('wrote', os.path.join(OUT, 'audio-vo.wav'), f'{N / SR:.1f}s peak={np.max(np.abs(audio)):.3f}')
+    print('wrote', os.path.join(OUT, 'audio-vo.wav'), f'{N / SR:.1f}s peak={np.max(np.abs(audio)):.3f}',
+          'with music' if MUSIC else 'without music')
