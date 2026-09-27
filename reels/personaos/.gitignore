@@ -1,0 +1,4 @@
+node_modules/
+out/*
+!out/personaos-reel.mp4
+!out/cover.jpg
