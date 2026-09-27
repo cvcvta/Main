@@ -51,6 +51,10 @@ Give Mo more when you're ready."
 | 01 / RESEARCH. CREATE. LAUNCH. | Big-agency work. One very good hire. · Mo studies competitor ads, then makes and runs your campaigns on Facebook and Google. · COMPETITOR AD INTELLIGENCE (MONITORING): Local remodelers, Sponsored, "Free design consultation"; Nationwide, Sponsored, "Before & after transformations"; each tagged Offer + creative · Offers · hooks · visuals · landing pages · ↓ TURNED INTO YOUR NEXT CAMPAIGN: VIDEO ADS "See what's under the tile.", IMAGE ADS stone & oak "Your daily upgrade." BOOK A DESIGN VISIT →, MEMES "We'll just change the tap." Also us: |
 | Campaigns, managed. | ● ON · Google Ads, Facebook Ads, Instagram Ads, YouTube Ads, each RUNNING · Audiences · budgets · placements · creative tests · Video, images, memes, copy, and campaign setup. Mo makes the assets and runs the work. · Illustrative campaigns and competitor ad concepts. |
 | 02 / BUILT TO TURN INTEREST INTO ACTION | Every click. Closer to booked. · From the ad they see to the visit you book. Mo builds, and improves, the path between. · Landing card: "Bathroom remodels. Beautifully done." "Thoughtfully designed. Expertly installed." "Book your complimentary design visit" |
+| Enterprise | MO / ENTERPRISE · Big brand. Bigger possibilities. · Your AI marketing team for large-scale ecommerce and DTC. Built around you. · Custom pricing · Talk to sales → · YOUR CATALOG. YOUR CHANNELS. ONE MO. · Sample brand FORMA (skincare): "A little ritual. A lot of care." · Mo → STOREFRONT + SEO / CREATIVE + ADS / EMAIL + SMS, "One product story. A whole launch in motion." · FROM LAUNCH TO LOYALTY: One launch. Every touchpoint. · BUILT FOR YOUR NEXT STAGE: More products. Less to manage. (catalog ● SYNCED → Get found / Stand out / Bring them back) · Your team stays in control. · ILLUSTRATIVE BRAND + WORKSPACE. SCOPE SET WITH YOUR TEAM. |
+| A BETTER WAY TO GET IT DONE | More doing. Less managing. · Another tool gives you more work. Mo takes the work on. · Table THE WORK / YOU + TOOLS / YOU + MO: Build the website, Keep social active, Make the creative, Run the campaigns, Stay on top of it (You → Mo, with the Mo column on lavender) · Capabilities depend on your plan. You stay in control. |
+| YOU SET THE DIRECTION. MO GETS IT DONE. | A little context. A lot off your plate. · 01 Tell him about your business. Your services, your customers, your goals. Mo learns what makes you, you. · 02 Connect your channels. Give Mo the access he needs. You stay in control of the direction. · 03 Let him get to work. Websites, content, campaigns, follow-up. See what's happening as he handles it. |
+| OUR BELIEF | ✦ OUR BELIEF (black sparkle on lime) · Small business. *Never small.* (second line in serif italic) |
 
 ## Palette (sampled)
 
@@ -72,6 +76,8 @@ Give Mo more when you're ready."
 | Muted on dark | `#ACA4BC` labels · `#B7B4C3` body | "/ SOCIAL", "2026", $499 copy |
 | Map | states `#D4CFE0`, highlight `#9F87E6`, labels `#564770` | competitor map |
 | Format tags | STATIC `#2C4940` (dark green) · MEME `#DCCBFB` (lavender) | content cards |
+| Enterprise | navy `#15243B` on `#F2F6FB`, blue labels `#396AE8` | enterprise sub-brand only |
+| Mo column | `#EDE8FD` with `#5E38E3` text | "YOU + MO" comparison column |
 
 ## Type
 
@@ -80,6 +86,7 @@ Give Mo more when you're ready."
 - The wordmark is lowercase `personaos`, bold, tracking about −0.03em, next to the sparkle.
 - Labels are uppercase, semibold, widely tracked (about 0.18em), in purple or grey.
 - The preview mock uses a book serif ("Better spaces. Better mornings.").
+- The accent is a sharp high-contrast serif italic: purple step numerals (01, 02, 03) and "Never small." The reel uses Instrument Serif Italic.
 
 ## Marks and components
 
