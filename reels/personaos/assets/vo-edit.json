@@ -1,0 +1,16 @@
+{
+  "note": "Pauses cut into assets/vo.mp3 so each line has room to land. After word `after` (an index into vo-words.json), music-vo.py splits the audio at `cut` seconds, a silent or near-silent point between the two words, and inserts `add` seconds of silence; reel-vo.html shifts the word timings by the same amounts. The pause lengths put the audible start of every line on a beat of the 120 BPM music (grid anchored on \"Meet Mo\") and \"Click the link below\" on a bar line, so the final chord lands on the bar after \"today\". `dur` is the length of the reel in seconds.",
+  "pauses": [
+    { "after": 6, "cut": 2.7, "add": 1.0 },
+    { "after": 8, "cut": 3.71, "add": 0.287 },
+    { "after": 15, "cut": 5.91, "add": 1.124 },
+    { "after": 21, "cut": 7.33, "add": 0.496 },
+    { "after": 28, "cut": 9.2, "add": 1.166 },
+    { "after": 32, "cut": 10.45, "add": 0.264 },
+    { "after": 37, "cut": 11.8, "add": 0.368 },
+    { "after": 42, "cut": 13.23, "add": 1.38 },
+    { "after": 50, "cut": 15.1, "add": 0.324 },
+    { "after": 56, "cut": 16.64, "add": 0.61 }
+  ],
+  "dur": 27.5
+}

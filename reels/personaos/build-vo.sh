@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Builds the voiceover cut: out/personaos-reel-vo.mp4 (1080x1920, 30 fps, H.264 + AAC, 20 s)
-# and out/cover-vo.jpg, from reel-vo.html + assets/vo.mp3.
+# Builds the voiceover cut: out/personaos-reel-vo.mp4 (1080x1920, 30 fps, H.264 + AAC, 27.5 s)
+# and out/cover-vo.jpg, from reel-vo.html + assets/vo.mp3 (with the pauses in assets/vo-edit.json).
 #   SUB=1 ./build-vo.sh     quick build without motion blur
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -9,7 +9,7 @@ SUB=${SUB:-8}            # motion-blur samples averaged into each frame
 WORKERS=${WORKERS:-3}
 
 node render.mjs --page reel-vo.html --fps "$FPS" --sub "$SUB" --workers "$WORKERS"
-node render.mjs --page reel-vo.html --stills 5.8 >/dev/null
+node render.mjs --page reel-vo.html --stills 7.6 >/dev/null
 python3 music-vo.py
 
 # Master: measure loudness, then gain + true-peak limiter to land near -14 LUFS (the Reels/TikTok playback level).
@@ -31,6 +31,6 @@ ffmpeg -y -hide_banner -loglevel error -stats \
   -c:v libx264 -preset slow -crf 20 -maxrate 10M -bufsize 20M -profile:v high -level 4.2 -g 60 \
   -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv \
   -c:a aac -b:a 256k -ar 48000 -movflags +faststart -shortest out/personaos-reel-vo.mp4
-ffmpeg -y -hide_banner -loglevel error -i out/stills/t005.80.png -q:v 2 out/cover-vo.jpg
+ffmpeg -y -hide_banner -loglevel error -i out/stills/t007.60.png -q:v 2 out/cover-vo.jpg
 ffmpeg -hide_banner -nostats -i out/personaos-reel-vo.mp4 -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|Peak):" | sed 's/^ */loudness /'
 echo "done: out/personaos-reel-vo.mp4"
