@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 # Whole pipeline: footage -> frames + tracking -> cue sheet -> soundtrack -> picture -> mux.
+#   tools/build.sh              both formats
+#   tools/build.sh 9x16         just one
 set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p build/frames build/track build/models out
+FORMATS=("${@:-16x9 9x16}")
+read -r -a FORMATS <<< "${FORMATS[*]}"
 
 for f in footage/clip_*.mp4; do
   id=$(basename "$f" .mp4); id=${id#clip_}
@@ -20,10 +24,12 @@ IDS=$(node --input-type=module -e "import * as C from './src/config.js'; console
 # shellcheck disable=SC2086
 python3 tools/track.py $MESH $IDS
 
-node tools/cues.mjs > build/cues.json
-python3 tools/soundtrack.py
-node tools/render.mjs "$@"
-ffmpeg -hide_banner -loglevel error -y -i out/cvcvta-showreel-video.mp4 -i build/soundtrack.wav \
-  -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart out/cvcvta-showreel.mp4
-rm -f out/cvcvta-showreel-video.mp4
-echo "done: out/cvcvta-showreel.mp4"
+for fmt in "${FORMATS[@]}"; do
+  node tools/cues.mjs "$fmt" > "build/cues-$fmt.json"
+  python3 tools/soundtrack.py "build/cues-$fmt.json" "build/soundtrack-$fmt.wav"
+  node tools/render.mjs --format "$fmt"
+  ffmpeg -hide_banner -loglevel error -y -i "out/cvcvta-showreel-$fmt-video.mp4" -i "build/soundtrack-$fmt.wav" \
+    -map 0:v -map 1:a -c:v copy -c:a aac -b:a 256k -movflags +faststart "out/cvcvta-showreel-$fmt.mp4"
+  rm -f "out/cvcvta-showreel-$fmt-video.mp4"
+  echo "done: out/cvcvta-showreel-$fmt.mp4"
+done

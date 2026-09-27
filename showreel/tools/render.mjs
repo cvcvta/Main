@@ -1,9 +1,9 @@
 // Frame-accurate renderer for index.html.
 //
-//   node tools/render.mjs                      full render -> out/cvcvta-showreel-video.mp4 (no audio)
-//   node tools/render.mjs --stills 1.2,3.5     PNG stills -> build/stills/
-//   node tools/render.mjs --sheet 0.5          contact sheet every 0.5s -> build/stills/sheet.png
-//   options: --workers 3  --sub 5 (motion-blur subframes)  --from 0 --to 15  --crf 16
+//   node tools/render.mjs                      full render -> out/cvcvta-showreel-16x9-video.mp4 (no audio)
+//   node tools/render.mjs --stills 1.2,3.5     PNG stills -> build/stills/<format>-t<time>.png
+//   node tools/render.mjs --sheet 0.5          contact sheet every 0.5s -> build/stills/<format>-sheet.png
+//   options: --format 16x9|9x16  --workers 3  --sub 5 (fixed motion-blur subframes)  --from 0 --to 15  --crf 18
 import { chromium } from 'playwright-core';
 import sharp from 'sharp';
 import http from 'node:http';
@@ -11,13 +11,17 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { W, H, FPS, DURATION } from '../src/config.js';
+import { FPS, DURATION } from '../src/config.js';
+import { FORMATS } from '../src/layout.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, all) => {
   if (a.startsWith('--')) acc.push([a.slice(2), all[i + 1] && !all[i + 1].startsWith('--') ? all[i + 1] : true]);
   return acc;
 }, []));
+const FORMAT = args.format || '16x9';
+if (!FORMATS[FORMAT]) throw new Error(`--format must be one of ${Object.keys(FORMATS).join(', ')}`);
+const [W, H] = FORMATS[FORMAT];
 const WORKERS = +(args.workers || 3);
 const SUB_OVERRIDE = args.sub ? +args.sub : 0; // default: adaptive per frame (window.subframes)
 const SUB = 'auto';
@@ -35,7 +39,7 @@ const server = http.createServer((req, res) => {
   });
 }).listen(0, '127.0.0.1');
 await new Promise((r) => server.once('listening', r));
-const URL = `http://127.0.0.1:${server.address().port}/index.html`;
+const URL = `http://127.0.0.1:${server.address().port}/index.html?format=${FORMAT}`;
 
 const browser = await chromium.launch({
   args: ['--font-render-hinting=none', '--force-color-profile=srgb', '--disable-lcd-text', '--hide-scrollbars'],
@@ -63,7 +67,7 @@ async function openPage() {
 const VIG = new Float32Array(W * H);
 for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
   const dx = (x - W / 2) / (W / 2), dy = (y - H / 2) / (H / 2);
-  const d = Math.sqrt(dx * dx * 0.82 + dy * dy);
+  const d = W >= H ? Math.sqrt(dx * dx * 0.82 + dy * dy) : Math.sqrt(dx * dx + dy * dy * 0.82); // softer along the long axis
   VIG[y * W + x] = Math.max(0, d - 0.35) / 0.9;
 }
 function xorshift(seed) {
@@ -131,23 +135,23 @@ if (args.stills || args.sheet) {
       const j = next++;
       const f = Math.round(times[j] * FPS);
       const rgb = await renderFrame(pg, f, args.blur ? SUB : 1);
-      const file = path.join(ROOT, `build/stills/t${times[j].toFixed(3)}.png`);
+      const file = path.join(ROOT, `build/stills/${FORMAT}-t${times[j].toFixed(3)}.png`);
       await sharp(rgb, { raw: { width: W, height: H, channels: 3 } }).png().toFile(file);
       files[j] = file;
     }
   }));
   if (args.sheet) {
-    const cols = 4, tw = 480, th = 270;
+    const cols = W >= H ? 4 : 8, tw = W / 4, th = H / 4;
     const tiles = await Promise.all(files.map((f) => sharp(f).resize(tw, th).toBuffer()));
     const rows = Math.ceil(tiles.length / cols);
     await sharp({ create: { width: cols * tw, height: rows * th, channels: 3, background: '#000' } })
       .composite(tiles.map((b, i) => ({ input: b, left: (i % cols) * tw, top: Math.floor(i / cols) * th })))
-      .png().toFile(path.join(ROOT, 'build/stills/sheet.png'));
+      .png().toFile(path.join(ROOT, `build/stills/${FORMAT}-sheet.png`));
   }
   console.log(files.join('\n'));
 } else {
   const f0 = Math.round(+(args.from || 0) * FPS), f1 = Math.round(+(args.to || DURATION) * FPS);
-  const outFile = path.join(ROOT, args.out || 'out/cvcvta-showreel-video.mp4');
+  const outFile = path.join(ROOT, args.out || `out/cvcvta-showreel-${FORMAT}-video.mp4`);
   const ff = spawn('ffmpeg', ['-y', '-hide_banner', '-loglevel', 'error',
     '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', `${W}x${H}`, '-r', String(FPS), '-i', '-',
     '-vf', 'scale=out_color_matrix=bt709:out_range=tv:flags=accurate_rnd+full_chroma_int',

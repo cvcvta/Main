@@ -1,8 +1,7 @@
 // Everything that defines the edit: copy, timing grid, and which footage goes where.
 // Plain ES module with no DOM access, so tools/render.mjs can import it too.
+// Frame sizes per format live in layout.js.
 
-export const W = 1920;
-export const H = 1080;
 export const FPS = 30;
 export const DURATION = 15;
 export const BPM = 128;
@@ -10,7 +9,9 @@ export const BEAT = 60 / BPM; // 0.46875s; 8 bars of 4/4 = exactly 15.0s
 export const S16 = BEAT / 4;
 export const b = (n) => n * BEAT; // beat number -> seconds
 
-export const BRAND = 'CVCVTA';
+export const BRAND = 'CVCVTA'; // one letter per creator card
+export const TLD = 'AI'; // arrives after the REC dot lands as the "."
+export const NAME = `${BRAND}.${TLD}`;
 export const TAG_TOP = 'AI UGC STUDIO';
 export const TAGLINE = 'Every face in this reel was generated.';
 
@@ -55,6 +56,10 @@ export const T = {
   solid: b(26.5),
   tagline: b(27),
   dot: b(28),
+  land: b(28) + 0.52, // REC dot lands as the "."
+  ai: b(28) + 0.55, // red "AI" rises after it; the lockup re-centres
+  reflow: b(26.5) + 0.5, // 9:16 only: two rows of letters reflow into one line
+  taglineV: b(28) + 0.72, // 9:16 tagline waits for the final lockup
   end: DURATION,
 };
 
@@ -92,5 +97,5 @@ export const SECTIONS = [
   [0, '01 — THE LINEUP'],
   [b(6), '02 — FORENSICS'],
   [b(20), '03 — THE VERDICT'],
-  [b(24), '04 — CVCVTA'],
+  [b(24), '04 — CVCVTA.AI'],
 ];

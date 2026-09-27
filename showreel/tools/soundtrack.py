@@ -1,12 +1,13 @@
 """Original score + sound design for the CVCVTA showreel, synthesized from scratch.
 
-    node tools/cues.mjs > build/cues.json
-    python3 tools/soundtrack.py            -> build/soundtrack.wav (48 kHz stereo, exactly 15.0 s)
+    node tools/cues.mjs 9x16 > build/cues-9x16.json
+    python3 tools/soundtrack.py build/cues-9x16.json build/soundtrack-9x16.wav   (48 kHz stereo, exactly 15.0 s)
 
 128 BPM, F minor -> Ab major. Every hit is placed from the same cue sheet the visuals use,
 and one-shots are panned to the on-screen position of whatever made the sound.
 """
 import json
+import sys
 
 import numpy as np
 import pyloudnorm as pyln
@@ -14,7 +15,8 @@ import soundfile as sf
 from scipy import signal
 
 SR = 48000
-C = json.load(open("build/cues.json"))
+C = json.load(open(sys.argv[1] if len(sys.argv) > 1 else "build/cues-16x9.json"))
+OUT = sys.argv[2] if len(sys.argv) > 2 else "build/soundtrack-16x9.wav"
 DUR = C["duration"]
 N = int(SR * DUR)
 BEAT, S16 = C["beat"], C["s16"]
@@ -444,6 +446,20 @@ sfx.add(land, fades(np.sin(2 * np.pi * 150 * tt(0.2) * np.exp(-tt(0.2) * 3)) * n
 sfx.add(land, bell(80, 2.2, 1.6, 2.0, 1.6), 0.4, pan=0.55)
 verb_send.add(land, bell(80, 2.2, 1.6, 2.0, 1.6), 0.35)
 
+# ".AI": two bright plucks as the red letters rise, plus a little air
+for j, m in enumerate([87, 92]):
+    ta = C["ai"] + j * 0.07
+    sfx.add(ta, pluck(m, 0.7, 5200), 0.34, pan=0.45 + 0.1 * j)
+    sfx.add(ta, bell(m, 1.4, 1.1, 2.0, 2.4), 0.16, pan=0.45 + 0.1 * j)
+    verb_send.add(ta, pluck(m, 0.7, 5200), 0.25)
+sfx.add(C["ai"] - 0.02, whoosh(0.3, 2500, 9000, 1.2, "bell"), 0.22, pan=0.5)
+
+# 9:16 only: the two rows of letters reflow into one line
+if C.get("reflow") is not None:
+    sfx.add(C["reflow"] - 0.02, whoosh(0.52, 3400, 520, 1.1, "bell"), 0.4)
+    sfx.add(C["reflow"] + 0.5, tick(0.03, 3200), 0.28)
+    sfx.add(C["reflow"] + 0.5, fades(np.sin(2 * np.pi * 95 * tt(0.25)) * np.exp(-tt(0.25) * 18), 0.0005, 0.02), 0.35)
+
 # ------------------------------------------------------------------ mix + master
 ir = make_ir()
 wet = np.stack([signal.fftconvolve(verb_send.x[:, c], ir[:, c])[: len(verb_send.x)] for c in range(2)], 1)
@@ -468,5 +484,5 @@ mix = pyln.normalize.loudness(mix, lufs, -14.0)
 ceil = 10 ** (-1.0 / 20)
 mix = np.tanh(mix / ceil * 0.98) * ceil
 print(f"loudness in {lufs:.1f} LUFS -> {meter.integrated_loudness(mix):.1f} LUFS, peak {20 * np.log10(np.abs(mix).max()):.2f} dBFS")
-sf.write("build/soundtrack.wav", mix.astype(np.float32), SR, subtype="PCM_24")
-print("wrote build/soundtrack.wav", mix.shape[0] / SR, "s")
+sf.write(OUT, mix.astype(np.float32), SR, subtype="PCM_24")
+print("wrote", OUT, mix.shape[0] / SR, "s")

@@ -1,4 +1,4 @@
 node_modules/
 build/
 footage/
-out/cvcvta-showreel-video.mp4
+out/*-video.mp4

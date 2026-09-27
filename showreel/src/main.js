@@ -1,16 +1,26 @@
-// CVCVTA showreel: one deterministic scene, rendered frame by frame via window.seek(t).
+// CVCVTA.AI showreel: one deterministic scene, rendered frame by frame via window.seek(t).
+// ?format=16x9 (default) or ?format=9x16 picks the layout; the timeline is shared.
 import * as C from './config.js';
 import { clamp, lerp, E, spring, noise, hash, decode, timecode, frameBitmap, loadTracks, faceAt, clipFrames } from './engine.js';
+import { makeLayout } from './layout.js';
 
-const { W, H, BEAT, S16, T, CARDS, SUBJECTS, CLIPS, SRC_FPS } = C;
+const { BEAT, S16, T, CARDS, SUBJECTS, CLIPS, SRC_FPS } = C;
+const LY = makeLayout(new URLSearchParams(location.search).get('format') || '16x9');
+const { W, H, v: VERT } = LY;
 const BG = '#0b0b0c';
 const ink = (a) => `rgba(243,240,232,${a})`;
 const red = (a) => `rgba(255,59,47,${a})`;
 const MONO = '"JetBrains Mono"';
 
 const cv = document.getElementById('fx');
+cv.width = W;
+cv.height = H;
+document.documentElement.style.setProperty('--W', `${W}px`);
+document.documentElement.style.setProperty('--H', `${H}px`);
+if (VERT) document.body.classList.add('v');
 const ctx = cv.getContext('2d');
 const camEl = document.getElementById('cam');
+camEl.style.transformOrigin = `${W / 2}px ${H / 2}px`;
 const fg = document.getElementById('fg');
 const ui = document.getElementById('ui');
 const layer = document.createElement('canvas');
@@ -29,13 +39,14 @@ function vis(e, a) {
   e.style.visibility = a <= 0.002 ? 'hidden' : 'visible';
 }
 const setText = (e, s) => { if (e.textContent !== s) e.textContent = s; };
+const px = (n) => `${n}px`;
 
 // ---------------------------------------------------------------- geometry
-const CW = 240, CH = 427, GAP = 28, X0 = (W - (6 * CW + 5 * GAP)) / 2, CY = 392;
-const slot = (i) => ({ x: X0 + i * (CW + GAP), y: CY, w: CW, h: CH, r: 16 });
-const PANEL = { x: 696, y: 72, w: 528, h: 936, r: 22 };
+const slot = LY.slot;
+const PANEL = LY.panel;
 const lerpRect = (a, b, p) => ({ x: lerp(a.x, b.x, p), y: lerp(a.y, b.y, p), w: lerp(a.w, b.w, p), h: lerp(a.h, b.h, p), r: lerp(a.r, b.r, p) });
 const inflate = (r, d) => ({ x: r.x - d, y: r.y - d, w: r.w + 2 * d, h: r.h + 2 * d, r: (r.r || 0) + d });
+const center = (r) => [r.x + r.w / 2, r.y + r.h / 2];
 const subjEnd = (k) => (k < 4 ? T.subj[k + 1] : T.pull);
 const srcIdx = (clip, s) => clamp(Math.floor(s * SRC_FPS + 1e-4), 0, clipFrames(clip) - 1);
 function subjIndex(t) {
@@ -80,113 +91,184 @@ function cover(c, bmp, r, focus = [0.5, 0.5], zoom = 1, glitch = 0, seed = 0, t 
 const mapPt = (m, u, v) => [m.r.x + (u * m.sw - m.sx) * m.s, m.r.y + (v * m.sh - m.sy) * m.s];
 
 // ---------------------------------------------------------------- wordmark
-const WM = { size: 268, track: 0.02, letters: [], dot: null };
-function brandFont(c) {
-  c.font = `900 ${WM.size}px Archivo`;
+// Stage A: the letters the cards morph into (one row in 16:9, CVC / VTA in 9:16).
+// Stage B: one line "CVCVTA." centred. Stage C: "CVCVTA.AI" centred (a pure x-shift of B).
+const WM = {};
+function glyphFont(c, size) {
+  c.font = `900 ${size}px Archivo`;
   c.fontStretch = 'expanded';
   c.textBaseline = 'alphabetic';
 }
+function measureRow(str, size) {
+  glyphFont(ctx, size);
+  const tr = size * 0.02;
+  const xs = [...str].map((ch, i) => ctx.measureText(str.slice(0, i + 1)).width - ctx.measureText(ch).width + i * tr);
+  return { xs, width: ctx.measureText(str).width + (str.length - 1) * tr, ms: [...str].map((ch) => ctx.measureText(ch)) };
+}
 function layoutWordmark() {
   ctx.save();
-  brandFont(ctx);
-  const word = C.BRAND, S = WM.size, tr = S * WM.track;
-  const xs = [];
-  for (let i = 0; i < word.length; i++) {
-    xs.push(ctx.measureText(word.slice(0, i + 1)).width - ctx.measureText(word[i]).width + i * tr);
-  }
-  const total = ctx.measureText(word).width + (word.length - 1) * tr;
-  const capH = ctx.measureText('H').actualBoundingBoxAscent;
-  const dotD = S * 0.16, dotGap = S * 0.05;
-  const x0 = (W - (total + dotGap + dotD)) / 2;
-  const baseline = Math.round(478 + capH / 2);
-  WM.letters = [...word].map((ch, i) => {
-    const m = ctx.measureText(ch);
-    const x = x0 + xs[i];
-    return {
-      ch, x, baseline,
-      bb: { x: x - m.actualBoundingBoxLeft, y: baseline - m.actualBoundingBoxAscent, w: m.actualBoundingBoxLeft + m.actualBoundingBoxRight, h: m.actualBoundingBoxAscent + m.actualBoundingBoxDescent },
-    };
+  const word = C.BRAND, tld = C.TLD;
+  const k = LY.wm;
+  // B/C size: the full "CVCVTA.AI" line has to fit the frame
+  const u = measureRow(word, 100), ua = measureRow(tld, 100);
+  const DOT = 0.16, DGAP = 0.05, AGAP = 0.06;
+  const fullAt100 = u.width + (DGAP + DOT + AGAP) * 100 + ua.width;
+  const SB = Math.min(k.maxA, ((W - 2 * k.margin) / fullAt100) * 100);
+  // A size: every stage-A row has to fit
+  const rowStr = k.rows.map((r) => r.map((i) => word[i]).join(''));
+  const SA = k.rows.length === 1 ? SB : Math.min(k.maxA, Math.min(...rowStr.map((s) => ((W - 2 * k.margin) / measureRow(s, 100).width) * 100)));
+  glyphFont(ctx, SA);
+  const capA = ctx.measureText('H').actualBoundingBoxAscent;
+  glyphFont(ctx, SB);
+  const capB = ctx.measureText('H').actualBoundingBoxAscent;
+
+  // stage B line (with the dot) centred; its caps centred on centerFinal
+  const b = measureRow(word, SB);
+  const dotD = SB * DOT, dotGap = SB * DGAP, aGap = SB * AGAP;
+  const lineB = b.width + dotGap + dotD;
+  const xB = (W - lineB) / 2, baseB = Math.round(k.centerFinal + capB / 2);
+  const ai = measureRow(tld, SB);
+  const lineC = lineB + aGap + ai.width;
+  WM.shift = (W - lineC) / 2 - xB; // negative: slide left as "AI" arrives
+  WM.SA = SA; WM.SB = SB; WM.capB = capB;
+  WM.dot = { x: xB + b.width + dotGap + dotD / 2, y: baseB - dotD / 2, d: dotD };
+  WM.ai = [...tld].map((ch, j) => ({ ch, x: xB + lineB + aGap + ai.xs[j], baseline: baseB }));
+  WM.baseB = baseB;
+
+  // stage A rows, block centred on centerA
+  const blockH = k.rows.length * capA + (k.rows.length - 1) * k.rowGap;
+  const top0 = k.centerA - blockH / 2;
+  WM.A = [];
+  k.rows.forEach((row, ri) => {
+    const str = rowStr[ri];
+    const m = measureRow(str, SA);
+    const x0 = k.rows.length === 1 ? xB : (W - m.width) / 2; // 16:9: A is B
+    const baseline = k.rows.length === 1 ? baseB : Math.round(top0 + ri * (capA + k.rowGap) + capA);
+    row.forEach((i, j) => {
+      const mm = m.ms[j];
+      const x = x0 + m.xs[j];
+      WM.A[i] = {
+        ch: word[i], x, baseline,
+        bb: { x: x - mm.actualBoundingBoxLeft, y: baseline - mm.actualBoundingBoxAscent, w: mm.actualBoundingBoxLeft + mm.actualBoundingBoxRight, h: mm.actualBoundingBoxAscent + mm.actualBoundingBoxDescent },
+      };
+    });
   });
-  WM.dot = { x: x0 + total + dotGap + dotD / 2, y: baseline - dotD / 2, d: dotD };
-  WM.left = x0; WM.right = x0 + total + dotGap + dotD; WM.top = baseline - capH; WM.bottom = baseline;
+  WM.B = [...word].map((ch, i) => ({ x: xB + b.xs[i], baseline: baseB }));
+  WM.left = Math.min(...WM.A.map((L) => L.bb.x));
+  WM.right = Math.max(...WM.A.map((L) => L.bb.x + L.bb.w));
+  WM.top = Math.min(...WM.A.map((L) => L.bb.y));
+  WM.bottom = Math.max(...WM.A.map((L) => L.baseline));
   ctx.restore();
 }
+// reflow (9:16 only) and the final slide, per letter
+const reflowP = (i, t) => (VERT ? E.inOutCubic(clamp((t - T.reflow - i * 0.025) / 0.42)) : 1);
+const slideP = (t) => E.inOutCubic(clamp((t - T.land) / 0.46));
+function pose(i, t) {
+  const A = WM.A[i], B = WM.B[i], p = reflowP(i, t);
+  return { x: lerp(A.x, B.x, p) + WM.shift * slideP(t), baseline: lerp(A.baseline, B.baseline, p), scale: lerp(1, WM.SB / WM.SA, p) };
+}
+const dotAt = (t) => [WM.dot.x + WM.shift * slideP(t), WM.dot.y];
 
 // ---------------------------------------------------------------- DOM
 const D = {};
 function buildDOM() {
+  const ch = LY.chrome;
   // chrome
-  D.tl = el('div', 'mono chrome', ui, `<b>${C.BRAND}</b><span class="sep">/</span>SHOWREEL ’26`);
-  css(D.tl, { left: '48px', top: '38px' });
+  D.tl = el('div', 'mono chrome', ui, `<b>${C.NAME}</b><span class="sep">/</span>SHOWREEL ’26`);
+  css(D.tl, { left: px(ch.side), top: px(ch.top) });
   D.tr = el('div', 'mono chrome', ui);
-  css(D.tr, { left: '1706px', top: '38px', color: 'var(--ink)' });
+  css(D.tr, { left: px(W - 214), top: px(ch.top), color: 'var(--ink)' });
   D.bl = el('div', 'mono chrome', ui);
-  css(D.bl, { left: '48px', top: '1026px' });
+  css(D.bl, { left: px(ch.side), top: px(ch.bottom) });
   D.bars = el('div', 'bars', ui);
-  css(D.bars, { left: `${1920 - 48 - 8 * 16 - 7 * 5}px`, top: '1032px' });
+  css(D.bars, { left: px(W - 48 - 8 * 16 - 7 * 5), top: px(ch.bottom + 6) });
   D.barEls = [...Array(8)].map(() => el('i', '', D.bars));
-  const cs = [[24, 24, 'Top', 'Left'], [1920 - 46, 24, 'Top', 'Right'], [24, 1080 - 46, 'Bottom', 'Left'], [1920 - 46, 1080 - 46, 'Bottom', 'Right']];
+  const cs = [[24, 24, 'Top', 'Left'], [W - 46, 24, 'Top', 'Right'], [24, H - 46, 'Bottom', 'Left'], [W - 46, H - 46, 'Bottom', 'Right']];
   for (const [x, y, a, b2] of cs) {
     const c = el('div', 'corner', ui);
-    css(c, { left: `${x}px`, top: `${y}px`, [`border${a}Width`]: '1.5px', [`border${b2}Width`]: '1.5px' });
+    css(c, { left: px(x), top: px(y), [`border${a}Width`]: '1.5px', [`border${b2}Width`]: '1.5px' });
   }
 
   // hook
   D.hook = el('div', 'hook');
-  D.words = C.HOOK.map((w, i) => el('span', 'hwi' + (i === C.HOOK.length - 1 ? ' ai' : ''), el('span', 'hw', D.hook), w));
+  css(D.hook, { top: px(LY.hook.top), fontSize: px(LY.hook.size) });
+  D.words = C.HOOK.map((w, i) => {
+    const word = el('span', 'hwi' + (i === C.HOOK.length - 1 ? ' ai' : ''), el('span', 'hw', D.hook), w);
+    if (i === LY.hook.brk) el('span', 'brk', D.hook);
+    return word;
+  });
   D.sub = el('div', 'mono center');
-  css(D.sub, { top: '322px', fontSize: '13px', letterSpacing: '0.3em' });
+  css(D.sub, { top: px(LY.subTop), fontSize: '13px', letterSpacing: '0.3em' });
 
   // card labels + verdict tags
   D.clabels = CARDS.map((c, i) => el('div', 'mono clabel', fg, `<span>0${i + 1}</span>${c.tag}`));
   D.vtags = CARDS.map(() => el('div', 'mono vtag'));
   D.summary = el('div', 'mono center summary');
-  css(D.summary, { top: '336px' });
+  css(D.summary, { top: px(LY.summaryTop) });
   D.strike = el('div', '');
-  css(D.strike, { left: '770px', top: '343px', width: '380px', height: '3px', background: 'var(--red)', transformOrigin: '0 50%' });
+  css(D.strike, { left: px(W / 2 - 190), top: px(LY.summaryTop + 7), width: '380px', height: '3px', background: 'var(--red)', transformOrigin: '0 50%' });
 
-  // montage: left column
+  // scan: subject block
+  const P = PANEL;
+  const big = VERT ? 150 : 232;
+  D.odoH = big;
   D.left = el('div', 'col');
-  css(D.left, { left: '150px' });
+  css(D.left, { left: px(VERT ? P.x : 150) });
   D.sLbl = el('div', 'mono', D.left, 'SUBJECT');
-  css(D.sLbl, { position: 'absolute', left: '4px', top: '150px', fontSize: '13px' });
+  css(D.sLbl, { position: 'absolute', left: '4px', top: px(VERT ? 118 : 150), fontSize: '13px' });
   D.big = el('div', 'big', D.left);
-  css(D.big, { position: 'absolute', left: '-10px', top: '172px' });
+  css(D.big, { position: 'absolute', left: px(VERT ? -6 : -10), top: px(VERT ? 136 : 172), fontSize: px(big) });
   el('span', '', D.big, '0');
-  D.odo = el('div', '', el('span', 'odo', D.big));
+  const odoWrap = el('span', 'odo', D.big);
+  odoWrap.style.height = px(big);
+  D.odo = el('div', '', odoWrap);
   for (let d = 0; d <= 9; d++) el('span', '', D.odo, String(d));
   D.of = el('div', 'mono', D.left, '/ 06');
-  css(D.of, { position: 'absolute', left: '316px', top: '198px', fontSize: '15px' });
+  css(D.of, { position: 'absolute', left: px(VERT ? 196 : 316), top: px(VERT ? 158 : 198), fontSize: '15px' });
   D.cat = el('div', 'cat', D.left);
-  css(D.cat, { position: 'absolute', left: '0px', top: '440px', whiteSpace: 'nowrap' });
+  css(D.cat, { position: 'absolute', left: px(VERT ? 262 : 0), top: px(VERT ? 204 : 440), whiteSpace: 'nowrap', fontSize: px(VERT ? 64 : 60) });
   D.meta = [...Array(5)].map((_, j) => {
     const m = el('div', 'mono', D.left);
-    css(m, { position: 'absolute', left: '4px', top: `${560 + j * 30}px` });
+    css(m, { position: 'absolute', left: '4px', top: px(560 + j * 30) });
     return m;
   });
   D.redact = el('div', '', D.left);
-  css(D.redact, { position: 'absolute', left: '123px', top: `${560 + 4 * 30 + 2}px`, width: '150px', height: '12px', background: 'var(--ink)', transformOrigin: '0 0' });
+  css(D.redact, { position: 'absolute', left: '123px', top: px(560 + 4 * 30 + 2), width: '150px', height: '12px', background: 'var(--ink)', transformOrigin: '0 0' });
+  if (VERT) {
+    D.meta.forEach((m) => (m.style.display = 'none'));
+    D.redact.style.display = 'none';
+    // rotated side rails
+    D.railL = el('div', 'mono rail');
+    css(D.railL, { left: px(P.x - 36), top: px(P.y + P.h), fontSize: '11px' });
+    D.railLt = el('span', '', D.railL);
+    D.railLbar = el('i', '', D.railL);
+    D.railR = el('div', 'mono rail');
+    css(D.railR, { left: px(P.x + P.w + 22), top: px(P.y + P.h), fontSize: '11px' });
+  }
 
-  // montage: right column
+  // scan: check block (right column in 16:9, overlay on the panel in 9:16)
+  const RW = VERT ? P.w - 60 : 480;
+  const R0 = VERT ? { left: P.x + 30, hdr: 1196, rows: 1234, tele: 1196, vLbl: 1378, verdict: 1400, conf: 1506 } : { left: 1290, hdr: 150, rows: 200, tele: 404, vLbl: 646, verdict: 676, conf: 822 };
   D.right = el('div', 'col');
-  css(D.right, { left: '1290px' });
+  css(D.right, { left: px(R0.left) });
   D.hdr = el('div', 'mono', D.right, 'FORENSIC CHECK');
-  css(D.hdr, { position: 'absolute', left: '0px', top: '150px', fontSize: '13px' });
+  css(D.hdr, { position: 'absolute', left: '0px', top: px(VERT ? 118 : R0.hdr), fontSize: '13px' });
   D.hdrSq = el('div', '', D.right);
-  css(D.hdrSq, { position: 'absolute', left: '466px', top: '152px', width: '10px', height: '10px', background: 'var(--red)' });
+  css(D.hdrSq, { position: 'absolute', left: px(VERT ? 186 : 466), top: px((VERT ? 118 : R0.hdr) + 2), width: '10px', height: '10px', background: 'var(--red)' });
+  if (VERT) css(D.hdr, { left: px(P.w - 30 - 210) }), css(D.hdrSq, { left: px(P.w - 30 - 10) });
   D.rows = [0, 1, 2].map((j) => {
     const r = el('div', 'mono row', D.right);
-    css(r, { position: 'absolute', left: '0px', top: `${200 + j * 48}px` });
+    css(r, { position: 'absolute', left: '0px', top: px(R0.rows + j * (VERT ? 40 : 48)), width: px(RW) });
     const lab = el('span', '', r), lead = el('span', 'lead', r), val = el('span', 'val', r);
     const trk = el('div', 'track', D.right);
-    css(trk, { position: 'absolute', left: '0px', top: `${230 + j * 48}px`, width: '480px' });
+    css(trk, { position: 'absolute', left: '0px', top: px(R0.rows + 28 + j * (VERT ? 40 : 48)), width: px(RW) });
     const fill = el('div', 'fill', trk);
-    return { r, lab, lead, val, fill };
+    return { r, lab, lead, val, fill, trk };
   });
   D.teleT = el('div', 'mono', D.right, 'EXPRESSION TELEMETRY · LIVE');
-  css(D.teleT, { position: 'absolute', left: '0px', top: '372px' });
+  css(D.teleT, { position: 'absolute', left: '0px', top: px(R0.tele - 32) });
   D.tele = el('div', 'tele', D.right);
-  css(D.tele, { position: 'absolute', left: '0px', top: '404px' });
+  css(D.tele, { position: 'absolute', left: '0px', top: px(R0.tele), width: px(RW) });
   D.teleRows = ['jaw', 'smile', 'brow', 'blink', 'squint', 'pucker'].map((k) => {
     const r = el('div', 'tr mono', D.tele);
     const l = el('div', 'tl', r, k.toUpperCase());
@@ -196,38 +278,38 @@ function buildDOM() {
     return { k, f, v, l };
   });
   D.vLbl = el('div', 'mono', D.right, 'VERDICT');
-  css(D.vLbl, { position: 'absolute', left: '0px', top: '646px', fontSize: '13px' });
+  css(D.vLbl, { position: 'absolute', left: '0px', top: px(R0.vLbl), fontSize: '13px' });
   D.verdict = el('div', 'verdict', D.right, 'HUMAN');
-  css(D.verdict, { position: 'absolute', left: '-6px', top: '676px', transformOrigin: '0 100%' });
+  css(D.verdict, { position: 'absolute', left: '-6px', top: px(R0.verdict), transformOrigin: '0 100%' });
   D.conf = el('div', 'mono row', D.right);
-  css(D.conf, { position: 'absolute', left: '0px', top: '822px' });
+  css(D.conf, { position: 'absolute', left: '0px', top: px(R0.conf), width: px(RW) });
   D.confL = el('span', '', D.conf, 'CONFIDENCE');
   el('span', 'lead', D.conf);
   D.confV = el('span', 'val', D.conf);
   const ct = el('div', 'track', D.right);
-  css(ct, { position: 'absolute', left: '0px', top: '852px', width: '480px' });
+  css(ct, { position: 'absolute', left: '0px', top: px(R0.conf + 30), width: px(RW) });
   D.confFill = el('div', 'fill', ct);
 
   D.panTop = el('div', 'mono');
-  css(D.panTop, { left: `${PANEL.x}px`, top: '46px', width: `${PANEL.w}px`, display: 'flex', justifyContent: 'space-between', fontSize: '11px' });
+  css(D.panTop, { left: px(P.x), top: px(P.y - 26), width: px(P.w), display: VERT ? 'none' : 'flex', justifyContent: 'space-between', fontSize: '11px' });
   D.panTopL = el('span', '', D.panTop);
   D.panTopR = el('span', '', D.panTop);
   D.panBot = el('div', 'mono');
-  css(D.panBot, { left: `${PANEL.x}px`, top: '1020px', width: `${PANEL.w}px`, display: 'flex', justifyContent: 'space-between', fontSize: '11px' });
+  css(D.panBot, { left: px(P.x), top: px(P.y + P.h + 12), width: px(P.w), display: 'flex', justifyContent: 'space-between', fontSize: '11px' });
   D.panBotL = el('span', '', D.panBot);
   D.panBotR = el('span', '', D.panBot);
 
   // verdict reveal + slam
   D.corr = el('div', 'mono center');
-  css(D.corr, { top: '334px', color: 'var(--red)', fontSize: '15px', letterSpacing: '0.34em' });
+  css(D.corr, { top: px(LY.summaryTop - 2), color: 'var(--red)', fontSize: '15px', letterSpacing: '0.34em' });
   D.slam = el('div', 'slam');
+  css(D.slam, { top: px(LY.slamTop) });
   D.slamParts = [el('span', 'g', D.slam, 'ALL'), el('span', 's', D.slam, 'of'), el('span', 'g', D.slam, 'THEM<span class="dot">.</span>')];
 
   // brand
   D.tag1 = el('div', 'mono center tag1');
-  css(D.tag1, { top: '664px' });
   D.tag2w = el('div', 'center');
-  css(D.tag2w, { top: '706px', overflow: 'hidden', paddingBottom: '12px' });
+  css(D.tag2w, { overflow: 'hidden', paddingBottom: '12px' });
   D.tag2 = el('div', 'mono tag2', D.tag2w, C.TAGLINE);
   D.ring = el('div', '', ui);
   css(D.ring, { borderRadius: '50%', border: '2px solid var(--red)', left: '0px', top: '0px' });
@@ -246,7 +328,7 @@ function cardState(i, t) {
     st.alpha = clamp(pe * 4);
     st.blur = (1 - E.outCubic(pe)) * 16;
     st.scale = lerp(0.84, 1, e);
-    st.rot = (1 - e) * (i - 2.5) * -2.4;
+    st.rot = (1 - e) * ((VERT ? (i % 3) - 1 : i - 2.5)) * -2.4;
     st.zoom = lerp(1.22, 1.0, E.outCubic(clamp((t - te) / 1.7)));
     if (t >= T.hopStart) {
       const h = Math.min(T.hops.length - 1, Math.floor((t - T.hopStart) / S16));
@@ -261,9 +343,13 @@ function cardState(i, t) {
   }
   if (t < T.dive + 0.45) {
     if (i === 0) return null;
+    // clear out, away from the card that dives in
     const q = E.outCubic(clamp((t - T.dive + 0.02) / 0.3));
-    st.dx = q * (260 + 90 * i);
-    st.dy = q * 40;
+    const [ax, ay] = center(slot(0)), [bx, by] = center(slot(i));
+    const len = Math.hypot(bx - ax, by - ay) || 1;
+    const dist = 260 + 90 * i;
+    st.dx = q * dist * ((bx - ax) / len);
+    st.dy = q * (dist * ((by - ay) / len) + 40);
     st.alpha = 1 - E.inQuad(q);
     st.blur = q * 22;
     st.scale = 1 - 0.14 * q;
@@ -320,7 +406,7 @@ function panelState(t) {
 }
 
 function letterState(i, t) {
-  const L = WM.letters[i];
+  const L = WM.A[i];
   const d = i * 0.03;
   const pr = E.inOutCubic(clamp((t - T.brand - d) / 0.4));
   const pw = E.inOutCubic(clamp((t - T.brand - 0.02 - d) / 0.56));
@@ -330,7 +416,7 @@ function letterState(i, t) {
   const bcx = L.bb.x + L.bb.w / 2, bcy = L.bb.y + L.bb.h / 2;
   const off = [(from.x + from.w / 2 - bcx) * (1 - pr), (from.y + from.h / 2 - bcy) * (1 - pr)];
   const fade = 1 - E.outCubic(clamp((t - T.brand) / 0.3));
-  return { rect, stroke: lerp(340, 0, pw), off, dim: 0.74 * fade, blur: 7 * fade, L };
+  return { rect, stroke: lerp(VERT ? 420 : 340, 0, pw), off, dim: 0.74 * fade, blur: 7 * fade, L };
 }
 
 // ---------------------------------------------------------------- drawing
@@ -350,7 +436,7 @@ function drawBackground(t) {
   // warm key light behind the wordmark
   const gl = E.outCubic(clamp((t - T.brand) / 1.2));
   if (gl > 0) {
-    const g = ctx.createRadialGradient(960, 480, 0, 960, 480, 980);
+    const g = ctx.createRadialGradient(W / 2, LY.glowY, 0, W / 2, LY.glowY, 980);
     g.addColorStop(0, `rgba(255,236,214,${0.075 * gl})`);
     g.addColorStop(1, 'rgba(255,236,214,0)');
     ctx.fillStyle = g;
@@ -362,7 +448,7 @@ function drawBackground(t) {
   const x = t - T.slam;
   if (x >= 0 && t < T.brand) rw += Math.exp(-x * 5) * 0.08;
   if (rw > 0.002) {
-    const g = ctx.createRadialGradient(960, 600, 0, 960, 600, 1100);
+    const g = ctx.createRadialGradient(W / 2, LY.washY, 0, W / 2, LY.washY, 1100);
     g.addColorStop(0, red(rw));
     g.addColorStop(1, red(0));
     ctx.fillStyle = g;
@@ -486,17 +572,36 @@ function leader(c, pts, p, a) {
 
 const FACE_OVAL = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 109];
 
+// how present the scan read-outs are (columns / overlay), shared by canvas and DOM
+const scanUI = (t) => (t >= T.dive ? E.outExpo(clamp((t - T.dive - 0.26) / 0.5)) * (1 - E.inCubic(clamp((t - T.pull) / 0.3))) : 0);
+
 function drawScanHUD(t, ps, m, bmp) {
   const k = ps.k;
+  const r = ps.rect;
+  // 9:16: the read-outs sit on the lower part of the panel, over a scrim
+  if (VERT) {
+    const a = scanUI(t);
+    if (a > 0.002) {
+      ctx.save();
+      rr(ctx, r);
+      ctx.clip();
+      const y0 = r.y + r.h - 470;
+      const g = ctx.createLinearGradient(0, y0, 0, r.y + r.h);
+      g.addColorStop(0, 'rgba(8,8,9,0)');
+      g.addColorStop(0.45, `rgba(8,8,9,${0.62 * a})`);
+      g.addColorStop(1, `rgba(8,8,9,${0.9 * a})`);
+      ctx.fillStyle = g;
+      ctx.fillRect(r.x, y0, r.w, r.y + r.h - y0);
+      ctx.restore();
+    }
+  }
   if (k < 0) return;
   const s = SUBJECTS[k];
   const u = t - T.subj[k];
-  const Dk = subjEnd(k) - T.subj[k];
   const gone = t >= T.pull ? E.outCubic(clamp((t - T.pull) / 0.12)) : 0;
   const A = 1 - gone;
   if (A <= 0) return;
   const f = faceAt(s.clip, ps.src);
-  const r = ps.rect;
 
   // scan beam + landmark mesh (inside the panel)
   ctx.save();
@@ -574,7 +679,7 @@ function drawScanHUD(t, ps, m, bmp) {
   if (s.fx === 'loupe') {
     const [tx, ty] = mapPt(m, s.loupe[0], s.loupe[1]);
     const R = 124;
-    const lc = [r.x + 172, r.y + r.h - 250];
+    const lc = LY.loupe(r);
     const pa = spring(t, T.subj[k] + 0.2, 3.0, 0.55);
     const a = cA(0.12);
     reticle(ctx, tx, ty, a, 10);
@@ -620,11 +725,11 @@ function drawScanHUD(t, ps, m, bmp) {
       label(ctx, decode(bx.label, clamp((u - 0.14 - j * 0.1) / 0.18), t, j + 3), b2.x + 2, b2.y - 16, { bg: ink(0.95 * a) });
     });
   } else if (s.fx === 'light') {
-    const [px, py] = mapPt(m, s.point[0], s.point[1]);
+    const [px2, py2] = mapPt(m, s.point[0], s.point[1]);
     const a = cA(0.12);
-    reticle(ctx, px, py, a, 11);
-    const ex = px + 150, ey = py + 118;
-    leader(ctx, [[px + 12, py + 9], [px + 70, ey], [ex, ey]], clamp((u - 0.12) / 0.16), a);
+    reticle(ctx, px2, py2, a, 11);
+    const ex = px2 + 150, ey = py2 + 118;
+    leader(ctx, [[px2 + 12, py2 + 9], [px2 + 70, ey], [ex, ey]], clamp((u - 0.12) / 0.16), a);
     const la = cA(0.26);
     label(ctx, decode(s.label, clamp((u - 0.26) / 0.16), t, 7), ex + 6, ey, { bg: ink(0.95 * la) });
     label(ctx, 'LUX 98,400 · 5600K', ex + 6, ey + 28, { color: ink(0.8 * la) });
@@ -641,14 +746,22 @@ function drawScanHUD(t, ps, m, bmp) {
     ctx.beginPath(); ctx.arc(g[0] + Math.cos(an) * len, g[1] + Math.sin(an) * len, 4, 0, Math.PI * 2); ctx.fill();
     label(ctx, 'KEY 34°', g[0], g[1] + 48, { align: 'center', color: ink(0.8 * ga) });
   } else if (s.fx === 'hair') {
-    const [px, py] = mapPt(m, s.point[0], s.point[1]);
+    const [px2, py2] = mapPt(m, s.point[0], s.point[1]);
     const a = cA(0.12);
-    reticle(ctx, px, py, a, 11);
-    const ex = r.x - 36;
-    leader(ctx, [[px - 16, py], [px - 50, py + 44], [ex, py + 44]], clamp((u - 0.12) / 0.16), a);
+    reticle(ctx, px2, py2, a, 11);
     const la = cA(0.26);
-    label(ctx, decode(s.label, clamp((u - 0.26) / 0.16), t, 9), ex - 8, py + 44, { align: 'right', bg: ink(0.95 * la) });
-    label(ctx, '~110K STRANDS', ex - 8, py + 72, { align: 'right', color: ink(0.7 * la) });
+    const txt = decode(s.label, clamp((u - 0.26) / 0.16), t, 9);
+    if (LY.hairLabel === 'outside') {
+      const ex = r.x - 36;
+      leader(ctx, [[px2 - 16, py2], [px2 - 50, py2 + 44], [ex, py2 + 44]], clamp((u - 0.12) / 0.16), a);
+      label(ctx, txt, ex - 8, py2 + 44, { align: 'right', bg: ink(0.95 * la) });
+      label(ctx, '~110K STRANDS', ex - 8, py2 + 72, { align: 'right', color: ink(0.7 * la) });
+    } else {
+      const ey = py2 + 150;
+      leader(ctx, [[px2, py2 + 16], [px2 + 30, ey], [px2 + 70, ey]], clamp((u - 0.12) / 0.16), a);
+      label(ctx, txt, px2 + 76, ey, { bg: ink(0.95 * la) });
+      label(ctx, '~110K STRANDS', px2 + 76, ey + 28, { color: ink(0.8 * la) });
+    }
   } else if (s.fx === 'expr' && f && f.mouth && faceOk) {
     const [mx, my] = mapPt(m, f.mouth[0], f.mouth[1]);
     const [x0] = mapPt(m, f.box[0], 0);
@@ -714,7 +827,7 @@ function drawLetters(t, bmps) {
       lc.filter = 'none';
       if (st.dim > 0.002) { lc.fillStyle = `rgba(8,8,9,${st.dim})`; lc.fillRect(R.x, R.y, R.w, R.h); }
       lc.restore();
-      brandFont(mc);
+      glyphFont(mc, WM.SA);
       mc.fillStyle = '#fff';
       mc.fillText(L.ch, gx, gy);
       const Rd = st.stroke / 2;
@@ -734,13 +847,19 @@ function drawLetters(t, bmps) {
       ctx.drawImage(layer, bx, by);
     }
     if (solidP > 0) {
+      // solid ink behind the render sweep; after it, the letters are free to reflow and slide
+      const P = solidP < 1 ? { x: L.x, baseline: L.baseline, scale: 1 } : pose(i, t);
       ctx.save();
-      ctx.beginPath();
-      ctx.rect(0, 0, sweepX, H);
-      ctx.clip();
-      brandFont(ctx);
+      if (solidP < 1) {
+        ctx.beginPath();
+        ctx.rect(0, 0, sweepX, H);
+        ctx.clip();
+      }
+      ctx.translate(P.x, P.baseline);
+      ctx.scale(P.scale, P.scale);
+      glyphFont(ctx, WM.SA);
       ctx.fillStyle = '#f3f0e8';
-      ctx.fillText(L.ch, gx, gy);
+      ctx.fillText(L.ch, 0, 0);
       ctx.restore();
     }
   }
@@ -753,6 +872,25 @@ function drawLetters(t, bmps) {
     ctx.fillStyle = ink(0.95);
     ctx.fillRect(sweepX - 1, WM.top - 70, 2, WM.bottom - WM.top + 140);
   }
+  drawTLD(t);
+}
+
+// ".AI": the letters rise out of the baseline right after the dot lands, in the hook's red
+function drawTLD(t) {
+  const sh = WM.shift * slideP(t);
+  WM.ai.forEach((L, j) => {
+    const p = E.outExpo(clamp((t - T.ai - j * 0.07) / 0.5));
+    if (p <= 0) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, W, L.baseline + WM.SB * 0.04);
+    ctx.clip();
+    glyphFont(ctx, WM.SB);
+    ctx.fillStyle = '#ff3b2f';
+    ctx.globalAlpha = clamp(p * 3);
+    ctx.fillText(L.ch, L.x + sh, L.baseline + (1 - p) * WM.capB * 1.1);
+    ctx.restore();
+  });
 }
 
 // ---------------------------------------------------------------- DOM per frame
@@ -800,15 +938,16 @@ function domUpdate(t) {
     if (t >= T.pull && t < T.brand) a *= clamp((t - (T.pull + 0.35)) / 0.2);
     if (t >= T.slam - 0.04 && t < T.brand) a *= 1 - 0.7 * E.outCubic(clamp((t - T.slam) / 0.2));
     if (i === 5 && t >= T.pull && t < T.pull + 0.42) a = 0;
-    css(L, { transform: `translate(${(r.x + 2 + dx).toFixed(1)}px, ${(r.y + r.h + 20 + dy).toFixed(1)}px)` });
+    const [lx, ly] = LY.cardLabels === 'inside' ? [r.x + 12, r.y + 12] : [r.x + 2, r.y + r.h + 20];
+    css(L, { transform: `translate(${(lx + dx).toFixed(1)}px, ${(ly + dy).toFixed(1)}px)` });
     vis(L, a);
 
     // verdict tag: HUMAN during the pull-back, flips to AI on the reveal
     const tin = T.pull + 0.42 + i * 0.05;
     let va = t >= T.pull && t < T.brand ? clamp((t - tin) / 0.08) : 0;
     const flipped = t >= T.flip(i);
-    const txt = flipped ? decode('✕ AI-GENERATED', clamp((t - T.flip(i)) / 0.1), t, i + 11) : decode('✓ HUMAN', clamp((t - tin) / 0.18), t, i + 21);
-    setText(V, txt);
+    const txt2 = flipped ? decode('✕ AI-GENERATED', clamp((t - T.flip(i)) / 0.1), t, i + 11) : decode('✓ HUMAN', clamp((t - tin) / 0.18), t, i + 21);
+    setText(V, txt2);
     V.className = 'mono vtag' + (flipped ? ' ai' : '');
     const pop = flipped ? 1 + 0.18 * (1 - E.outExpo(clamp((t - T.flip(i)) / 0.2))) : 1 + 0.12 * (1 - E.outBack(clamp((t - tin) / 0.25)));
     if (t >= T.slam - 0.04 && t < T.brand) va *= 1 - 0.55 * E.outCubic(clamp((t - T.slam) / 0.2));
@@ -823,27 +962,28 @@ function domUpdate(t) {
   D.strike.style.transform = `scaleX(${sk.toFixed(4)})`;
   vis(D.strike, t < T.correction + 0.06 ? sk : 0);
 
-  // montage columns
+  // scan read-outs
   const colIn = E.outExpo(clamp((t - T.dive - 0.26) / 0.5));
   const colOut = E.inCubic(clamp((t - T.pull) / 0.3));
-  const colA = t >= T.dive ? colIn * (1 - colOut) : 0;
-  css(D.left, { transform: `translateX(${((1 - colIn) * -60 - colOut * 60).toFixed(1)}px)` });
-  css(D.right, { transform: `translateX(${((1 - colIn) * 60 + colOut * 60).toFixed(1)}px)` });
+  const colA = scanUI(t);
+  const slideL = VERT ? `translateY(${((1 - colIn) * -30 - colOut * 30).toFixed(1)}px)` : `translateX(${((1 - colIn) * -60 - colOut * 60).toFixed(1)}px)`;
+  const slideR = VERT ? `translateY(${((1 - colIn) * 40 + colOut * 40).toFixed(1)}px)` : `translateX(${((1 - colIn) * 60 + colOut * 60).toFixed(1)}px)`;
+  css(D.left, { transform: slideL });
+  css(D.right, { transform: slideR });
   vis(D.left, colA);
   vis(D.right, colA);
   vis(D.panTop, colA);
   vis(D.panBot, colA);
+  if (VERT) { vis(D.railL, colA); vis(D.railR, colA); }
   if (colA > 0) {
     const k = Math.max(0, subjIndex(t));
     const s = SUBJECTS[k];
     const t0 = subjIndex(t) < 0 ? T.dive : T.subj[k];
     const u = t - t0;
     // odometer
-    const digit = k + 1;
-    const prevDigit = k;
     const roll = subjIndex(t) <= 0 ? 1 : E.outExpo(clamp(u / 0.3));
-    const dpos = lerp(prevDigit, digit, roll);
-    D.odo.style.transform = `translateY(${(-dpos * 232).toFixed(2)}px)`;
+    const dpos = lerp(k, k + 1, roll);
+    D.odo.style.transform = `translateY(${(-dpos * D.odoH).toFixed(2)}px)`;
     const cp = E.outExpo(clamp(u / 0.35));
     setText(D.cat, s.cat + '.');
     css(D.cat, { transform: `translateY(${((1 - cp) * 36).toFixed(1)}px)`, opacity: cp.toFixed(3) });
@@ -854,14 +994,21 @@ function domUpdate(t) {
       ['LIGHT', s.meta[2]],
       ['SOURCE', ''],
     ];
-    D.meta.forEach((e, j) => {
-      const [a, b2] = metaTxt[j];
-      setText(e, decode((a + ' ').padEnd(12, '.') + ' ' + b2, clamp((u - j * 0.03) / 0.25), t, j + 40));
-    });
-    D.redact.style.transform = `scaleX(${E.outExpo(clamp((u - 0.12) / 0.3)).toFixed(3)})`;
+    if (VERT) {
+      setText(D.railLt, decode(`FORMAT 9:16 UGC  ·  LENGTH ${s.meta[0]}  ·  ${s.meta[1]}  ·  ${s.meta[2]}  ·  SOURCE `, clamp(u / 0.3), t, 40));
+      D.railLbar.style.transform = `scaleX(${E.outExpo(clamp((u - 0.12) / 0.3)).toFixed(3)})`;
+      setText(D.railR, decode(`CAM A  ·  24P  ·  ISO ${[320, 800, 100, 250, 400][k]}  ·  1/48  ·  SRC ${timecode(s.t + Math.max(0, u), 24).slice(3)}`, clamp(u / 0.3), t, 44));
+    } else {
+      D.meta.forEach((e, j) => {
+        const [a, b2] = metaTxt[j];
+        setText(e, decode((a + ' ').padEnd(12, '.') + ' ' + b2, clamp((u - j * 0.03) / 0.25), t, j + 40));
+      });
+      D.redact.style.transform = `scaleX(${E.outExpo(clamp((u - 0.12) / 0.3)).toFixed(3)})`;
+    }
 
-    // right column
+    // checks
     D.hdrSq.style.opacity = Math.floor(t * 4) % 2 ? '1' : '0.25';
+    const showRows = !(VERT && k === 4); // 9:16: the expression subject swaps its checks for telemetry
     D.rows.forEach((row, j) => {
       const [lab, val] = s.checks[j];
       const t1 = 0.1 + j * 0.08;
@@ -869,10 +1016,11 @@ function domUpdate(t) {
       const bp = E.outCubic(clamp((u - t1) / 0.2));
       row.fill.style.transform = `scaleX(${bp.toFixed(3)})`;
       setText(row.val, bp >= 1 ? decode(val, clamp((u - t1 - 0.2) / 0.1), t, j + 60) : '');
-      vis(row.r, clamp((u - t1) / 0.04));
+      vis(row.r, showRows ? clamp((u - t1) / 0.04) : 0);
+      vis(row.trk, showRows ? 1 : 0);
     });
     const f = faceAt(s.clip, s.t + Math.max(0, u));
-    const emph = k === 4 ? 1 : 0.55;
+    const teleOn = VERT ? (k === 4 ? 1 : 0) : k === 4 ? 1 : 0.55;
     D.teleT.style.color = k === 4 ? 'var(--ink)' : '';
     D.teleRows.forEach((row, j) => {
       let v = f && f.bs ? clamp(f.bs[row.k] || 0) : 0;
@@ -883,7 +1031,8 @@ function domUpdate(t) {
       setText(row.v, v.toFixed(2));
       row.l.style.color = k === 4 ? 'var(--ink)' : '';
     });
-    D.tele.style.opacity = emph.toFixed(2);
+    D.tele.style.opacity = teleOn.toFixed(2);
+    vis(D.teleT, VERT ? teleOn : 1);
     const vt = 0.42;
     const vp = clamp((u - vt) / 0.22);
     const vs = 1 + 0.3 * (1 - E.outExpo(vp));
@@ -897,7 +1046,7 @@ function domUpdate(t) {
     // panel labels
     setText(D.panTopL, `CAM A · 24P · ISO ${[320, 800, 100, 250, 400][k]} · 1/48`);
     setText(D.panTopR, `SUBJ 0${k + 1}`);
-    setText(D.panBotL, `SRC ${timecode(s.t + Math.max(0, u), 24).slice(3)}`);
+    setText(D.panBotL, VERT ? `SUBJ 0${k + 1} / 06` : `SRC ${timecode(s.t + Math.max(0, u), 24).slice(3)}`);
     setText(D.panBotR, `${(2.4 + hash(k) * 0.6).toFixed(1)} MP · H.264`);
   }
 
@@ -917,16 +1066,21 @@ function domUpdate(t) {
     vis(D.slam, clamp(sl / 0.03) * (1 - out));
   } else vis(D.slam, 0);
 
-  // brand tagline
-  const t1 = t - T.tagline;
+  // brand tagline, under the final lockup
+  const tagAt = VERT ? T.taglineV : T.tagline;
+  const cpT = camParams(t);
+  const tagTop = WM.baseB + (VERT ? 88 : 94);
+  css(D.tag1, { top: px(tagTop) });
+  css(D.tag2w, { top: px(tagTop + 42) });
+  const t1 = t - tagAt;
   setText(D.tag1, decode(C.TAG_TOP, clamp(t1 / 0.35), t, 90));
   vis(D.tag1, t1 >= 0 ? clamp(t1 / 0.05) : 0);
   const t2 = E.outExpo(clamp((t1 - 0.12) / 0.7));
   D.tag2.style.transform = `translateY(${((1 - t2) * 110).toFixed(2)}%)`;
   vis(D.tag2w, t1 > 0.12 ? 1 : 0);
 
-  // hero dot: REC light -> full stop of the wordmark
-  const recPos = [recX - 22, 44];
+  // hero dot: REC light -> the "." of CVCVTA.AI
+  const recPos = [recX - 22, LY.chrome.top + 6];
   const dp = clamp((t - T.dot) / 0.52);
   let x = recPos[0], y = recPos[1], size = 12, rot = 0, sx = 1, sy = 1, da = 1;
   if (t < T.dot - 0.12) {
@@ -937,19 +1091,19 @@ function domUpdate(t) {
     y -= 5 * a;
   } else {
     const e = E.inOutCubic(dp);
-    const cp = camParams(t);
-    const P0 = recPos, P2 = toScreen(cp, WM.dot.x, WM.dot.y), P1 = [P2[0] + 190, P0[1] + 120];
+    const [dx, dy] = dotAt(t);
+    const P0 = recPos, P2 = toScreen(cpT, dx, dy), P1 = VERT ? [P2[0] + 120, P0[1] + 380] : [P2[0] + 190, P0[1] + 120];
     const q = (a, b2, c2, s2) => (1 - s2) * (1 - s2) * a + 2 * (1 - s2) * s2 * b2 + s2 * s2 * c2;
     x = q(P0[0], P1[0], P2[0], e);
     y = q(P0[1], P1[1], P2[1], e);
     const e2 = Math.min(1, e + 0.01);
     const vx = q(P0[0], P1[0], P2[0], e2) - x, vy = q(P0[1], P1[1], P2[1], e2) - y;
     rot = Math.atan2(vy, vx);
-    size = lerp(12, WM.dot.d * cp.s, E.inOutQuad(dp));
+    size = lerp(12, WM.dot.d * cpT.s, E.inOutQuad(dp));
     const stretch = 1 + 0.9 * Math.sin(Math.PI * dp) * (dp < 1 ? 1 : 0);
     sx = stretch; sy = 1 / stretch;
     if (dp >= 1) {
-      const sp2 = spring(t, T.dot + 0.52, 4.2, 0.3);
+      const sp2 = spring(t, T.land, 4.2, 0.3);
       rot = 0;
       sx = 1 + 0.35 * (1 - sp2);
       sy = 1 - 0.35 * (1 - sp2);
@@ -962,11 +1116,10 @@ function domUpdate(t) {
   });
   vis(D.dot, da);
   // landing ripple
-  const rp = clamp((t - T.dot - 0.52) / 0.7);
+  const rp = clamp((t - T.land) / 0.7);
   if (rp > 0 && rp < 1) {
-    const cp = camParams(t);
-    const [rx, ry] = toScreen(cp, WM.dot.x, WM.dot.y);
-    const rs = WM.dot.d * cp.s * (1 + 2.8 * E.outCubic(rp));
+    const [rx, ry] = toScreen(cpT, ...dotAt(t));
+    const rs = WM.dot.d * cpT.s * (1 + 2.8 * E.outCubic(rp));
     css(D.ring, { width: `${rs}px`, height: `${rs}px`, transform: `translate(${rx - rs / 2 - 2}px, ${ry - rs / 2 - 2}px)` });
     vis(D.ring, 0.9 * (1 - rp));
   } else vis(D.ring, 0);
@@ -975,7 +1128,7 @@ function domUpdate(t) {
 // ---------------------------------------------------------------- camera + post
 const IMPULSES = [
   [T.hookWord(5), 3, 16], ...[0, 1, 2, 3, 4, 5].map((i) => [T.flip(i), 3, 18]),
-  [T.slam, 16, 7], [T.brand, 7, 9], [T.dot + 0.52, 4, 12],
+  [T.slam, 16, 7], [T.brand, 7, 9], [T.land, 4, 12], [T.ai, 3, 14],
 ];
 function camParams(t) {
   let s = 1 + 0.028 * E.inOutQuad(clamp(t / T.dive)) * (1 - E.inOutQuart(clamp((t - T.dive) / 0.4)));
@@ -998,17 +1151,17 @@ function camera(t) {
   const { x, y, s } = camParams(t);
   camEl.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) scale(${s.toFixed(5)})`;
 }
-const toScreen = (cp, px, py) => [960 + (px - 960) * cp.s + cp.x, 540 + (py - 540) * cp.s + cp.y];
+const toScreen = (cp, px2, py2) => [W / 2 + (px2 - W / 2) * cp.s + cp.x, H / 2 + (py2 - H / 2) * cp.s + cp.y];
 
-const HI = [[T.dive - 0.05, 0.5], [T.pull - 0.05, 0.55], [T.brand - 0.02, 0.8], [T.dot - 0.15, 0.95], [T.slam - 0.02, 0.42], [T.solid, 0.5]];
-const MID = [[0, 1.1], [T.hopStart, T.dive - T.hopStart], ...T.subj.map((s) => [s, 0.45]), [T.reveal, 0.7], [T.tagline, 0.6], [T.hookWord(5), 0.2]];
+const HI = [[T.dive - 0.05, 0.5], [T.pull - 0.05, 0.55], [T.brand - 0.02, 0.8], [T.dot - 0.15, 1.5], [T.slam - 0.02, 0.42], [T.solid, 0.5], ...(VERT ? [[T.reflow, 0.6]] : [])];
+const MID = [[0, 1.1], [T.hopStart, T.dive - T.hopStart], ...T.subj.map((s) => [s, 0.45]), [T.reveal, 0.7], [VERT ? T.taglineV : T.tagline, 0.6], [T.hookWord(5), 0.2]];
 window.subframes = (t) => {
   const inside = (w) => w.some(([a, d]) => t >= a && t <= a + d);
   return inside(HI) ? 20 : inside(MID) ? 10 : 4;
 };
 window.post = (t) => {
   let ca = 0.6;
-  const spikes = [[T.hookWord(5), 5, 12], ...[0, 1, 2, 3, 4, 5].map((i) => [T.flip(i), 7, 16]), [T.slam, 9, 6], [T.brand, 6, 8], [T.dot + 0.52, 3, 10]];
+  const spikes = [[T.hookWord(5), 5, 12], ...[0, 1, 2, 3, 4, 5].map((i) => [T.flip(i), 7, 16]), [T.slam, 9, 6], [T.brand, 6, 8], [T.land, 3, 10], [T.ai, 4, 10]];
   for (const [ti, amp, dec] of spikes) { const d = t - ti; if (d >= 0) ca += amp * Math.exp(-d * dec); }
   const fade = clamp((C.DURATION - t) / 0.3) * clamp(t / 0.12);
   return { ca, fade, grain: 0.028, vignette: 0.32 };
@@ -1079,10 +1232,7 @@ async function init() {
   ]);
   await document.fonts.ready;
   layoutWordmark();
-  ctx.font = `500 12px ${MONO}`;
-  ctx.letterSpacing = '1.92px';
-  recX = 1706;
-  ctx.letterSpacing = '0px';
+  recX = W - 214;
 }
 
 window.ready = init();
@@ -1091,3 +1241,4 @@ window.seek = async (t) => {
   await seek(t);
 };
 window.CFG = C;
+window.LAYOUT = LY;
