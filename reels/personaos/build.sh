@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds out/personaos-reel.mp4 (1080x1920, 30 fps, H.264 + AAC) and out/cover.jpg.
+# Builds out/personaos-reel.mp4 (1080x1920, 30 fps, H.264 + AAC, 34 s) and out/cover.jpg.
 #   SUB=1 ./build.sh     quick build without motion blur
 set -euo pipefail
 cd "$(dirname "$0")"
@@ -8,7 +8,7 @@ SUB=${SUB:-8}            # motion-blur samples averaged into each frame
 WORKERS=${WORKERS:-3}
 
 node render.mjs --fps "$FPS" --sub "$SUB" --workers "$WORKERS"
-node render.mjs --stills 31.5 >/dev/null
+node render.mjs --stills 6.9 >/dev/null
 python3 music.py
 
 # Master: measure loudness, then gain + true-peak limiter to land near -14 LUFS (the Reels/TikTok playback level).
@@ -30,6 +30,6 @@ ffmpeg -y -hide_banner -loglevel error -stats \
   -c:v libx264 -preset slow -crf 20 -maxrate 10M -bufsize 20M -profile:v high -level 4.2 -g 60 \
   -colorspace bt709 -color_primaries bt709 -color_trc bt709 -color_range tv \
   -c:a aac -b:a 256k -ar 48000 -movflags +faststart -shortest out/personaos-reel.mp4
-ffmpeg -y -hide_banner -loglevel error -i out/stills/t031.50.png -q:v 2 out/cover.jpg
+ffmpeg -y -hide_banner -loglevel error -i out/stills/t006.90.png -q:v 2 out/cover.jpg
 ffmpeg -hide_banner -nostats -i out/personaos-reel.mp4 -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I|Peak):" | sed 's/^ */loudness /'
 echo "done: out/personaos-reel.mp4"

@@ -1,41 +1,48 @@
-# Persona OS reel
+# personaos reel: "Meet Mo"
 
-A 32-second vertical promo reel for [personaos.com](https://personaos.com/), built as code: an
+A 34-second vertical promo reel for [personaos.com](https://personaos.com/), built as code: an
 HTML/CSS/JS motion-graphics timeline rendered frame by frame in headless Chromium, with an
-original soundtrack and sound design synthesized in Python. No AI video, image or audio
-generators are involved.
+original soundtrack and sound design synthesized in Python. No Higgsfield or other AI video,
+image or audio generators are involved.
 
 - `out/personaos-reel.mp4` is 1080×1920, 30 fps, H.264 High with AAC 256 kbps (48 kHz), mastered to about −14 LUFS.
-- `out/cover.jpg` is the cover frame, taken from the end card.
+- `out/cover.jpg` is the cover frame ("Meet Mo. The best employee you'll ever hire.").
+
+Copy, colors, type and the Mo mascot come from the site. See [BRAND.md](BRAND.md).
 
 ## Storyboard
 
 | Time | Scene | On-screen copy |
 | --- | --- | --- |
-| 0–4 s | A social feed scrolls fast, then snaps to one post that lands | "Most content gets scrolled past." / "Unless it's made for *them.*" |
-| 4–8 s | Audience radar sweep | "Better content starts with knowing your audience *deeply.*" |
-| 8–10 s | Brand reveal (music drop) | Persona OS · "The *Creative Intelligence* Platform" |
-| 10–16 s | Domain → lead AI strategist → specialist agents → 10-phase pipeline | "Start with your domain." / "A lead AI strategist runs the research." / "A 10-phase research pipeline." · Specialist agents · Digital focus groups · Behavioral scoring |
-| 16–20 s | Persona cards are dealt in | "Deeply researched personas." "Ready to drive content." |
-| 20–25 s | Angle / hook / script / brief cards and channel chips | "Angles. Hooks. Scripts. Briefs." · Ready for Paid · Organic · Email · Creators |
-| 25–28 s | Performance loop: the winning hook spawns variants, a loser is stamped RETIRED | "What works *compounds.*" / "What doesn't gets *retired.*" |
-| 28–32 s | End card over a wall of content (final drop) | "Scroll-stopping content. *Every single week.*" · Persona OS · personaos.com |
+| 0–3.5 s | Mo hops down a to-do list, stamping each item DONE | YOU HAVE A BUSINESS TO RUN. / Your to-do list just got shorter. / Update the website · Figure out what to post · Make the next campaign · Follow up with new leads |
+| 3.5–7.5 s | Mo flips to center stage and grows (music drop), looks around, smiles | Meet Mo. Your AI CMO. / The best employee *you'll ever hire.* / Your website, social, and growth. Handled by one remarkable AI. |
+| 7.5–11.5 s | The dark "mo / SOCIAL" calendar fills with statics, videos and memes | 01 / MO PLANS YOUR MONTH / Your business. Everywhere it matters. / ✓ Plan ready / Month planned. Content made. Posts scheduled. |
+| 11.5–15.5 s | US map: Washington, Texas and New York light up, dotted lines run into Mo | 02 / MO MONITORS YOUR COMPETITORS / Your industry. Coast to coast. / Mo connects the dots. |
+| 15.5–19.5 s | Reel, carousel and meme examples fan in | 03 / MO CREATES YOUR CONTENT / Your work. Worth a second look. / Ready for Instagram, Facebook, and TikTok. |
+| 19.5–24 s | Dark scene opens out of Mo: campaigns → Mo → Friday 10:00 BOOKED | RESEARCH. CREATE. LAUNCH. / Every click. Closer to booked. / From first click to a confirmed consultation. |
+| 24–28 s | Pricing sheet slides up, and the three plans snap in | ONE AGENT. FOUR WAYS TO GROW. / Big capability. At every stage. / Website $49 · Social $99 · Growth $499 |
+| 28–34 s | The black Growth card expands into the finale, with Mo glowing and smiling | BIG PLANS. MEET YOUR NEW RIGHT HAND. / Your next great hire is right here. / Put Mo to work — $49/mo / personaos.com |
 
-The product claims come from Persona OS's own copy: the 10-phase AI research pipeline with
-specialist agents, digital focus groups and behavioral scoring; the lead AI strategist built
-from your brand's domain; angles, hooks, scripts and full briefs; performance data flowing
-back into personas; "scroll-stopping content for paid and organic — every single week".
-Persona names, the sample hook, CTR numbers and `yourbrand.com` inside the UI mockups are
-illustrative placeholders. The build environment couldn't load personaos.com itself, so the
-wordmark is typographic and the palette is original. To match the real brand, swap in the
-logo and colors as described below.
+## Assets
+
+All assets come from personaos.com screenshots. The stone & oak remodeler content is the
+site's own illustrative example.
+
+| File | What it is |
+| --- | --- |
+| `assets/mo.png` | Mo cut out as a clean circle with an alpha edge (~1050 px) |
+| `assets/mo-body.png` + `mo.json` | Mo with the eyes painted out, plus the eye geometry. The reel redraws the eyes in SVG so Mo can look around, blink and smile. |
+| `assets/sparkle.svg` | The logo mark, an exact astroid |
+| `assets/reel-mock.png`, `carousel-mock.png` | The site's reel and carousel mockups, with rounded alpha masks |
+| `assets/photo-bath-wide.jpg` | Clean bathroom photo crop, used in the meme card |
+| `assets/us-states.json` | State outlines from `us-atlas`, generated by `tools-us-states.mjs` |
 
 ## Build
 
 ```bash
-npm install                                  # fonts (Fontsource) + Playwright
+npm install                                  # fonts (Fontsource), Playwright, map data
 pip install numpy scipy                      # soundtrack synthesis
-./build.sh                                   # full render, ~10 min (8 motion-blur samples per frame)
+./build.sh                                   # full render, ~12 min (8 motion-blur samples per frame)
 SUB=1 ./build.sh                             # quick render without motion blur
 ```
 
@@ -45,8 +52,8 @@ It runs these steps:
 1. `render.mjs` serves this folder locally, drives `reel.html` through every frame
    (`window.__render(t)`), and saves JPEG frames. It also writes the sound cue sheet
    (`out/sfx.json`) that the page exports.
-2. `music.py` synthesizes the 120 BPM track and places the sound effects from the cue sheet,
-   so every whoosh, pop and keystroke lands on its visual.
+2. `music.py` synthesizes the 120 BPM track and places the sound effects from the cue sheet
+   (hops, checks, the bubble "bloop", pings, the booking ding), so each lands on its visual.
 3. ffmpeg normalizes loudness, averages the motion-blur samples (`tmix`), and encodes the MP4
    and the cover.
 
@@ -61,17 +68,17 @@ npx serve .                                  # then open /reel.html to watch it 
 
 ## Editing
 
-- **Colors** are the `:root` custom properties at the top of `reel.html`. `--grad` is the
-  accent gradient used on the serif words, the logo chip and the progress bars.
-- **Copy** lives in the `<h1 class="hl">` elements. Wrap a word in `<em>` for the serif accent;
-  lines that are too wide shrink automatically to fit the safe area.
-- **Logo**: replace the two `.logo` blocks (brand reveal and end card) with an `<img>` or
-  inline SVG.
+- **Colors** are the `:root` custom properties at the top of `reel.html`. They were sampled
+  from the site.
+- **Copy** lives in the `<h1 class="hl">` elements. Wrap words in `<span class="g">` for the
+  purple headline gradient; lines that are too wide shrink automatically to fit.
+- **Mo** is one actor driven by `moAt(t)`. `KEYS` holds his position, size, gaze and glow
+  per scene, and `BLINKS` and `HAPPY` hold the blink and smile moments.
 - **Timing**: each scene has a `renderS*` function with its start and exit times in seconds.
-  The music's drops are at 8 s and 28 s (`DROPS` in `music.py`), with the stop hit at 2 s.
+  The music drops at 4 s, 24 s and 28 s (`DROPS` in `music.py`), with the final hit at 32 s.
   Move them together.
-- **Music**: the chord progression (`PROG`), instrument spans (`KICK`, `ARP`, …) and mix levels
-  are all in `music.py`.
+- **Music**: the chord progression (`PROG`), Mo's marimba motif (`MOTIF`), instrument spans
+  and mix levels are all in `music.py`.
 
-Headlines stay between y ≈ 300 and 1100 px, which keeps them clear of the Reels/TikTok UI
-at the top and bottom.
+Headlines stay between y ≈ 290 and 1100 px, and CTAs sit above the bottom caption area of
+the Reels/TikTok UI.

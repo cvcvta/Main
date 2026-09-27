@@ -92,6 +92,6 @@ python -m unittest discover -s tests -v
 
 ## Reels
 
-- [`reels/personaos`](reels/personaos) — 32-second 9:16 promo reel for personaos.com, rendered from
-  HTML with Playwright and ffmpeg, with a synthesized soundtrack. The finished video is
-  `reels/personaos/out/personaos-reel.mp4`.
+- [`reels/personaos`](reels/personaos) — "Meet Mo", a 34-second 9:16 promo reel for personaos.com,
+  rendered from HTML with Playwright and ffmpeg, with a synthesized soundtrack. The finished video
+  is `reels/personaos/out/personaos-reel.mp4`.
