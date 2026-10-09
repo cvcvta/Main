@@ -5,105 +5,100 @@ const prog = (t, s, d) => clamp((t - s) / d);
 const lerp = (a, b, m) => a + (b - a) * m;
 const $ = id => document.getElementById(id);
 const place = (id, x, y, k = 1) => $(id).setAttribute('transform', `translate(${x} ${y}) scale(${k})`);
-const wave = (id, a, cx, cy) => { const el = $(id + 'arm'); if (el) el.setAttribute('transform', `rotate(${a} ${cx} ${cy})`); };
-const kidWave = (id, a) => wave(id, a, 156, 184);
+const armTo = (id, a, cx = 156, cy = 184) => { const el = $(id + 'arm'); if (el) el.setAttribute('transform', `rotate(${a} ${cx} ${cy})`); };
+const waveA = (t, s, speed = 14) => t > s ? -150 + 18 * Math.sin((t - s) * speed) : lerp(0, -150, eo(prog(t, s - .2, .2)));
 const COLORS = ['#e2432b', '#3aa655', '#2a6fd6', '#f5b400'];
-const logo = (size) => [0, 1, 2, 3].map(i => `<path transform="translate(${(i % 2) * size} ${(i >> 1) * size}) scale(${size / 100}) translate(2 2) scale(.96)" d="${PIECE}" fill="${COLORS[i]}"/>`).join('');
+const logo = size => [0, 1, 2, 3].map(i => `<path transform="translate(${(i % 2) * size} ${(i >> 1) * size}) scale(${size / 100}) translate(2 2) scale(.96)" d="${PIECE}" fill="${COLORS[i]}"/>`).join('');
+const MOM = id => adult({ id, hairStyle: 'bun', top: '#e4d3b5', pants: '#5f6b45', hair: '#2e211b' });
+const star4 = r => `<path d="M0 ${-r} Q0 0 ${r} 0 Q0 0 0 ${r} Q0 0 ${-r} 0 Q0 0 0 ${-r}Z"/>`;
 
 // ---------- build ----------
 document.querySelectorAll('[data-words]').forEach(el => {
-  const [s, st] = el.dataset.words.split(',').map(Number);
-  let i = 0;
-  el.innerHTML = el.textContent.split('|').map(line =>
-    line.split(' ').map(w => `<span class="w" data-a="${(s + st * i++).toFixed(2)},.5,up">${w}</span>`).join('')).join('<br>');
+  const [s, st] = el.dataset.words.split(',').map(Number); let i = 0;
+  el.innerHTML = el.textContent.split('|').map(line => line.split(' ').map(w => `<span class="w" data-a="${(s + st * i++).toFixed(2)},.5,up">${w}</span>`).join('')).join('<br>');
 });
-
-// floating outline pieces behind each scene
 const decos = [];
 document.querySelectorAll('[data-deco]').forEach((sc, si) => {
-  const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('width', 1080); svg.setAttribute('height', 1920); svg.setAttribute('class', 'abs'); svg.style.left = 0; svg.style.top = 0;
-  const spots = [[900, 260], [120, 1180], [960, 1500], [180, 380], [860, 900], [520, 1800]];
+  const spots = [[920, 120], [100, 1250], [980, 1540], [160, 420], [900, 980], [520, 1840]];
   svg.innerHTML = spots.map(([x, y], i) => `<g class="dp" data-x="${x}" data-y="${y}" data-k="${1.1 + ((i * 7 + si) % 5) * .25}" data-d="${i % 2 ? 1 : -1}"><path d="${PIECE}" transform="translate(-50 -50)" fill="none" stroke="${sc.dataset.deco}" stroke-width="3" opacity=".09"/></g>`).join('');
   sc.prepend(svg); decos.push(...svg.querySelectorAll('.dp'));
 });
+document.querySelectorAll('[data-icon]').forEach(el => el.innerHTML = icon(el.dataset.icon));
 
-// A
-$('logoA').innerHTML = [0, 1, 2, 3].map(i => `<g id="pA${i}"><path d="${PIECE}" fill="${COLORS[i]}" stroke="#faf8f3" stroke-width="4"/></g>`).join('');
-$('wordA').innerHTML = [...'PuzzlePiece'].map(c => `<span>${c}</span>`).join('');
-$('momA').innerHTML = adult({ id: 'mA', hairStyle: 'bun', top: '#e4d3b5', pants: '#5f6b45', hair: '#2e211b' });
-$('dadA').innerHTML = adult({ id: 'dA', top: '#5e7f4e', topDark: '#3f5a3a', pants: '#3e4a5e', hair: '#5a3824', skin: '#e8b48a' });
-$('kidA').innerHTML = kid({ id: 'kA' }) + `<g id="hiA"><rect x="0" y="0" width="120" height="76" rx="30" fill="#fff" stroke="#184e45" stroke-width="4"/><path d="M20 72 L10 100 L44 74" fill="#fff" stroke="#184e45" stroke-width="4" stroke-linejoin="round"/><rect x="18" y="66" width="30" height="10" fill="#fff"/><text x="60" y="52" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="36" fill="#184e45">Hi!</text></g>`;
+// 1 park meltdown
+$('park1').innerHTML = parkBg(1080, 1920, 1520);
+$('mom1').innerHTML = MOM('m1');
+$('kid1').innerHTML = kid({ id: 'k1' });
+$('cloud1').innerHTML = stormCloud();
+$('burst1').innerHTML = Array.from({ length: 10 }, (_, i) => { const a = i / 10 * Math.PI * 2; return `<path d="M${Math.cos(a) * 150} ${Math.sin(a) * 150} l${Math.cos(a + .5) * 22} ${Math.sin(a + .5) * 22} l${Math.cos(a) * 30} ${Math.sin(a) * 30}" stroke="#d2462c" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`; }).join('');
+$('bub1').innerHTML = `<rect x="0" y="0" width="360" height="110" rx="40" fill="#fff" stroke="#184e45" stroke-width="5"/><path d="M60 106 L48 150 L104 106" fill="#fff" stroke="#184e45" stroke-width="5" stroke-linejoin="round"/><rect x="56" y="98" width="46" height="12" fill="#fff"/>
+  <circle cx="62" cy="55" r="28" fill="#f9d272" stroke="#184e45" stroke-width="5"/><path d="M62 55 V38 M62 55 L74 62" stroke="#184e45" stroke-width="5" stroke-linecap="round"/>
+  <text x="110" y="70" font-family="DM Sans" font-weight="700" font-size="44" fill="#184e45">Time to go!</text>`;
 
-// B
+// 2 scribbles over each transition card
+const scribble = (x, y) => { let d = ''; for (let i = 0; i <= 60; i++) { const a = i * .55, r = 34 + 18 * Math.sin(i * 1.7); d += `${i ? 'L' : 'M'}${(x + Math.cos(a) * r * 1.6 + i * 1.2).toFixed(1)} ${(y + Math.sin(a) * r).toFixed(1)} `; } return `<path class="scr" d="${d}" stroke="#d2462c" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`; };
+$('scrib2').innerHTML = [[260, 560], [740, 560], [260, 1040], [740, 1040]].map(([x, y]) => scribble(x, y)).join('');
+const scrs = [...document.querySelectorAll('.scr')]; scrs.forEach(p => { const L = p.getTotalLength(); p.dataset.l = L; p.style.strokeDasharray = L; });
+
+// 3 logo
+$('logo3').innerHTML = [0, 1, 2, 3].map(i => `<g id="p3${i}"><path d="${PIECE}" fill="${COLORS[i]}" stroke="#e5efe9" stroke-width="4"/></g>`).join('');
+$('rays3').innerHTML = Array.from({ length: 12 }, (_, i) => `<path d="M0 0 L${-40} -620 L40 -620 Z" fill="#f9d272" opacity=".35" transform="rotate(${i * 30})"/>`).join('');
+$('word3').innerHTML = [...'PuzzlePiece'].map(c => `<span style="display:inline-block">${c}</span>`).join('');
+
+// 4 story pages on a tablet
+const page = (i, art, text) => `<g id="pg${i}"><rect width="664" height="404" fill="#fffdf8"/><rect x="0" y="0" width="300" height="404" fill="#e5efe9"/>${art}
+  <text x="330" y="70" font-family="DM Sans" font-weight="700" font-size="22" letter-spacing="2" fill="#c98a1d">${['FIRST', 'THEN', 'NEXT'][i]}</text>
+  <foreignObject x="330" y="90" width="310" height="200"><div xmlns="http://www.w3.org/1999/xhtml" style="font-family:Lora;font-size:40px;line-height:1.15;color:#184e45">${text}</div></foreignObject>
+  <rect x="330" y="320" width="260" height="10" rx="5" fill="#e3ebe6"/><rect x="330" y="345" width="200" height="10" rx="5" fill="#e3ebe6"/></g>`;
+$('tab4').innerHTML = tabletSvg(`<g id="scr4">
+  ${page(0, `<g transform="translate(20 70) scale(1.1)">${icon('park')}</g><g transform="translate(160 190) scale(.45)">${kid({ id: 'k4a' })}</g>`, 'We play at the park.')}
+  ${page(1, `<g transform="translate(30 70) scale(1.0)">${icon('timer')}</g>`, 'The timer rings. Play is done.')}
+  ${page(2, `<g transform="translate(140 110) scale(.6)">${icon('car')}</g><g transform="translate(30 190) scale(.45)">${kid({ id: 'k4c' })}</g>`, 'We wave goodbye and ride home.')}
+</g>`);
+
+// 5 photo -> character
 $('photoLayer').innerHTML = `<g filter="url(#photoF)"><rect width="540" height="620" fill="#7d9a5c"/><rect width="540" height="160" fill="#b7c4c9"/>
   ${Array.from({ length: 40 }, (_, i) => `<path d="M${(i * 37) % 540} ${200 + (i * 53) % 420} l6 -24" stroke="#56703c" stroke-width="4"/>`).join('')}
-  <g transform="translate(140 60) scale(1.3)">${kid({ id: 'kP' })}</g></g>
-  <rect width="540" height="620" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="60" style="filter:blur(30px)"/>`;
-$('illLayer').innerHTML = `<rect width="540" height="620" fill="#e5efe9"/><circle cx="270" cy="330" r="230" fill="#cfe5da"/>
-  <g transform="translate(140 60) scale(1.3)">${kid({ id: 'kI' })}</g>`;
-const star4 = (x, y, r) => `<path d="M${x} ${y - r} Q${x} ${y} ${x + r} ${y} Q${x} ${y} ${x} ${y + r} Q${x} ${y} ${x - r} ${y} Q${x} ${y} ${x} ${y - r}Z"/>`;
+  <g transform="translate(140 60) scale(1.3)">${kid({ id: 'kP' })}</g></g>`;
+$('illLayer').innerHTML = `<rect width="540" height="620" fill="#e5efe9"/><circle cx="270" cy="330" r="230" fill="#cfe5da"/><g transform="translate(140 60) scale(1.3)">${kid({ id: 'kI' })}</g>`;
 const sparks = [[230, 470, 30], [860, 520, 40], [200, 900, 24], [890, 980, 30], [300, 1250, 28], [800, 1260, 36], [540, 430, 22], [960, 760, 22]];
-$('sparkB').innerHTML = sparks.map(([x, y, r], i) => `<g class="spk" data-i="${i}" data-x="${x}" data-y="${y}" fill="${i % 2 ? '#fbb015' : '#184e45'}">${star4(0, 0, r)}</g>`).join('');
+$('spark5').innerHTML = sparks.map(([x, y, r], i) => `<g class="spk" data-i="${i}" data-x="${x}" data-y="${y}" fill="${i % 2 ? '#fbb015' : '#184e45'}">${star4(r)}</g>`).join('');
 
-const headBox = { kid: '10 18 180 180', adult: '32 22 176 176' };
-const avatar = (x, y, svg, box, name, a, extra = '') => `<div class="avatar" style="left:${x}px;top:${y}px" data-a="${a},.35,pop"><svg width="170" height="170" viewBox="${box}">${svg}</svg></div>${extra}<div class="avname" style="left:${x}px;top:${y + 180}px" data-a="${a},.35,fade">${name}</div>`;
-const MOM = () => adult({ hairStyle: 'bun', top: '#e4d3b5', hair: '#2e211b' });
-const DAD = () => adult({ top: '#5e7f4e', hair: '#5a3824', skin: '#e8b48a' });
-const SIB = () => kid({ hairStyle: 'long', hair: '#7a4a2a', hairDark: '#5e3820', top: '#e6b43c', camo: false, topDark: '#c9952a', shorts: '#6d8fb8' });
-$('famB').innerHTML = avatar(0, 0, MOM(), headBox.adult, 'Mom', 5.55) + avatar(200, 0, DAD(), headBox.adult, 'Dad', 5.65) + avatar(400, 0, SIB(), headBox.kid, 'Sibling', 5.75) +
-  `<div class="abs serif" style="left:610px;top:40px;width:320px;font-size:40px;line-height:1.2;color:#184e45" data-a="5.85,.4,up">+ the people they love</div>`;
+// 7 practice stories
+$('storyA').innerHTML = parkBg(920, 900, 640) + `<g transform="translate(300 418) scale(.85)">${MOM('m7')}</g><g transform="translate(470 470) scale(.93)">${kid({ id: 'k7a' })}</g>
+  <g transform="translate(700 150) scale(.8)">${icon('timer').replace(/timer(Arc|Hand)/g, 't7$1')}</g>
+  <g id="bye7" transform="translate(600 350)"><rect x="0" y="0" width="260" height="84" rx="34" fill="#fff" stroke="#184e45" stroke-width="4"/><path d="M40 80 L30 112 L76 80" fill="#fff" stroke="#184e45" stroke-width="4" stroke-linejoin="round"/><rect x="36" y="74" width="40" height="10" fill="#fff"/><text x="130" y="56" text-anchor="middle" font-family="DM Sans" font-weight="700" font-size="36" fill="#184e45">Bye, slide!</text></g>`;
+$('storyB').innerHTML = homeBg(920, 900) + `<g transform="translate(130 400) scale(.9)">${adult({ id: 'm7b', hairStyle: 'bun', top: '#e4d3b5', hair: '#2e211b' })}</g><g transform="translate(420 450) scale(1.0)">${kid({ id: 'k7b', backpack: true })}</g>`;
 
-// C
-const check = (x, y, a) => `<div class="abs" style="left:${x}px;top:${y}px;width:52px;height:52px;border-radius:50%;background:#184e45;color:#fff;font-size:30px;display:flex;align-items:center;justify-content:center;font-weight:700" data-a="${a},.3,pop">✓</div>`;
-$('castC').innerHTML = avatar(0, 0, kid({}), headBox.kid, 'Your child', 8.2, `<div class="abs" style="left:-6px;top:-6px;width:182px;height:182px;border-radius:50%;border:6px solid #fbb015" data-a="8.2,.35,pop"></div>`) +
-  avatar(250, 0, MOM(), headBox.adult, 'Mom', 8.3, check(378, -6, 8.65)) + avatar(500, 0, DAD(), headBox.adult, 'Dad', 8.4) + avatar(750, 0, SIB(), headBox.kid, 'Sibling', 8.5);
-$('pageArt').innerHTML = `<rect width="450" height="580" fill="#f7e8cf"/><rect y="440" width="450" height="140" fill="#dcb98c"/>
-  <rect x="250" y="120" width="160" height="330" fill="#6f9a5a"/><rect x="262" y="132" width="136" height="318" fill="#bfe3a4"/><circle cx="330" cy="250" r="44" fill="#7fb35f"/><rect x="262" y="132" width="136" height="80" fill="#dff1f7"/>
-  <g transform="translate(40 170) scale(.72)">${adult({ id: 'mC', hairStyle: 'bun', top: '#e4d3b5', hair: '#2e211b' })}</g>
-  <g transform="translate(190 250) scale(.62)">${kid({ id: 'kC', backpack: true })}</g>
-  <g id="heartC"><path d="M0 18 C-14 8 -9 -6 0 0 C9 -6 14 8 0 18Z" fill="#f08c7a" transform="translate(200 150) scale(1.6)"/></g>`;
-$('coverLogo').innerHTML = logo(100);
+// 8 together on the couch
+$('room8').innerHTML = `<rect y="1700" width="1080" height="220" fill="#d9bf98"/>
+  <rect x="700" y="420" width="290" height="330" rx="10" fill="#fff"/><rect x="714" y="434" width="262" height="302" fill="#f6b98a"/><rect x="714" y="600" width="262" height="136" fill="#e88f6a"/><circle cx="900" cy="520" r="30" fill="#ffe2a0"/>
+  <circle cx="150" cy="900" r="260" fill="url(#gGlow)"/><path d="M90 820 L210 820 L236 920 L64 920 Z" fill="#ffe2a0"/><rect x="142" y="920" width="16" height="420" fill="#8a5a34"/>
+  <g transform="translate(220 640) scale(1.5)">${MOM('m8')}</g>
+  <g transform="translate(560 770) scale(1.5)">${kid({ id: 'k8' })}</g>
+  <rect x="40" y="1250" width="1000" height="280" rx="70" fill="#5e7f4e"/>
+  <rect x="40" y="1460" width="1000" height="230" rx="40" fill="#6f8e4d"/><path d="M540 1470 V1680" stroke="#5e7f4e" stroke-width="6"/>
+  <rect x="0" y="1350" width="140" height="360" rx="60" fill="#557548"/><rect x="940" y="1350" width="140" height="360" rx="60" fill="#557548"/>
+  <g transform="translate(400 1090) rotate(-4) scale(.36)">${tabletSvg(`<rect width="664" height="404" fill="#e5efe9"/><g transform="translate(60 40)">${logo(60)}</g><text x="200" y="110" font-family="Lora" font-size="60" fill="#184e45">Story time</text><rect x="200" y="160" width="360" height="22" rx="11" fill="#cfe5da"/><rect x="200" y="210" width="300" height="22" rx="11" fill="#cfe5da"/>`)}</g>`;
+$('hearts8').innerHTML = [0, 1, 2, 3].map(i => `<path class="ht" data-i="${i}" d="M0 18 C-14 8 -9 -6 0 0 C9 -6 14 8 0 18Z" fill="${i % 2 ? '#f08c7a' : '#e2432b'}"/>`).join('');
 
-// D
-$('bg0').innerHTML = schoolBg(); $('bg1').innerHTML = doctorBg(); $('bg2').innerHTML = bedBg();
-$('kidD1').innerHTML = kid({ id: 'kD1', backpack: true }); $('kidD2').innerHTML = kid({ id: 'kD2' });
-
-// E
-$('stA').innerHTML = kid({ id: 'kE1', shade: true });
-$('stB').innerHTML = pixelKid();
-$('stBbg').innerHTML = Array.from({ length: 22 }, (_, i) => `<rect x="${i * 20}" y="${440 + (i % 3) * 0}" width="20" height="70" fill="${i % 2 ? '#6aa84f' : '#5a9a42'}"/><rect x="${i * 20}" y="470" width="20" height="40" fill="#8a6440"/>`).join('') +
-  `<rect x="40" y="60" width="60" height="60" fill="#fff" opacity=".7"/><rect x="340" y="100" width="40" height="40" fill="#fff" opacity=".7"/>`;
-$('stC').innerHTML = brickKid();
-$('stCbg').innerHTML = Array.from({ length: 36 }, (_, i) => `<circle cx="${30 + (i % 9) * 48}" cy="${444 + Math.floor(i / 9) * 22}" r="12" fill="#f0c65a"/>`).join('');
-$('stD').innerHTML = kid({ id: 'kE4', skin: '#f7d117', line: '#2b2b2b', eyes: 'bulge', hair: '#f2c522', hairDark: '#c99a10' });
-
-// F
-let dots = '';
-for (let i = 0; i < 249; i++) {
-  const c = i % 18, r = Math.floor(i / 18), x = c * 46 + 23, y = r * 44 + 22;
-  dots += `<g class="dot" data-d="${(c + r) * 0.022}" data-x="${x}" data-y="${y}"><circle cx="0" cy="-9" r="8" fill="${i % 7 === 3 ? '#fbb015' : '#184e45'}"/><rect x="-10" y="1" width="20" height="15" rx="7" fill="${i % 7 === 3 ? '#fbb015' : '#184e45'}"/></g>`;
-}
-$('dotsF').innerHTML = dots;
-const chk = $('checkF'), chkL = chk.getTotalLength(); chk.style.strokeDasharray = chkL;
-
-// G
-$('tabG').innerHTML = tabletSvg(`<rect width="664" height="404" fill="#e5efe9"/><circle cx="332" cy="260" r="200" fill="#cfe5da"/>
+// 9 CTA tablet
+$('tab9').innerHTML = tabletSvg(`<rect width="664" height="404" fill="#e5efe9"/><circle cx="332" cy="260" r="200" fill="#cfe5da"/>
   <g transform="translate(40 36)">${logo(28)}</g><text x="112" y="80" font-family="Lora" font-size="34" fill="#184e45">PuzzlePiece</text>
-  <g transform="translate(250 60) scale(.8)">${kid({ id: 'kG' })}</g>
-  <g transform="translate(470 120) scale(.55)">${bookIcon()}</g>
-  <rect id="screenOff" width="664" height="404" fill="#0c0c0c"/>`);
-function bookIcon() { return `<rect x="0" y="0" width="140" height="180" rx="10" fill="#184e45"/><rect x="140" y="0" width="140" height="180" rx="10" fill="#2a6b5f"/><rect x="20" y="30" width="100" height="10" rx="5" fill="#f9d272"/><rect x="160" y="30" width="100" height="10" rx="5" fill="#f9d272"/><rect x="20" y="56" width="80" height="10" rx="5" fill="#cfe5da"/><rect x="160" y="56" width="80" height="10" rx="5" fill="#cfe5da"/>`; }
+  <g transform="translate(250 60) scale(.8)">${kid({ id: 'k9' })}</g>
+  <rect id="off9" width="664" height="404" fill="#0c0c0c"/>`);
+$('logo9').innerHTML = logo(100);
 
 const anims = [...document.querySelectorAll('[data-a]')];
 const scenes = [...document.querySelectorAll('.scene')];
-const WIPES = [[3, '#e5efe9'], [6.4, '#faf8f3'], [10, '#e5efe9'], [12.6, '#184e45'], [15, '#faf8f3'], [17.4, '#184e45']];
-const quote = '“My child feels anxious when I leave at school. Can we practice saying goodbye?”';
+const WIPES = [[4.6, '#faf8f3'], [7.2, '#e5efe9'], [9.4, '#faf8f3'], [14.4, '#e5efe9'], [17.2, '#184e45'], [19.6, '#faf8f3'], [25.4, '#f3e3cc'], [28.6, '#184e45']];
+$('wipeP').setAttribute('d', PIECE);
 
 // ---------- render ----------
 function render(t) {
   scenes.forEach(sc => sc.style.display = (t >= +sc.dataset.s && t < +sc.dataset.e) ? 'block' : 'none');
-
   anims.forEach(el => {
     const [s, d, k] = el.dataset.a.split(','); const p = prog(t, +s, +d), e = eo(p);
     const rot = el.dataset.rot ? ` rotate(${el.dataset.rot}deg)` : '';
@@ -115,103 +110,97 @@ function render(t) {
     el.style.opacity = k === 'flip' ? (p > 0 ? 1 : 0) : e;
     el.style.transform = tr + rot;
   });
-
-  decos.forEach((g, i) => {
-    const x = +g.dataset.x, y = +g.dataset.y + Math.sin(t * .9 + i) * 24, k = +g.dataset.k;
-    g.setAttribute('transform', `translate(${x} ${y}) rotate(${t * 14 * g.dataset.d + i * 40}) scale(${k})`);
-  });
-
-  // wipe
+  decos.forEach((g, i) => g.setAttribute('transform', `translate(${g.dataset.x} ${+g.dataset.y + Math.sin(t * .9 + i) * 24}) rotate(${t * 14 * g.dataset.d + i * 40}) scale(${g.dataset.k})`));
   const wp = $('wipeP'); wp.style.display = 'none';
-  for (const [T, col] of WIPES) {
-    if (t >= T - .5 && t < T) {
-      const p = prog(t, T - .5, .5), s = .1 + 46 * p * p;
-      wp.style.display = 'block'; wp.setAttribute('fill', col); wp.setAttribute('stroke', '#f9d272');
-      wp.setAttribute('transform', `translate(540 960) rotate(${140 * p}) scale(${s}) translate(-50 -50)`);
-    }
+  for (const [T, col] of WIPES) if (t >= T - .5 && t < T) {
+    const p = prog(t, T - .5, .5);
+    wp.style.display = 'block'; wp.setAttribute('fill', col); wp.setAttribute('stroke', '#f9d272');
+    wp.setAttribute('transform', `translate(540 960) rotate(${140 * p}) scale(${.1 + 46 * p * p}) translate(-50 -50)`);
   }
 
-  // A — pieces assemble into the logo, then dock in the header
-  const m = eo(prog(t, 1.25, .45));
-  const size = lerp(150, 40, m), ox = lerp(390, 80, m), oy = lerp(520, 70, m);
+  // 1 — happy play, "time to go", meltdown
+  const melt = t >= 2.2;
+  const bob = melt ? 0 : -Math.abs(Math.sin(t * 6)) * 26;
+  place('kid1', 470, 1201 + bob, 1.45); place('mom1', 50, 1134, 1.3);
+  armTo('k1', melt ? 10 * Math.sin(t * 30) : -120 + 35 * Math.sin(t * 9));
+  armTo('m1', t > 1.0 ? lerp(0, -40, eo(prog(t, 1.0, .3))) : 0, 188, 196);
+  $('k1happy').setAttribute('opacity', melt ? 0 : 1); $('k1sad').setAttribute('opacity', melt ? 1 : 0);
+  ['k1tear1', 'k1tear2'].forEach((id, i) => { const p = ((t - 2.3 + i * .35) % .8) / .8; $(id).setAttribute('transform', `translate(0 ${t > 2.3 ? p * 40 : 0})`); $(id).style.opacity = t > 2.3 ? 1 - p : 0; });
+  const bp = eb(prog(t, 1.0, .4)); $('bub1').setAttribute('transform', `translate(120 980) scale(${bp})`); $('bub1').style.opacity = 1 - prog(t, 2.6, .3);
+  const cp = eb(prog(t, 2.35, .45)); $('cloud1').setAttribute('transform', `translate(${490 + Math.sin(t * 3) * 10} ${960 + (1 - cp) * 60}) scale(${1.1 * cp})`);
+  $('cloud1').style.opacity = cp > 0 ? 1 : 0;
+  const bu = prog(t, 2.4, .3); $('burst1').setAttribute('transform', `translate(615 1355) scale(${bu * (1 + .08 * Math.sin(t * 20))})`); $('burst1').style.opacity = bu;
+  $('dim1').style.opacity = .22 * prog(t, 2.3, .4);
+  const sh = t > 2.4 && t < 4.3 ? 9 : 0; $('shake1').style.transform = `translate(${Math.sin(t * 71) * sh}px, ${Math.cos(t * 53) * sh}px)`;
+
+  // 2 — every transition gets tangled
+  [0, 1, 2, 3].forEach(i => { const st = 5.95 + i * .1; $('tc' + i).style.rotate = t > st ? `${Math.sin((t - st) * 22) * 3 * (1 - prog(t, st + .8, .4))}deg` : '0deg'; });
+  scrs.forEach((p, i) => { p.style.strokeDashoffset = p.dataset.l * (1 - eo(prog(t, 5.6 + i * .12, .5))); });
+
+  // 3 — logo assembles, sun rays turn
   const starts = [[-320, -340, -200], [1300, -300, 220], [-340, 2100, 160], [1320, 2150, -240]];
   for (let i = 0; i < 4; i++) {
-    const p = eb(prog(t, .05 + i * .12, .6)), [sx, sy, sr] = starts[i];
-    const fx = ox + (i % 2) * size, fy = oy + (i >> 1) * size;
-    const snap = 1 + .08 * Math.sin(Math.PI * prog(t, .85, .25));
-    const k = size / 100 * snap;
-    $('pA' + i).setAttribute('transform', `translate(${lerp(sx, fx, p)} ${lerp(sy, fy, p)}) rotate(${lerp(sr, 0, clamp(p))} ${size / 2} ${size / 2}) scale(${k})`);
+    const p = eb(prog(t, 7.3 + i * .1, .55)), [sx, sy, sr] = starts[i], fx = 390 + (i % 2) * 150, fy = 560 + (i >> 1) * 150;
+    const snap = 1 + .08 * Math.sin(Math.PI * prog(t, 7.95, .25));
+    $('p3' + i).setAttribute('transform', `translate(${lerp(sx, fx, p)} ${lerp(sy, fy, p)}) rotate(${lerp(sr, 0, clamp(p))} 75 75) scale(${1.5 * snap})`);
   }
-  const wA = $('wordA'); wA.style.fontSize = lerp(124, 58, m) + 'px';
-  wA.style.left = lerp(540 - wA.offsetWidth / 2, 180, m) + 'px'; wA.style.top = lerp(860, 72, m) + 'px';
-  [...wA.children].forEach((c, i) => { const p = eo(prog(t, .75 + i * .035, .3)); c.style.opacity = p; c.style.display = 'inline-block'; c.style.transform = `translateY(${(1 - p) * 30}px)`; });
-  const rise = (s) => (1 - eb(prog(t, s, .6))) * 800;
-  place('momA', 40, 1216 + rise(1.85), 1.2);
-  place('dadA', 740, 1190 + rise(1.95), 1.25);
-  place('kidA', 405, 1273 + rise(1.7), 1.35);
-  kidWave('kA', t > 2.1 ? -150 + 18 * Math.sin((t - 2.1) * 14) : lerp(0, -150, eo(prog(t, 1.9, .2))));
-  wave('dA', t > 2.3 ? -8 * Math.sin((t - 2.3) * 6) : 0, 188, 196);
-  const hi = eb(prog(t, 2.35, .35)); $('hiA').setAttribute('transform', `translate(${150 + 40 * (1 - hi)} ${-70 + 40 * (1 - hi)}) scale(${hi})`);
+  $('rays3').setAttribute('transform', `translate(540 710) rotate(${t * 20}) scale(${eo(prog(t, 7.9, .5))})`);
+  [...$('word3').children].forEach((c, i) => { const p = eo(prog(t, 8.05 + i * .035, .3)); c.style.opacity = p; c.style.transform = `translateY(${(1 - p) * 40}px)`; });
 
-  // B — scan turns the photo into the character
-  const sp = prog(t, 4.0, .85);
-  $('scanRect').setAttribute('height', sp * 620);
-  $('scanLine').setAttribute('y', sp * 620 - 5); $('scanLine').setAttribute('opacity', sp > 0 && sp < 1 ? .95 : 0);
-  $('capPhoto').style.opacity = 1 - prog(t, 4.75, .2); $('capChar').style.opacity = prog(t, 4.8, .25);
-  kidWave('kI', t > 4.9 ? -150 + 18 * Math.sin((t - 4.9) * 14) : lerp(0, -150, eo(prog(t, 4.75, .15))));
-  document.querySelectorAll('.spk').forEach(g => {
-    const i = +g.dataset.i, p = prog(t, 4.85 + i * .06, .7), k = Math.sin(Math.PI * p);
-    g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) rotate(${p * 90}) scale(${k})`);
+  // 4 — pages flip First / Then / Next
+  const flips = [11.2, 12.5]; let sx = 1;
+  flips.forEach(T => { const d = prog(t, T - .15, .3); if (d > 0 && d < 1) sx = Math.abs(1 - 2 * d); });
+  $('scr4').setAttribute('transform', `translate(332 0) scale(${Math.max(sx, .02)} 1) translate(-332 0)`);
+  const pgi = t < 11.2 ? 0 : t < 12.5 ? 1 : 2;
+  [0, 1, 2].forEach(i => { $('pg' + i).style.display = i === pgi ? 'inline' : 'none'; const st = $('st' + i); st.style.background = i === pgi && t > 9.9 ? '#fbb015' : '#fff'; st.style.transform = `scale(${i === pgi && t > 9.9 ? 1.08 : 1})`; });
+  $('timerArc').style.strokeDasharray = 377; $('timerArc').style.strokeDashoffset = 377 * prog(t, 11.2, 1.1);
+  $('timerHand').setAttribute('transform', `rotate(${prog(t, 11.2, 1.1) * 360} 120 110)`);
+  armTo('k4c', waveA(t, 12.7));
+
+  // 5 — scan photo into character
+  const sp = prog(t, 14.95, .8);
+  $('scanRect').setAttribute('height', sp * 620); $('scanLine').setAttribute('y', sp * 620 - 5); $('scanLine').setAttribute('opacity', sp > 0 && sp < 1 ? .95 : 0);
+  $('capPhoto').style.opacity = 1 - prog(t, 15.65, .2); $('capChar').style.opacity = prog(t, 15.7, .25);
+  armTo('kI', waveA(t, 15.85));
+  document.querySelectorAll('.spk').forEach(g => { const p = prog(t, 15.75 + g.dataset.i * .06, .7); g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) rotate(${p * 90}) scale(${Math.sin(Math.PI * p)})`); });
+
+  // 6 — a selection ring hops across the site's styles, then picks one
+  const tiles = [[80, 500], [560, 500], [80, 1010], [560, 1010]], seq = [[17.9, 0], [18.15, 1], [18.4, 3], [18.65, 2]];
+  let pos = tiles[0];
+  for (let i = 0; i < seq.length; i++) if (t >= seq[i][0]) { const prev = i ? tiles[seq[i - 1][1]] : tiles[0], m = eo(prog(t, seq[i][0], .2)); pos = [lerp(prev[0], tiles[seq[i][1]][0], m), lerp(prev[1], tiles[seq[i][1]][1], m)]; }
+  const ring = $('ring6'); ring.style.left = pos[0] - 12 + 'px'; ring.style.top = pos[1] - 12 + 'px'; ring.style.opacity = prog(t, 17.8, .15);
+  const ck = eb(prog(t, 18.8, .3)), sel = tiles[2]; const c6 = $('chk6');
+  c6.style.left = sel[0] + 380 + 'px'; c6.style.top = sel[1] - 30 + 'px'; c6.style.opacity = ck > 0 ? 1 : 0; c6.style.transform = `scale(${ck})`;
+  $('ti2').style.transform = t > 18.8 ? `scale(${1 + .04 * Math.sin(Math.PI * prog(t, 18.8, .3))})` : $('ti2').style.transform;
+
+  // 7 — two practice stories
+  const sw = eo(prog(t, 22.2, .45));
+  $('storyB').style.transform = `translateX(${(1 - sw) * 940}px)`;
+  $('tA').style.display = sw < .5 ? 'inline' : 'none'; $('tB').style.display = sw >= .5 ? 'inline' : 'none';
+  $('listA').style.opacity = 1 - prog(t, 22.1, .25); $('listB').style.display = t > 22.3 ? 'block' : 'none';
+  armTo('k7a', waveA(t, 21.2)); armTo('k7b', waveA(t, 24.2));
+  armTo('m7b', t > 23.0 ? -150 + 15 * Math.sin((t - 23) * 10) : 0, 188, 196);
+  $('t7Arc').style.strokeDasharray = 377; $('t7Arc').style.strokeDashoffset = 377 * prog(t, 20.2, .8);
+  $('t7Hand').setAttribute('transform', `rotate(${prog(t, 20.2, .8) * 360} 120 110)`);
+  const by = eb(prog(t, 21.25, .35)); $('bye7').setAttribute('transform', `translate(600 350) scale(${by})`);
+
+  // 8 — reading together, hearts rise
+  armTo('k8', 0);
+  document.querySelectorAll('.ht').forEach(h => {
+    const i = +h.dataset.i, p = prog(t, 26.2 + i * .4, 1.6);
+    h.setAttribute('transform', `translate(${530 + Math.sin(p * 6 + i) * 40 + (i - 1.5) * 50} ${1080 - p * 420}) scale(${2.2 * Math.sin(Math.PI * Math.min(p * 1.4, 1)) })`);
+    h.style.opacity = p > 0 && p < 1 ? 1 - p * .6 : 0;
   });
 
-  // C — typing, cover flip
-  const n = Math.round(quote.length * prog(t, 6.95, 1.0));
-  $('typed').textContent = quote.slice(0, n);
-  $('caret').style.opacity = (n < quote.length || Math.floor(t * 2.5) % 2) ? 1 : 0;
-  const f = eo(prog(t, 9.0, .55));
-  $('coverC').style.transform = `rotateY(${-180 * f}deg)`;
-  $('coverC').style.visibility = f < .5 ? 'visible' : 'hidden';
-  $('pageL').style.opacity = f >= .5 ? 1 : 0;
-  kidWave('kC', t > 9.3 ? -150 + 18 * Math.sin((t - 9.3) * 14) : -150);
-  const hp = prog(t, 9.35, .6); $('heartC').setAttribute('transform', `translate(0 ${-60 * hp})`); $('heartC').style.opacity = hp > 0 ? Math.sin(Math.PI * hp) : 0;
-
-  // D — circle reveals cycle the moments
-  [10.15, 10.95, 11.7].forEach((s, i) => $('cr' + i).setAttribute('r', 360 * eo(prog(t, s, .5))));
-  const bob = -Math.abs(Math.sin(t * 5)) * 14, kp = eb(prog(t, 10.3, .45));
-  const swap = t >= 11.2;
-  $('kidD1').style.display = swap ? 'none' : 'block'; $('kidD2').style.display = swap ? 'block' : 'none';
-  $('kidD1').setAttribute('transform', `translate(235 ${190 + bob + (1 - kp) * 500}) scale(1.15)`);
-  $('kidD2').setAttribute('transform', `translate(235 ${190 + bob}) scale(1.15)`);
-  kidWave('kD2', t > 11.8 ? -150 + 15 * Math.sin(t * 12) : 0);
-  const win = (a, b) => Math.min(eo(prog(t, a, .25)), 1 - prog(t, b, .2));
-  [[10.4, 10.95], [11.15, 11.7], [11.9, 99]].forEach(([a, b], i) => { const o = win(a, b); $('lbl' + i).style.opacity = o; $('lbl' + i).style.transform = `translateY(${(1 - o) * 24}px)`; });
-  document.querySelectorAll('.twinkle').forEach(s => s.style.opacity = .35 + .65 * Math.abs(Math.sin(t * 4 + +s.dataset.i)));
-  $('marq1').style.transform = `translateX(${-(t - 10) * 120}px)`;
-  $('marq2').style.transform = `translateX(${-800 + (t - 10) * 120}px)`;
-
-  // E — each style bounces
-  ['stA', 'stB', 'stC', 'stD'].forEach((id, i) => { $(id).style.transform = `translateY(${-Math.abs(Math.sin((t - 13) * 5 + i * .8)) * 18}px)`; });
-  kidWave('kE4', -150 + 18 * Math.sin(t * 12)); kidWave('kE1', -150 + 18 * Math.sin(t * 12 + 1));
-
-  // F — children fill in, counters, check
-  document.querySelectorAll('.dot').forEach(g => {
-    const p = eb(prog(t, 15.3 + +g.dataset.d, .3));
-    g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) scale(${Math.max(p, 0)})`);
-  });
-  $('c249').textContent = Math.round(249 * eo(prog(t, 15.35, 1.0)));
-  $('c87').textContent = Math.round(87 * eo(prog(t, 15.45, 1.0)));
-  chk.style.strokeDashoffset = chkL * (1 - eo(prog(t, 16.4, .35)));
-
-  // G — tablet drops, screen wakes, CTA gets tapped
-  const d = prog(t, 17.6, .65);
-  $('tabG').style.transform = `translateY(${-1000 * (1 - eb(d))}px) rotate(${(1 - eo(d)) * -10}deg)`;
-  $('screenOff').setAttribute('opacity', 1 - prog(t, 18.15, .3));
-  kidWave('kG', t > 18.3 ? -150 + 18 * Math.sin((t - 18.3) * 14) : 0);
-  const tp = eo(prog(t, 18.95, .35)), press = Math.sin(Math.PI * prog(t, 19.3, .25));
-  const tap = $('tapG'); tap.style.opacity = tp * (1 - .4 * prog(t, 19.7, .3));
+  // 9 — tablet drops, screen wakes, tap the CTA
+  const d = prog(t, 28.75, .65);
+  $('tab9').style.transform = `translateY(${-1000 * (1 - eb(d))}px) rotate(${(1 - eo(d)) * -10}deg)`;
+  $('off9').setAttribute('opacity', 1 - prog(t, 29.35, .3));
+  armTo('k9', waveA(t, 29.6));
+  const tp = eo(prog(t, 30.4, .35)), press = Math.sin(Math.PI * prog(t, 30.8, .25));
+  const tap = $('tap9'); tap.style.opacity = tp * (1 - .4 * prog(t, 31.3, .3));
   tap.style.transform = `translate(${(1 - tp) * 140}px, ${(1 - tp) * 260}px) scale(${1 - .25 * press})`;
-  $('ctaG').style.transform = `scale(${1 - .04 * press + (t > 19.6 ? .02 * Math.sin((t - 19.6) * 10) : 0)})`;
-  const rp = prog(t, 19.35, .5); const rip = $('rippleG');
-  rip.style.opacity = rp > 0 ? .55 * (1 - rp) : 0; rip.style.transform = `translate(-50%,-50%) scale(${rp * 180})`;
+  $('cta9').style.transform = `scale(${1 - .04 * press + (t > 31.1 ? .02 * Math.sin((t - 31.1) * 10) : 0)})`;
+  const rp = prog(t, 30.85, .5), rip = $('rip9'); rip.style.opacity = rp > 0 ? .55 * (1 - rp) : 0; rip.style.transform = `translate(-50%,-50%) scale(${rp * 180})`;
 }
 window.render = render; render(0);

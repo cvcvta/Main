@@ -52,7 +52,14 @@ function kid(o = {}) {
     ${hairFront}
     <circle cx="66" cy="130" r="9" fill="#f08c7a" opacity=".45"/><circle cx="134" cy="130" r="9" fill="#f08c7a" opacity=".45"/>
     ${eyes}
-    <path d="M86 136 Q100 150 114 136" stroke="#8a4636" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <g id="${id}happy"><path d="M86 136 Q100 150 114 136" stroke="#8a4636" stroke-width="4" fill="none" stroke-linecap="round"/></g>
+    <g id="${id}sad" opacity="0">
+      <rect x="62" y="92" width="76" height="30" fill="${s}"/>
+      <path d="M70 108 Q80 100 90 108 M110 108 Q120 100 130 108" stroke="#3b2a20" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M66 90 L90 98 M134 90 L110 98" stroke="#8a5a2a" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="100" cy="146" rx="15" ry="11" fill="#8a4636"/>
+      <path id="${id}tear1" d="M74 116 q-7 14 0 18 q7 -4 0 -18z" fill="#7cc4f0"/><path id="${id}tear2" d="M126 116 q-7 14 0 18 q7 -4 0 -18z" fill="#7cc4f0"/>
+    </g>
   </g>`;
 }
 
@@ -165,4 +172,46 @@ function tabletSvg(inner) {
   <rect x="46" y="46" width="708" height="448" rx="26" fill="#151515"/>
   <circle cx="400" cy="30" r="6" fill="#111"/>
   <svg x="68" y="68" width="664" height="404" viewBox="0 0 664 404">${inner}</svg>`;
+}
+
+function parkBg(w = 1080, h = 1920, ground = 1200) {
+  return `<rect width="${w}" height="${h}" fill="#cfe8f2"/>
+  <circle cx="${w - 170}" cy="300" r="80" fill="#ffd66b"/>
+  <ellipse cx="${w * .25}" cy="${ground + 30}" rx="${w * .55}" ry="160" fill="#b5d98a"/><ellipse cx="${w * .85}" cy="${ground + 50}" rx="${w * .5}" ry="140" fill="#a8d07c"/>
+  <rect y="${ground}" width="${w}" height="${h - ground}" fill="#9cc96b"/>
+  <rect x="${w * .07}" y="${ground - 420}" width="34" height="440" fill="#8a6440"/><circle cx="${w * .07 + 17}" cy="${ground - 470}" r="150" fill="#6fa85a"/><circle cx="${w * .07 - 70}" cy="${ground - 380}" r="90" fill="#7fb35f"/><circle cx="${w * .07 + 110}" cy="${ground - 390}" r="95" fill="#7fb35f"/>
+  <g transform="translate(${w * .62} ${ground - 380})">
+    <rect x="0" y="0" width="16" height="400" fill="#e2432b"/><rect x="90" y="0" width="16" height="400" fill="#e2432b"/>
+    ${[60, 130, 200, 270, 340].map(y => `<rect x="0" y="${y}" width="106" height="12" fill="#e2432b"/>`).join('')}
+    <rect x="-10" y="-14" width="126" height="22" rx="6" fill="#f5b400"/>
+    <path d="M106 0 Q190 40 250 330 Q258 380 330 390 L330 420 Q230 420 220 340 Q170 70 106 40 Z" fill="#2a6fd6"/>
+  </g>
+  <g transform="translate(${w * .3} ${ground - 330})"><rect x="0" y="0" width="200" height="14" fill="#5a6b78"/><rect x="0" y="0" width="12" height="340" fill="#5a6b78" transform="rotate(8)"/><rect x="190" y="0" width="12" height="340" fill="#5a6b78" transform="rotate(-8 196 0)"/>
+    <path d="M70 14 V210 M130 14 V210" stroke="#999" stroke-width="4"/><rect x="58" y="206" width="84" height="14" rx="5" fill="#f5b400"/></g>`;
+}
+function icon(kind) {
+  if (kind === 'park') return `<rect x="40" y="170" width="160" height="20" rx="6" fill="#9cc96b"/><rect x="62" y="80" width="12" height="100" fill="#8a6440"/><circle cx="68" cy="70" r="40" fill="#6fa85a"/>
+    <rect x="120" y="70" width="8" height="110" fill="#e2432b"/><path d="M128 70 Q160 90 170 170 L184 170 Q172 80 128 58Z" fill="#2a6fd6"/>`;
+  if (kind === 'bath') return `<rect x="30" y="110" width="180" height="70" rx="30" fill="#7cc4f0"/><rect x="30" y="100" width="180" height="20" rx="10" fill="#fff" stroke="#9fb8c8" stroke-width="4"/>
+    <circle cx="80" cy="84" r="20" fill="#e6f4fb" stroke="#9fd0ee" stroke-width="3"/><circle cx="118" cy="70" r="15" fill="#e6f4fb" stroke="#9fd0ee" stroke-width="3"/><circle cx="150" cy="88" r="12" fill="#e6f4fb" stroke="#9fd0ee" stroke-width="3"/>
+    <path d="M190 100 V40 Q190 24 170 24" stroke="#9fb8c8" stroke-width="8" fill="none"/>`;
+  if (kind === 'bed') return `<circle cx="160" cy="54" r="26" fill="#f9d272"/><circle cx="172" cy="46" r="24" fill="#faf8f3"/>
+    <rect x="30" y="110" width="20" height="80" rx="6" fill="#8a5a34"/><rect x="30" y="130" width="180" height="40" rx="12" fill="#4a6fb5"/><ellipse cx="74" cy="124" rx="28" ry="14" fill="#dfe6f6"/>`;
+  if (kind === 'school') return `<path d="M30 100 L120 40 L210 100 Z" fill="#e2432b"/><rect x="44" y="100" width="152" height="90" fill="#f7e8cf"/><rect x="100" y="130" width="40" height="60" fill="#b98555"/>
+    <rect x="58" y="116" width="28" height="26" fill="#9fd0ee"/><rect x="154" y="116" width="28" height="26" fill="#9fd0ee"/><rect x="114" y="10" width="4" height="34" fill="#555"/><path d="M118 12 h24 v14 h-24z" fill="#f5b400"/>`;
+  if (kind === 'timer') return `<circle cx="120" cy="110" r="74" fill="#fff" stroke="#184e45" stroke-width="10"/><rect x="104" y="18" width="32" height="18" rx="6" fill="#184e45"/>
+    <path id="timerArc" d="M120 50 A60 60 0 1 1 119.9 50" stroke="#f5b400" stroke-width="16" fill="none"/><path id="timerHand" d="M120 110 V64" stroke="#184e45" stroke-width="8" stroke-linecap="round"/>`;
+  if (kind === 'car') return `<path d="M30 140 Q36 96 80 92 L110 62 H170 L200 96 Q216 100 216 140 Z" fill="#2a6fd6"/><rect x="118" y="70" width="44" height="26" rx="4" fill="#cdeaf6"/><circle cx="70" cy="146" r="20" fill="#333"/><circle cx="180" cy="146" r="20" fill="#333"/>`;
+  return '';
+}
+function stormCloud() {
+  return `<g><circle cx="60" cy="70" r="46" fill="#7d8796"/><circle cx="120" cy="50" r="58" fill="#8a94a3"/><circle cx="180" cy="74" r="44" fill="#7d8796"/><rect x="40" y="70" width="170" height="50" rx="25" fill="#7d8796"/>
+    <path d="M118 112 L96 160 H122 L104 210 L150 146 H124 L140 112Z" fill="#f5b400"/></g>`;
+}
+function homeBg(w = 920, h = 900) {
+  return `<rect width="${w}" height="${h}" fill="#f6ead8"/><rect y="${h - 200}" width="${w}" height="200" fill="#d9bf98"/>
+  <rect x="${w - 330}" y="170" width="230" height="${h - 370}" fill="#6f9a5a"/><rect x="${w - 318}" y="182" width="206" height="${h - 382}" fill="#bfe3a4"/><rect x="${w - 318}" y="182" width="206" height="150" fill="#dff1f7"/><circle cx="${w - 215}" cy="420" r="60" fill="#7fb35f"/>
+  <rect x="60" y="250" width="150" height="10" fill="#9b7550"/><circle cx="90" cy="268" r="6" fill="#9b7550"/><circle cx="150" cy="268" r="6" fill="#9b7550"/>
+  <path d="M150 274 q-18 0 -18 30 v40 h36 v-40 q0 -30 -18 -30z" fill="#e8b93a"/>
+  <rect x="60" y="${h - 230}" width="160" height="40" rx="8" fill="#b98555"/><ellipse cx="100" cy="${h - 240}" rx="26" ry="12" fill="#5a4a3e"/><ellipse cx="170" cy="${h - 240}" rx="26" ry="12" fill="#5a4a3e"/>`;
 }
