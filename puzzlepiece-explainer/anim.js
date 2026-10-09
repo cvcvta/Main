@@ -97,7 +97,10 @@ const WIPES = [[4.6, '#faf8f3'], [7.2, '#e5efe9'], [9.4, '#faf8f3'], [14.4, '#e5
 $('wipeP').setAttribute('d', PIECE);
 
 // ---------- render ----------
+// The timeline is authored on a 32 s grid and played back stretched to 50 s.
+const STRETCH = 50 / 32;
 function render(t) {
+  t = t / STRETCH;
   scenes.forEach(sc => sc.style.display = (t >= +sc.dataset.s && t < +sc.dataset.e) ? 'block' : 'none');
   anims.forEach(el => {
     const [s, d, k] = el.dataset.a.split(','); const p = prog(t, +s, +d * 1.9), e = eo(p);
