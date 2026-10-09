@@ -39,7 +39,7 @@ $('bub1').innerHTML = `<rect x="0" y="0" width="360" height="110" rx="40" fill="
 
 // 2 scribbles over each transition card
 const scribble = (x, y) => { let d = ''; for (let i = 0; i <= 60; i++) { const a = i * .55, r = 34 + 18 * Math.sin(i * 1.7); d += `${i ? 'L' : 'M'}${(x + Math.cos(a) * r * 1.6 + i * 1.2).toFixed(1)} ${(y + Math.sin(a) * r).toFixed(1)} `; } return `<path class="scr" d="${d}" stroke="#d2462c" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`; };
-$('scrib2').innerHTML = [[260, 560], [740, 560], [260, 1040], [740, 1040]].map(([x, y]) => scribble(x, y)).join('');
+$('scrib2').innerHTML = [[260, 500], [740, 500], [260, 980], [740, 980]].map(([x, y]) => scribble(x, y)).join('');
 const scrs = [...document.querySelectorAll('.scr')]; scrs.forEach(p => { const L = p.getTotalLength(); p.dataset.l = L; p.style.strokeDasharray = L; });
 
 // 3 logo
@@ -63,7 +63,7 @@ $('photoLayer').innerHTML = `<g filter="url(#photoF)"><rect width="540" height="
   ${Array.from({ length: 40 }, (_, i) => `<path d="M${(i * 37) % 540} ${200 + (i * 53) % 420} l6 -24" stroke="#56703c" stroke-width="4"/>`).join('')}
   <g transform="translate(140 60) scale(1.3)">${kid({ id: 'kP' })}</g></g>`;
 $('illLayer').innerHTML = `<rect width="540" height="620" fill="#e5efe9"/><circle cx="270" cy="330" r="230" fill="#cfe5da"/><g transform="translate(140 60) scale(1.3)">${kid({ id: 'kI' })}</g>`;
-const sparks = [[230, 470, 30], [860, 520, 40], [200, 900, 24], [890, 980, 30], [300, 1250, 28], [800, 1260, 36], [540, 430, 22], [960, 760, 22]];
+const sparks = [[230, 590, 30], [860, 640, 40], [200, 1020, 24], [890, 1100, 30], [300, 1370, 28], [800, 1380, 36], [540, 550, 22], [960, 880, 22]];
 $('spark5').innerHTML = sparks.map(([x, y, r], i) => `<g class="spk" data-i="${i}" data-x="${x}" data-y="${y}" fill="${i % 2 ? '#fbb015' : '#184e45'}">${star4(r)}</g>`).join('');
 
 // 7 practice stories

@@ -3,7 +3,7 @@
 `puzzlepiece-script-ad-9x16.mp4` — 1080×1920, 30 fps, 32 s, no audio.
 Timed to a natural read of the script so a voiceover can be laid on top.
 
-| Time | Script line | On screen |
+| Time | Script line (voiceover, not on screen) | On screen |
 |---|---|---|
 | 0–4.6 | My son is autistic, and leaving the park can mean a meltdown. | Park: "Time to go!" → kid melts down, storm cloud |
 | 4.6–7.2 | Daily transitions have always been tough. | Park / school / bath / bedtime cards get tangled |
