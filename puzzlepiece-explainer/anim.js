@@ -164,15 +164,13 @@ function render(t) {
   armTo('kI', waveA(t, 15.85));
   document.querySelectorAll('.spk').forEach(g => { const p = prog(t, 15.75 + g.dataset.i * .06, .7); g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) rotate(${p * 90}) scale(${Math.sin(Math.PI * p)})`); });
 
-  // 6 — a selection ring hops across the site's styles, then picks one
-  const tiles = [[80, 500], [560, 500], [80, 1010], [560, 1010]], seq = [[17.9, 0], [18.15, 1], [18.4, 3], [18.65, 2]];
-  let pos = tiles[0];
-  for (let i = 0; i < seq.length; i++) if (t >= seq[i][0]) { const prev = i ? tiles[seq[i - 1][1]] : tiles[0], m = eo(prog(t, seq[i][0], .2)); pos = [lerp(prev[0], tiles[seq[i][1]][0], m), lerp(prev[1], tiles[seq[i][1]][1], m)]; }
-  const ring = $('ring6'); ring.style.left = pos[0] - 12 + 'px'; ring.style.top = pos[1] - 12 + 'px'; ring.style.opacity = prog(t, 17.8, .15);
-  const ck = eb(prog(t, 18.8, .3)), sel = tiles[2]; const c6 = $('chk6');
-  c6.style.left = sel[0] + 380 + 'px'; c6.style.top = sel[1] - 30 + 'px'; c6.style.opacity = ck > 0 ? 1 : 0; c6.style.transform = `scale(${ck})`;
-  $('ti2').style.transform = t > 18.8 ? `scale(${1 + .04 * Math.sin(Math.PI * prog(t, 18.8, .3))})` : $('ti2').style.transform;
-
+  // 6 — a highlight hops across the website's four styles; each card lifts as it's highlighted
+  const tiles = [[80, 540], [560, 540], [80, 1050], [560, 1050]], hop = [17.95, 18.25, 18.55, 18.85];
+  let hi = -1; hop.forEach((h, i) => { if (t >= h) hi = i; });
+  const ring = $('ring6');
+  if (hi >= 0) { const prev = tiles[Math.max(hi - 1, 0)], m = hi ? eo(prog(t, hop[hi], .18)) : 1; ring.style.left = lerp(prev[0], tiles[hi][0], m) - 12 + 'px'; ring.style.top = lerp(prev[1], tiles[hi][1], m) - 26 + 'px'; }
+  ring.style.opacity = prog(t, 17.9, .12) * (1 - prog(t, 19.1, .15));
+  [0, 1, 2, 3].forEach(i => { if (t > 17.9) $('ti' + i).style.transform = `translateY(${i === hi && t < 19.1 ? -14 : 0}px) scale(${i === hi && t < 19.1 ? 1.03 : 1})`; });
   // 7 — two practice stories
   const sw = eo(prog(t, 22.2, .45));
   $('storyB').style.transform = `translateX(${(1 - sw) * 940}px)`;
