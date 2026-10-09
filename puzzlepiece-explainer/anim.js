@@ -1,12 +1,12 @@
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const eo = x => 1 - Math.pow(1 - x, 3);
-const eb = x => { const c = 1.6; x -= 1; return 1 + (c + 1) * x * x * x + c * x * x; };
+const eb = x => { const c = 0.9; x -= 1; return 1 + (c + 1) * x * x * x + c * x * x; };
 const prog = (t, s, d) => clamp((t - s) / d);
 const lerp = (a, b, m) => a + (b - a) * m;
 const $ = id => document.getElementById(id);
 const place = (id, x, y, k = 1) => $(id).setAttribute('transform', `translate(${x} ${y}) scale(${k})`);
 const armTo = (id, a, cx = 156, cy = 184) => { const el = $(id + 'arm'); if (el) el.setAttribute('transform', `rotate(${a} ${cx} ${cy})`); };
-const waveA = (t, s, speed = 14) => t > s ? -150 + 18 * Math.sin((t - s) * speed) : lerp(0, -150, eo(prog(t, s - .2, .2)));
+const waveA = (t, s, speed = 5.5) => t > s ? -150 + 14 * Math.sin((t - s) * speed) : lerp(0, -150, eo(prog(t, s - .5, .5)));
 const COLORS = ['#e2432b', '#3aa655', '#2a6fd6', '#f5b400'];
 const logo = size => [0, 1, 2, 3].map(i => `<path transform="translate(${(i % 2) * size} ${(i >> 1) * size}) scale(${size / 100}) translate(2 2) scale(.96)" d="${PIECE}" fill="${COLORS[i]}"/>`).join('');
 const MOM = id => adult({ id, hairStyle: 'bun', top: '#e4d3b5', pants: '#5f6b45', hair: '#2e211b' });
@@ -100,7 +100,7 @@ $('wipeP').setAttribute('d', PIECE);
 function render(t) {
   scenes.forEach(sc => sc.style.display = (t >= +sc.dataset.s && t < +sc.dataset.e) ? 'block' : 'none');
   anims.forEach(el => {
-    const [s, d, k] = el.dataset.a.split(','); const p = prog(t, +s, +d), e = eo(p);
+    const [s, d, k] = el.dataset.a.split(','); const p = prog(t, +s, +d * 1.9), e = eo(p);
     const rot = el.dataset.rot ? ` rotate(${el.dataset.rot}deg)` : '';
     let tr = '';
     if (k === 'up') tr = `translateY(${(1 - e) * 50}px)`;
@@ -110,95 +110,91 @@ function render(t) {
     el.style.opacity = k === 'flip' ? (p > 0 ? 1 : 0) : e;
     el.style.transform = tr + rot;
   });
-  decos.forEach((g, i) => g.setAttribute('transform', `translate(${g.dataset.x} ${+g.dataset.y + Math.sin(t * .9 + i) * 24}) rotate(${t * 14 * g.dataset.d + i * 40}) scale(${g.dataset.k})`));
+  decos.forEach((g, i) => g.setAttribute('transform', `translate(${g.dataset.x} ${+g.dataset.y + Math.sin(t * .9 + i) * 24}) rotate(${t * 5 * g.dataset.d + i * 40}) scale(${g.dataset.k})`));
   const wp = $('wipeP'); wp.style.display = 'none';
-  for (const [T, col] of WIPES) if (t >= T - .5 && t < T) {
-    const p = prog(t, T - .5, .5);
+  for (const [T, col] of WIPES) if (t >= T - .65 && t < T) {
+    const p = prog(t, T - .65, .65);
     wp.style.display = 'block'; wp.setAttribute('fill', col); wp.setAttribute('stroke', '#f9d272');
-    wp.setAttribute('transform', `translate(540 960) rotate(${140 * p}) scale(${.1 + 46 * p * p}) translate(-50 -50)`);
+    wp.setAttribute('transform', `translate(540 960) rotate(${90 * p}) scale(${.1 + 46 * p * p}) translate(-50 -50)`);
   }
 
   // 1 — happy play, "time to go", meltdown
   const melt = t >= 2.2;
-  const bob = melt ? 0 : -Math.abs(Math.sin(t * 6)) * 26;
+  const bob = melt ? 0 : -Math.abs(Math.sin(t * 3.2)) * 22;
   place('kid1', 470, 1201 + bob, 1.45); place('mom1', 50, 1134, 1.3);
-  armTo('k1', melt ? 10 * Math.sin(t * 30) : -120 + 35 * Math.sin(t * 9));
-  armTo('m1', t > 1.0 ? lerp(0, -40, eo(prog(t, 1.0, .3))) : 0, 188, 196);
+  armTo('k1', melt ? 16 * Math.sin(t * 7) : -120 + 30 * Math.sin(t * 3.5));
+  armTo('m1', t > 1.0 ? lerp(0, -40, eo(prog(t, 1.0, .6))) : 0, 188, 196);
   $('k1happy').setAttribute('opacity', melt ? 0 : 1); $('k1sad').setAttribute('opacity', melt ? 1 : 0);
   ['k1tear1', 'k1tear2'].forEach((id, i) => { const p = ((t - 2.3 + i * .35) % .8) / .8; $(id).setAttribute('transform', `translate(0 ${t > 2.3 ? p * 40 : 0})`); $(id).style.opacity = t > 2.3 ? 1 - p : 0; });
-  const bp = eb(prog(t, 1.0, .4)); $('bub1').setAttribute('transform', `translate(120 980) scale(${bp})`); $('bub1').style.opacity = 1 - prog(t, 2.6, .3);
-  const cp = eb(prog(t, 2.35, .45)); $('cloud1').setAttribute('transform', `translate(${490 + Math.sin(t * 3) * 10} ${960 + (1 - cp) * 60}) scale(${1.1 * cp})`);
+  const bp = eb(prog(t, .9, .7)); $('bub1').setAttribute('transform', `translate(120 980) scale(${bp})`); $('bub1').style.opacity = 1 - prog(t, 2.5, .5);
+  const cp = eb(prog(t, 2.25, .8)); $('cloud1').setAttribute('transform', `translate(${490 + Math.sin(t * 1.5) * 10} ${960 + (1 - cp) * 60}) scale(${1.1 * cp})`);
   $('cloud1').style.opacity = cp > 0 ? 1 : 0;
-  const bu = prog(t, 2.4, .3); $('burst1').setAttribute('transform', `translate(615 1355) scale(${bu * (1 + .08 * Math.sin(t * 20))})`); $('burst1').style.opacity = bu;
+  const bu = prog(t, 2.4, .6); $('burst1').setAttribute('transform', `translate(615 1355) scale(${bu * (1 + .08 * Math.sin(t * 5))})`); $('burst1').style.opacity = bu;
   $('dim1').style.opacity = .22 * prog(t, 2.3, .4);
-  const sh = t > 2.4 && t < 4.3 ? 9 : 0; $('shake1').style.transform = `translate(${Math.sin(t * 71) * sh}px, ${Math.cos(t * 53) * sh}px)`;
+  const sh = t > 2.4 && t < 4.0 ? 5 : 0; $('shake1').style.transform = `translate(${Math.sin(t * 17) * sh}px, ${Math.cos(t * 13) * sh}px)`;
 
   // 2 — every transition gets tangled
-  [0, 1, 2, 3].forEach(i => { const st = 5.95 + i * .1; $('tc' + i).style.rotate = t > st ? `${Math.sin((t - st) * 22) * 3 * (1 - prog(t, st + .8, .4))}deg` : '0deg'; });
-  scrs.forEach((p, i) => { p.style.strokeDashoffset = p.dataset.l * (1 - eo(prog(t, 5.6 + i * .12, .5))); });
+  [0, 1, 2, 3].forEach(i => { const st = 5.95 + i * .1; $('tc' + i).style.rotate = t > st ? `${Math.sin((t - st) * 8) * 2.5 * (1 - prog(t, st + .8, .4))}deg` : '0deg'; });
+  scrs.forEach((p, i) => { p.style.strokeDashoffset = p.dataset.l * (1 - eo(prog(t, 5.5 + i * .15, .9))); });
 
   // 3 — logo assembles, sun rays turn
   const starts = [[-320, -340, -200], [1300, -300, 220], [-340, 2100, 160], [1320, 2150, -240]];
   for (let i = 0; i < 4; i++) {
-    const p = eb(prog(t, 7.3 + i * .1, .55)), [sx, sy, sr] = starts[i], fx = 390 + (i % 2) * 150, fy = 560 + (i >> 1) * 150;
-    const snap = 1 + .08 * Math.sin(Math.PI * prog(t, 7.95, .25));
+    const p = eb(prog(t, 7.25 + i * .08, .85)), [sx, sy, sr] = starts[i], fx = 390 + (i % 2) * 150, fy = 560 + (i >> 1) * 150;
+    const snap = 1 + .08 * Math.sin(Math.PI * prog(t, 8.1, .4));
     $('p3' + i).setAttribute('transform', `translate(${lerp(sx, fx, p)} ${lerp(sy, fy, p)}) rotate(${lerp(sr, 0, clamp(p))} 75 75) scale(${1.5 * snap})`);
   }
-  $('rays3').setAttribute('transform', `translate(540 710) rotate(${t * 20}) scale(${eo(prog(t, 7.9, .5))})`);
-  [...$('word3').children].forEach((c, i) => { const p = eo(prog(t, 8.05 + i * .035, .3)); c.style.opacity = p; c.style.transform = `translateY(${(1 - p) * 40}px)`; });
+  $('rays3').setAttribute('transform', `translate(540 710) rotate(${t * 7}) scale(${eo(prog(t, 7.9, .8))})`);
+  [...$('word3').children].forEach((c, i) => { const p = eo(prog(t, 7.95 + i * .03, .5)); c.style.opacity = p; c.style.transform = `translateY(${(1 - p) * 40}px)`; });
 
   // 4 — pages flip First / Then / Next
   const flips = [11.2, 12.5]; let sx = 1;
-  flips.forEach(T => { const d = prog(t, T - .15, .3); if (d > 0 && d < 1) sx = Math.abs(1 - 2 * d); });
+  flips.forEach(T => { const d = prog(t, T - .3, .6); if (d > 0 && d < 1) sx = Math.abs(1 - 2 * d); });
   $('scr4').setAttribute('transform', `translate(332 0) scale(${Math.max(sx, .02)} 1) translate(-332 0)`);
   const pgi = t < 11.2 ? 0 : t < 12.5 ? 1 : 2;
   [0, 1, 2].forEach(i => { $('pg' + i).style.display = i === pgi ? 'inline' : 'none'; const st = $('st' + i); st.style.background = i === pgi && t > 9.9 ? '#fbb015' : '#fff'; st.style.transform = `scale(${i === pgi && t > 9.9 ? 1.08 : 1})`; });
-  $('timerArc').style.strokeDasharray = 377; $('timerArc').style.strokeDashoffset = 377 * prog(t, 11.2, 1.1);
-  $('timerHand').setAttribute('transform', `rotate(${prog(t, 11.2, 1.1) * 360} 120 110)`);
+  $('timerArc').style.strokeDasharray = 377; $('timerArc').style.strokeDashoffset = 377 * prog(t, 11.3, 1.1);
+  $('timerHand').setAttribute('transform', `rotate(${prog(t, 11.3, 1.1) * 360} 120 110)`);
   armTo('k4c', waveA(t, 12.7));
 
   // 5 — scan photo into character
-  const sp = prog(t, 14.95, .8);
+  const sp = prog(t, 14.85, 1.15);
   $('scanRect').setAttribute('height', sp * 620); $('scanLine').setAttribute('y', sp * 620 - 5); $('scanLine').setAttribute('opacity', sp > 0 && sp < 1 ? .95 : 0);
-  $('capPhoto').style.opacity = 1 - prog(t, 15.65, .2); $('capChar').style.opacity = prog(t, 15.7, .25);
-  armTo('kI', waveA(t, 15.85));
-  document.querySelectorAll('.spk').forEach(g => { const p = prog(t, 15.75 + g.dataset.i * .06, .7); g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) rotate(${p * 90}) scale(${Math.sin(Math.PI * p)})`); });
+  $('capPhoto').style.opacity = 1 - prog(t, 15.8, .4); $('capChar').style.opacity = prog(t, 15.9, .45);
+  armTo('kI', waveA(t, 16.0));
+  document.querySelectorAll('.spk').forEach(g => { const p = prog(t, 15.9 + g.dataset.i * .08, 1.1); g.setAttribute('transform', `translate(${g.dataset.x} ${g.dataset.y}) rotate(${p * 90}) scale(${Math.sin(Math.PI * p)})`); });
 
-  // 6 — a highlight hops across the website's four styles; each card lifts as it's highlighted
-  const tiles = [[80, 540], [560, 540], [80, 1050], [560, 1050]], hop = [17.95, 18.25, 18.55, 18.85];
-  let hi = -1; hop.forEach((h, i) => { if (t >= h) hi = i; });
-  const ring = $('ring6');
-  if (hi >= 0) { const prev = tiles[Math.max(hi - 1, 0)], m = hi ? eo(prog(t, hop[hi], .18)) : 1; ring.style.left = lerp(prev[0], tiles[hi][0], m) - 12 + 'px'; ring.style.top = lerp(prev[1], tiles[hi][1], m) - 26 + 'px'; }
-  ring.style.opacity = prog(t, 17.9, .12) * (1 - prog(t, 19.1, .15));
-  [0, 1, 2, 3].forEach(i => { if (t > 17.9) $('ti' + i).style.transform = `translateY(${i === hi && t < 19.1 ? -14 : 0}px) scale(${i === hi && t < 19.1 ? 1.03 : 1})`; });
+  // 6 — the website's four styles settle in and float gently
+  $('ring6').style.opacity = 0;
+  [0, 1, 2, 3].forEach(i => { if (t > 18.3) $('ti' + i).style.transform = `translateY(${Math.sin((t - 18.3) * 2.2 + i * 1.3) * 8}px)`; });
   // 7 — two practice stories
-  const sw = eo(prog(t, 22.2, .45));
+  const sw = eo(prog(t, 21.95, .8));
   $('storyB').style.transform = `translateX(${(1 - sw) * 940}px)`;
   $('tA').style.display = sw < .5 ? 'inline' : 'none'; $('tB').style.display = sw >= .5 ? 'inline' : 'none';
-  $('listA').style.opacity = 1 - prog(t, 22.1, .25); $('listB').style.display = t > 22.3 ? 'block' : 'none';
+  $('listA').style.opacity = 1 - prog(t, 21.9, .5); $('listB').style.display = t > 22.3 ? 'block' : 'none';
   armTo('k7a', waveA(t, 21.2)); armTo('k7b', waveA(t, 24.2));
-  armTo('m7b', t > 23.0 ? -150 + 15 * Math.sin((t - 23) * 10) : 0, 188, 196);
-  $('t7Arc').style.strokeDasharray = 377; $('t7Arc').style.strokeDashoffset = 377 * prog(t, 20.2, .8);
-  $('t7Hand').setAttribute('transform', `rotate(${prog(t, 20.2, .8) * 360} 120 110)`);
-  const by = eb(prog(t, 21.25, .35)); $('bye7').setAttribute('transform', `translate(600 350) scale(${by})`);
+  armTo('m7b', t > 23.0 ? -150 + 15 * Math.sin((t - 23) * 5) : 0, 188, 196);
+  $('t7Arc').style.strokeDasharray = 377; $('t7Arc').style.strokeDashoffset = 377 * prog(t, 20.2, 1.4);
+  $('t7Hand').setAttribute('transform', `rotate(${prog(t, 20.2, 1.4) * 360} 120 110)`);
+  const by = eb(prog(t, 21.1, .6)); $('bye7').setAttribute('transform', `translate(600 350) scale(${by})`);
 
   // 8 — reading together, hearts rise
   armTo('k8', 0);
   document.querySelectorAll('.ht').forEach(h => {
-    const i = +h.dataset.i, p = prog(t, 26.2 + i * .4, 1.6);
+    const i = +h.dataset.i, p = prog(t, 26.0 + i * .5, 2.4);
     h.setAttribute('transform', `translate(${530 + Math.sin(p * 6 + i) * 40 + (i - 1.5) * 50} ${1080 - p * 420}) scale(${2.2 * Math.sin(Math.PI * Math.min(p * 1.4, 1)) })`);
     h.style.opacity = p > 0 && p < 1 ? 1 - p * .6 : 0;
   });
 
   // 9 — tablet drops, screen wakes, tap the CTA
-  const d = prog(t, 28.75, .65);
+  const d = prog(t, 28.7, 1.1);
   $('tab9').style.transform = `translateY(${-1000 * (1 - eb(d))}px) rotate(${(1 - eo(d)) * -10}deg)`;
-  $('off9').setAttribute('opacity', 1 - prog(t, 29.35, .3));
+  $('off9').setAttribute('opacity', 1 - prog(t, 29.6, .6));
   armTo('k9', waveA(t, 29.6));
-  const tp = eo(prog(t, 30.4, .35)), press = Math.sin(Math.PI * prog(t, 30.8, .25));
-  const tap = $('tap9'); tap.style.opacity = tp * (1 - .4 * prog(t, 31.3, .3));
+  const tp = eo(prog(t, 30.3, .6)), press = Math.sin(Math.PI * prog(t, 30.95, .4));
+  const tap = $('tap9'); tap.style.opacity = tp * (1 - .4 * prog(t, 31.5, .4));
   tap.style.transform = `translate(${(1 - tp) * 140}px, ${(1 - tp) * 260}px) scale(${1 - .25 * press})`;
-  $('cta9').style.transform = `scale(${1 - .04 * press + (t > 31.1 ? .02 * Math.sin((t - 31.1) * 10) : 0)})`;
-  const rp = prog(t, 30.85, .5), rip = $('rip9'); rip.style.opacity = rp > 0 ? .55 * (1 - rp) : 0; rip.style.transform = `translate(-50%,-50%) scale(${rp * 180})`;
+  $('cta9').style.transform = `scale(${1 - .04 * press + (t > 31.35 ? .015 * Math.sin((t - 31.35) * 4) : 0)})`;
+  const rp = prog(t, 31.0, .9), rip = $('rip9'); rip.style.opacity = rp > 0 ? .55 * (1 - rp) : 0; rip.style.transform = `translate(-50%,-50%) scale(${rp * 180})`;
 }
 window.render = render; render(0);
