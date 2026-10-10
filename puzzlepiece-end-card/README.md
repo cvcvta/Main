@@ -15,3 +15,11 @@ button (one gentle press, then a soft pulse), puzzlepiecefamily.com and fine pri
 | 3.5–5.0 | Button press, then hold with a soft pulse |
 
     FFMPEG=$(which ffmpeg) node render.js     # -> out.mp4
+
+## Free-trial version (`puzzlepiece-end-card-trial-5s.mp4`)
+
+Same 5 s card and timing, CTA swapped for the trial offer: "7-DAY FREE TRIAL"
+tag, "Sign up today." headline, "Start my free trial" button, URL and
+fine print ("7-day free trial, then $39.99/month base plan. Terms apply." —
+confirm against the actual trial terms). Source: `index-trial.html`
+(render it by pointing `render.js` at that file or copying it over `index.html`).
