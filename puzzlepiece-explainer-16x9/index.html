@@ -1,0 +1,143 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>PuzzlePiece Explainer 16x9</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root{--cream:#faf8f3;--mint:#e5efe9;--mint2:#cfe5da;--green:#184e45;--yellow:#fbb015;--butter:#f9d272;--gold:#c98a1d;--eve:#f3e3cc}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--green)}
+.serif{font-family:'Lora',serif;font-weight:400;letter-spacing:-.01em}
+.scene{position:absolute;inset:0;display:none;overflow:hidden}
+.abs{position:absolute}
+.eyebrow{font-weight:700;font-size:22px;letter-spacing:.1em;text-transform:uppercase;opacity:.8}
+.w{display:inline-block;margin-right:.24em}
+.card{position:absolute;width:360px;height:380px;background:#fff;border-radius:34px;box-shadow:0 14px 34px rgba(24,78,69,.08)}
+.card .lbl{position:absolute;left:0;right:0;bottom:40px;text-align:center;font-size:30px;font-weight:700}
+.tile{position:absolute;width:380px;height:420px;background:var(--cream);border-radius:30px;padding:12px;box-shadow:0 18px 40px rgba(0,0,0,.18)}
+.tile img{width:356px;height:292px;object-fit:cover;border-radius:20px;display:block}
+.tile .lbl{text-align:center;font-weight:700;font-size:28px;padding-top:30px}
+.avatar{position:absolute;width:140px;height:140px;border-radius:50%;overflow:hidden;background:var(--mint2)}
+.avname{position:absolute;width:140px;text-align:center;font-weight:700;font-size:22px}
+.step{border-radius:999px;padding:12px 28px;font-size:26px;font-weight:700;background:#fff}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <radialGradient id="gHead" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#6a3a20" stop-opacity=".28"/></radialGradient>
+  <linearGradient id="gBody"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#000" stop-opacity=".2"/></linearGradient>
+  <radialGradient id="gGlow"><stop offset="0" stop-color="#ffd98a" stop-opacity=".6"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>
+  <filter id="photoF"><feGaussianBlur stdDeviation="2.2"/><feColorMatrix type="matrix" values=".45 .35 .15 0 .02  .35 .45 .15 0 .02  .3 .3 .35 0 0  0 0 0 1 0"/></filter>
+</defs></svg>
+
+<!-- 1. Hello — 0–4 -->
+<section class="scene" data-s="0" data-e="4" style="background:var(--cream)" data-deco="#184e45">
+  <img class="abs" src="assets/logo_lockup.png" style="left:140px;top:90px;height:70px" data-a=".1,.8,fade">
+  <div class="abs serif" style="left:140px;top:250px;font-size:100px;line-height:1.06" data-words=".5,.12">Calmer days.|More confident kids.</div>
+  <div class="abs" style="left:140px;top:530px;background:var(--green);color:#fff;border-radius:999px;padding:20px 40px;font-size:46px;font-weight:700" data-a="1.4,.8,up">For kids with <span style="color:var(--butter)">autism</span></div>
+  <div class="abs" style="left:140px;top:660px;font-size:36px" data-a="1.8,.8,up">Science-backed stories for everyday challenges.</div>
+  <div class="abs" style="left:140px;top:740px;font-size:28px;font-weight:500;display:flex;gap:14px;align-items:center" data-a="2.1,.8,up"><span style="color:var(--gold);letter-spacing:4px">★★★★★</span> Trusted by 5,000+ families</div>
+  <svg class="abs" style="left:0;top:0" width="1920" height="1080"><circle cx="1500" cy="700" r="340" fill="#e5efe9" id="halo1"/><g id="mom1"></g><g id="dad1"></g><g id="kid1"></g></svg>
+</section>
+
+<!-- 2. The problem — 4–8 -->
+<section class="scene" data-s="4" data-e="8" style="background:var(--mint)" data-deco="#184e45">
+  <div class="abs c serif" style="left:0;right:0;top:120px;text-align:center;font-size:76px" data-words="4.2,.09">Everyday transitions can feel big.</div>
+  <div class="card" style="left:140px;top:340px" data-a="4.6,.7,up" id="tc0"><svg class="abs" style="left:70px;top:50px" width="220" height="200" viewBox="0 0 240 220" data-icon="park"></svg><div class="lbl">Leaving the park</div></div>
+  <div class="card" style="left:560px;top:340px" data-a="4.8,.7,up" id="tc1"><svg class="abs" style="left:70px;top:50px" width="220" height="200" viewBox="0 0 240 220" data-icon="school"></svg><div class="lbl">Off to school</div></div>
+  <div class="card" style="left:980px;top:340px" data-a="5.0,.7,up" id="tc2"><svg class="abs" style="left:70px;top:50px" width="220" height="200" viewBox="0 0 240 220" data-icon="bath"></svg><div class="lbl">Bath time</div></div>
+  <div class="card" style="left:1400px;top:340px" data-a="5.2,.7,up" id="tc3"><svg class="abs" style="left:70px;top:50px" width="220" height="200" viewBox="0 0 240 220" data-icon="bed"></svg><div class="lbl">Bedtime</div></div>
+  <svg class="abs" style="left:0;top:0" width="1920" height="1080" id="scrib2"></svg>
+  <div class="abs" style="left:0;right:0;top:820px;text-align:center;font-size:34px" data-a="6.2,.8,up">A little preview goes a long way.</div>
+</section>
+
+<!-- 3. Their photo → their character — 8–12.5 -->
+<section class="scene" data-s="8" data-e="12.5" style="background:var(--cream)" data-deco="#184e45">
+  <div class="abs" style="left:240px;top:150px;width:460px;height:640px;background:#fff;border-radius:18px;padding:18px;box-shadow:0 30px 60px rgba(24,78,69,.16)" data-a="8.2,.8,up" data-rot="-3">
+    <svg width="424" height="487" viewBox="0 0 540 620" style="border-radius:8px;overflow:hidden;display:block">
+      <defs><clipPath id="scanClip"><rect id="scanRect" width="540" height="0"/></clipPath><clipPath id="frameClip"><rect width="540" height="620"/></clipPath></defs>
+      <g clip-path="url(#frameClip)"><g id="photoLayer"></g><g clip-path="url(#scanClip)" id="illLayer"></g><rect id="scanLine" x="0" y="-10" width="540" height="10" fill="#fff" opacity="0"/></g>
+    </svg>
+    <div class="serif" style="position:relative;text-align:center;margin-top:34px;font-size:40px;height:52px">
+      <span id="capPhoto" style="position:absolute;left:0;right:0">Their photo</span><span id="capChar" style="position:absolute;left:0;right:0;opacity:0">Their character ✦</span>
+    </div>
+  </div>
+  <svg class="abs" style="left:0;top:0" width="1920" height="1080"><g id="spark3"></g></svg>
+  <div class="abs eyebrow" style="left:900px;top:230px" data-a="8.4,.7,up">Personal from the first page</div>
+  <div class="abs serif" style="left:900px;top:280px;font-size:84px;line-height:1.08" data-words="8.5,.09">Your child is the|main character.</div>
+  <div class="abs" style="left:900px;top:520px;font-size:34px;line-height:1.4;width:820px" data-a="10.6,.8,up">Bring the people they love into the story, too.</div>
+  <div class="abs" style="left:900px;top:620px;width:820px;height:220px" id="cast3"></div>
+</section>
+
+<!-- 4. A story for the moment — 12.5–17 -->
+<section class="scene" data-s="12.5" data-e="17" style="background:var(--mint)" data-deco="#184e45">
+  <div class="abs eyebrow" style="left:140px;top:200px" data-a="12.7,.7,up">Tell us the hard part</div>
+  <div class="abs serif" style="left:140px;top:250px;font-size:80px;line-height:1.08" data-words="12.8,.09">A story for the|moment ahead.</div>
+  <div class="abs" style="left:140px;top:500px;width:680px;background:#fff;border-radius:34px;padding:30px 38px;box-shadow:0 14px 34px rgba(24,78,69,.10)" data-a="13.4,.7,up">
+    <div class="serif" style="font-size:40px;line-height:1.25;min-height:100px"><span id="typed"></span><span id="caret" style="border-left:3px solid var(--green);margin-left:2px"></span></div>
+    <svg class="abs" style="left:70px;bottom:-30px" width="54" height="34"><path d="M0 0 H54 L8 32 Z" fill="#fff"/></svg>
+  </div>
+  <div class="abs" style="left:140px;top:720px;background:var(--mint2);border-radius:999px;padding:14px 30px;font-size:28px;font-weight:700;border:2px solid #b9d8cb" data-a="14.7,.6,up">Goal: a calm goodbye to the park</div>
+  <svg class="abs" style="left:950px;top:230px" width="860" height="600" viewBox="-30 -30 860 600" id="tab4" data-a="13.0,.9,up"></svg>
+  <div class="abs" style="left:950px;top:860px;width:860px;display:flex;justify-content:center;gap:20px">
+    <div class="step" id="st0">First</div><div class="step" id="st1">Then</div><div class="step" id="st2">Next</div>
+  </div>
+</section>
+
+<!-- 5. Art styles (from the website) — 17–20.5 -->
+<section class="scene" data-s="17" data-e="20.5" style="background:var(--green);color:#fff" data-deco="#f9d272">
+  <div class="abs serif" style="left:140px;top:110px;font-size:84px" data-words="17.2,.09">Same kid. New worlds.</div>
+  <div class="abs" style="left:140px;top:225px;font-size:30px;opacity:.9" data-a="17.6,.7,up">Turn their character and every story into a look they love.</div>
+  <div class="abs" style="right:140px;top:130px;background:var(--butter);color:var(--green);border-radius:999px;padding:18px 36px;font-size:36px;font-weight:700" data-a="18.2,.7,up">10+ styles</div>
+  <div class="tile" style="left:140px;top:330px;color:var(--green)" data-a="17.5,.7,up"><img src="assets/lego.jpg"><div class="lbl">LEGO-inspired</div></div>
+  <div class="tile" style="left:560px;top:330px;color:var(--green)" data-a="17.65,.7,up"><img src="assets/minecraft.jpg"><div class="lbl">Minecraft-inspired</div></div>
+  <div class="tile" style="left:980px;top:330px;color:var(--green)" data-a="17.8,.7,up"><img src="assets/pixar.jpg"><div class="lbl">Pixar-inspired</div></div>
+  <div class="tile" style="left:1400px;top:330px;color:var(--green)" data-a="17.95,.7,up"><img src="assets/simpsons.jpg"><div class="lbl">Simpsons-inspired</div></div>
+  <div class="abs serif" style="left:0;right:0;top:850px;text-align:center;font-size:48px" data-a="18.6,.8,up">Their story. Their favorite universe.</div>
+</section>
+
+<!-- 6. Science — 20.5–24 -->
+<section class="scene" data-s="20.5" data-e="24" style="background:var(--cream)" data-deco="#184e45">
+  <div class="abs eyebrow" style="left:140px;top:280px" data-a="20.7,.7,up">The science behind the approach</div>
+  <div class="abs serif" style="left:140px;top:330px;font-size:84px;line-height:1.08" data-words="20.8,.09">Science-backed|stories.</div>
+  <div class="abs" style="left:140px;top:580px;width:640px;font-size:32px;line-height:1.45" data-a="21.4,.8,up">Built on Social Stories research, written around each child's own goals.</div>
+  <div class="abs" style="left:960px;top:200px;width:820px;height:600px;background:var(--green);color:#fff;border-radius:40px;padding:56px 60px" data-a="21.0,.8,up">
+    <div style="display:flex;gap:120px">
+      <div><div class="serif" id="c249" style="font-size:130px;line-height:1">0</div><div style="font-size:30px;margin-top:10px">children</div></div>
+      <div><div class="serif" id="c87" style="font-size:130px;line-height:1">0</div><div style="font-size:30px;margin-top:10px">schools</div></div>
+    </div>
+    <div style="height:2px;background:rgba(255,255,255,.2);margin:40px 0"></div>
+    <div style="font-size:38px;font-weight:700">ASSSIST-2 randomized school trial</div>
+    <div style="font-size:28px;margin-top:14px;opacity:.85">University of York · 2024 · Ages 4–11</div>
+    <div style="margin-top:30px;display:flex;gap:18px;align-items:center;font-size:32px;font-weight:700;color:var(--butter)" data-a="22.4,.7,fade">
+      <svg width="52" height="52" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#f9d272"/><path id="check6" d="M18 33 L28 43 L47 22" stroke="#184e45" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Individual goals. Reached more often.</div>
+  </div>
+  <div class="abs" style="left:960px;top:830px;width:820px;font-size:20px;opacity:.6" data-a="22.0,.7,fade">Study of Social Stories, not PuzzlePiece. Universities are sources, not endorsers.</div>
+</section>
+
+<!-- 7. Together — 24–27 -->
+<section class="scene" data-s="24" data-e="27" style="background:var(--eve)" data-deco="#c98a1d">
+  <div class="abs serif" style="left:140px;top:110px;font-size:76px;line-height:1.08" data-words="24.2,.09">Read together.|Revisit anytime.</div>
+  <svg class="abs" style="left:0;top:0" width="1920" height="1080" id="room7"></svg>
+  <svg class="abs" style="left:0;top:0" width="1920" height="1080"><g id="hearts7"></g></svg>
+</section>
+
+<!-- 8. End card — 27–32 -->
+<section class="scene" data-s="27" data-e="99" style="background:radial-gradient(90% 90% at 15% 10%, #f4edc4 0%, #f6f1df 40%, #f3efe5 75%, #efebe1 100%)">
+  <svg class="abs" style="left:0;top:0" width="1920" height="1080" id="pieces8"></svg>
+  <svg class="abs" style="left:150px;top:200px" width="860" height="600" viewBox="-30 -30 860 600" id="tab8" data-a="27.3,1.1,rise"></svg>
+  <div class="abs" style="left:150px;top:830px;width:860px;text-align:center;font-size:28px;font-weight:500;opacity:.75" data-a="28.4,.7,up">10.1″ display&nbsp;&nbsp;·&nbsp;&nbsp;64 GB&nbsp;&nbsp;·&nbsp;&nbsp;App preinstalled</div>
+  <div class="abs" style="left:1110px;top:220px;width:680px;text-align:center">
+    <img src="assets/logo_lockup.png" style="height:84px" data-a="28.6,.7,up">
+    <div style="height:4px;width:110px;border-radius:2px;background:#f2d77a;margin:22px auto 0" data-a="28.8,.6,grow"></div>
+    <div class="serif" style="font-size:46px;line-height:1.22;margin-top:26px" data-a="29.0,.7,up">Personalized stories for kids with autism, on their own tablet.</div>
+    <div id="cta8" style="margin-top:40px;background:var(--yellow);border-radius:24px;padding:28px 34px;display:flex;justify-content:space-between;align-items:center;font-size:44px;font-weight:700;box-shadow:0 8px 0 #d48f00;text-align:left" data-a="29.5,.7,up">
+      Get my free tablet <span style="width:68px;height:68px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:36px">→</span></div>
+    <div style="margin-top:34px;font-size:36px;font-weight:700;text-decoration:underline;text-underline-offset:6px" data-a="29.9,.7,up">puzzlepiecefamily.com</div>
+    <div style="margin-top:18px;font-size:19px;line-height:1.45;opacity:.6" data-a="30.1,.7,fade">$39.99/month base plan. US shipping address required. Eligibility, shipping and timing confirmed separately.</div>
+  </div>
+</section>
+
+<svg id="wipe" class="abs" style="left:0;top:0;pointer-events:none" width="1920" height="1080"><path id="wipeP" stroke-width="1.2"/></svg>
+<script src="art.js"></script>
+<script src="anim.js"></script>
+</body></html>
