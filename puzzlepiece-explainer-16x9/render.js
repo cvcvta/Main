@@ -1,7 +1,7 @@
 const { chromium } = require('playwright');
 const { spawn } = require('child_process');
 const path = require('path');
-const FFMPEG = process.env.FFMPEG, FPS = 30, DUR = 32;
+const FFMPEG = process.env.FFMPEG, FPS = 30, DUR = 50;
 const stills = process.argv[2] ? process.argv[2].split(',').map(Number) : null;
 (async () => {
   const b = await chromium.launch();

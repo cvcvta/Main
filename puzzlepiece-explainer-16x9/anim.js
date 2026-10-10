@@ -84,7 +84,10 @@ $('wipeP').setAttribute('d', PIECE);
 const chk = $('check6'), chkL = chk.getTotalLength(); chk.style.strokeDasharray = chkL;
 
 // ---------- render ----------
+// Authored on a 32 s grid, played back stretched to 50 s.
+const STRETCH = 50 / 32;
 function render(t) {
+  t = t / STRETCH;
   scenes.forEach(sc => sc.style.display = (t >= +sc.dataset.s && t < +sc.dataset.e) ? 'block' : 'none');
   anims.forEach(el => {
     const [s, d, k] = el.dataset.a.split(','); const e = eo(prog(t, +s, +d));
