@@ -23,3 +23,9 @@ tag, "Sign up today." headline, "Start my free trial" button, URL and
 fine print ("7-day free trial, then $39.99/month base plan. Terms apply." —
 confirm against the actual trial terms). Source: `index-trial.html`
 (render it by pointing `render.js` at that file or copying it over `index.html`).
+
+## Free-trial version, 8 s (`puzzlepiece-end-card-trial-8s.mp4`)
+
+Same trial card with the slower 8 s pacing: tablet 0.3–1.5, screen on 1.3–2.1,
+trial tag/logo/headline/line 1.9–3.8, button/URL/fine print 3.5–5.2, button press
+at 5.4, then a soft pulse to 8.0. Source: `index-trial-8s.html` (DUR = 8).

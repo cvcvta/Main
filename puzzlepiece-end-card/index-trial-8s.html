@@ -1,0 +1,68 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>PuzzlePiece Trial Card</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root{--green:#184e45;--yellow:#fbb015}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;font-family:'DM Sans',sans-serif;color:var(--green);
+  background:radial-gradient(110% 60% at 20% 10%, #f4edc4 0%, #f6f1df 40%, #f3efe5 75%, #efebe1 100%)}
+.serif{font-family:'Lora',serif;font-weight:400;letter-spacing:-.01em}
+.abs{position:absolute}
+.c{left:0;right:0;text-align:center}
+</style></head>
+<body>
+<svg class="abs" style="left:0;top:0" width="1080" height="1920" id="pieces"></svg>
+
+<svg class="abs" style="left:153px;top:273px" width="774" height="540" viewBox="-30 -30 860 600" id="tab" data-a=".3,1.2,rise"></svg>
+<div class="abs c" style="top:846px" data-a="1.9,.8,up"><span style="display:inline-block;background:#f9d272;border-radius:999px;padding:12px 30px;font-size:28px;font-weight:700;letter-spacing:.08em">7-DAY FREE TRIAL</span></div>
+
+<div class="abs c" style="top:960px" data-a="2.3,.8,up"><img src="assets/logo_lockup.png" style="height:88px"></div>
+<div class="abs c serif" style="top:1080px;font-size:92px;line-height:1.05" data-a="2.7,.8,up">Sign up today.</div>
+<div class="abs c" style="top:1205px;font-size:36px;line-height:1.35;padding:0 140px;opacity:.85" data-a="3.0,.8,up">Personalized stories for kids with autism.</div>
+
+<div id="cta" class="abs" style="left:160px;top:1330px;width:760px;background:var(--yellow);border-radius:26px;padding:32px 38px;display:flex;justify-content:space-between;align-items:center;font-size:48px;font-weight:700;box-shadow:0 8px 0 #d48f00" data-a="3.5,.8,up">
+  Start my free trial <span style="width:72px;height:72px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:38px">→</span>
+</div>
+<div class="abs c" style="top:1530px;font-size:38px;font-weight:700;text-decoration:underline;text-underline-offset:6px" data-a="4.1,.8,up">puzzlepiecefamily.com</div>
+<div class="abs c" style="top:1610px;font-size:21px;line-height:1.45;padding:0 170px;opacity:.6" data-a="4.4,.8,fade">7-day free trial, then $39.99/month base plan. Terms apply.</div>
+
+<script src="art.js"></script>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const eo = x => 1 - Math.pow(1 - x, 3);
+const prog = (t, s, d) => clamp((t - s) / d);
+const $ = id => document.getElementById(id);
+
+// three soft accent pieces only
+const P = [[150, 190, '#5cb85c', .7, -25, 0], [930, 210, '#6ccfd0', .6, 18, .15], [940, 1790, '#f0b24a', .65, -12, .3]];
+$('pieces').innerHTML = P.map(([x, y, c, k, r, d], i) => `<g class="pc" data-i="${i}"><path d="${PIECE}" transform="translate(-50 -50)" fill="${c}" opacity=".85"/></g>`).join('');
+
+// tablet: screen clipped to the display, just the child waving on a soft mint field
+$('tab').innerHTML = tabletSvg(`<defs><clipPath id="scr"><rect width="664" height="404" rx="6"/></clipPath></defs>
+  <g clip-path="url(#scr)"><rect width="664" height="404" fill="#e8f1ec"/><circle cx="332" cy="250" r="170" fill="#d3e7dc"/>
+  <g transform="translate(252 34) scale(.82)">${kid({ id: 'kE' })}</g>
+  <rect id="off" width="664" height="404" fill="#101010"/></g>`);
+
+const anims = [...document.querySelectorAll('[data-a]')];
+function render(t) {
+  anims.forEach(el => {
+    const [s, d, k] = el.dataset.a.split(','); const e = eo(prog(t, +s, +d));
+    el.style.opacity = e;
+    if (k === 'up') el.style.transform = `translateY(${(1 - e) * 30}px)`;
+    if (k === 'rise') el.style.transform = `translateY(${(1 - e) * 80}px) scale(${.96 + .04 * e})`;
+    if (k === 'grow') el.style.transform = `scaleX(${e})`;
+  });
+  document.querySelectorAll('.pc').forEach(g => {
+    const i = +g.dataset.i, [x, y, , k, r, d] = P[i], e = eo(prog(t, .2 + d, 1.2));
+    g.setAttribute('transform', `translate(${x} ${y + Math.sin(t * .9 + i * 2) * 10}) rotate(${r + Math.sin(t * .6 + i) * 6}) scale(${k * e})`);
+  });
+  $('off').setAttribute('opacity', 1 - eo(prog(t, 1.3, .8)));
+  const w = $('kEarm'); w.setAttribute('transform', `rotate(${t > 2.0 ? -150 + 12 * Math.sin((t - 2.0) * 4.5) : -150 * eo(prog(t, 1.6, .4))} 156 184)`);
+  // one gentle "press" on the button, then a soft breathing pulse to hold attention
+  const press = Math.sin(Math.PI * prog(t, 5.4, .45));
+  $('cta').style.transform = `scale(${1 - .035 * press + (t > 6 ? .012 * Math.sin((t - 6) * 3) : 0)})`;
+}
+window.render = render; render(0);
+</script>
+</body></html>
