@@ -14,7 +14,8 @@ const stills = process.argv[2] ? process.argv[2].split(',').map(Number) : null;
     return b.close();
   }
   const ff = spawn(FFMPEG, ['-y','-f','image2pipe','-framerate',String(FPS),'-i','-','-c:v','libx264','-pix_fmt','yuv420p','-crf','18','-preset','medium','-movflags','+faststart','out.mp4'], { stdio: ['pipe','inherit','inherit'] });
-  for (let f = 0; f < FPS * DUR; f++) {
+  const START = +(process.env.START || 0);
+  for (let f = Math.round(START * FPS); f < FPS * DUR; f++) {
     await p.evaluate(t => render(t), f / FPS);
     const buf = await p.screenshot({ type: 'jpeg', quality: 95 });
     if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));

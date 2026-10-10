@@ -20,3 +20,12 @@ All illustration is original vector art (`art.js`). The four art-style images in
 
     FFMPEG=$(which ffmpeg) node render.js          # full video -> out.mp4
     FFMPEG=x node render.js 2.4,18.9               # stills at given seconds
+
+## Cream end card (`puzzlepiece-script-ad-9x16-cream-ending.mp4`)
+
+Same 50 s ad with only the ending redone: everything up to 43.7 s is the
+original file frame for frame; from 43.7 s a cream puzzle-piece wipe leads into a
+warm cream end card (soft yellow glow, faint outlined pieces, floating coloured
+pieces) with the same tablet, specs and "Get my free tablet" card, now using the
+PuzzlePiece logo lockup. `START=43.7 FFMPEG=$(which ffmpeg) node render.js`
+re-renders just that tail.

@@ -89,11 +89,15 @@ $('tab9').innerHTML = tabletSvg(`<rect width="664" height="404" fill="#e5efe9"/>
   <g transform="translate(40 36)">${logo(28)}</g><text x="112" y="80" font-family="Lora" font-size="34" fill="#184e45">PuzzlePiece</text>
   <g transform="translate(250 60) scale(.8)">${kid({ id: 'k9' })}</g>
   <rect id="off9" width="664" height="404" fill="#0c0c0c"/>`);
-$('logo9').innerHTML = logo(100);
+// end-card background: faint outline pieces + soft-colored floating pieces
+const OUT9 = [[60, 120, 2.4, 20], [930, 260, 2.2, -15], [40, 980, 1.6, 10], [1010, 1080, 2.6, 30], [70, 1700, 2.0, -25], [1000, 1760, 1.9, 15]];
+const COL9 = [[150, 330, '#5cb85c', 1.3, -30], [930, 280, '#6ccfd0', 1.1, 20], [70, 930, '#e5674f', .85, 5], [1010, 1260, '#f0b24a', 1.0, -10], [540, 1820, '#a3404e', .8, 25], [960, 880, '#5cb85c', .55, 40]];
+$('bg9').innerHTML = OUT9.map(([x, y, k, r]) => `<path d="${PIECE}" transform="translate(${x} ${y}) rotate(${r}) scale(${k}) translate(-50 -50)" fill="none" stroke="#d8d4c2" stroke-width="2" opacity=".8"/>`).join('') +
+  COL9.map(([x, y, c, k, r], i) => `<g class="cp9" data-x="${x}" data-y="${y}" data-k="${k}" data-r="${r}" data-i="${i}"><path d="${PIECE}" transform="translate(-50 -50)" fill="${c}"/></g>`).join('');
 
 const anims = [...document.querySelectorAll('[data-a]')];
 const scenes = [...document.querySelectorAll('.scene')];
-const WIPES = [[4.6, '#faf8f3'], [7.2, '#e5efe9'], [9.4, '#faf8f3'], [14.4, '#e5efe9'], [17.2, '#184e45'], [19.6, '#faf8f3'], [25.4, '#f3e3cc'], [28.6, '#184e45']];
+const WIPES = [[4.6, '#faf8f3'], [7.2, '#e5efe9'], [9.4, '#faf8f3'], [14.4, '#e5efe9'], [17.2, '#184e45'], [19.6, '#faf8f3'], [25.4, '#f3e3cc'], [28.6, '#f5f1df']];
 $('wipeP').setAttribute('d', PIECE);
 
 // ---------- render ----------
@@ -189,6 +193,10 @@ function render(t) {
     h.style.opacity = p > 0 && p < 1 ? 1 - p * .6 : 0;
   });
 
+  document.querySelectorAll('.cp9').forEach(g => {
+    const i = +g.dataset.i, p = eb(prog(t, 28.75 + i * .12, .9));
+    g.setAttribute('transform', `translate(${g.dataset.x} ${+g.dataset.y + Math.sin(t * 1.1 + i) * 14}) rotate(${+g.dataset.r + Math.sin(t * .7 + i) * 8}) scale(${g.dataset.k * p})`);
+  });
   // 9 — tablet drops, screen wakes, tap the CTA
   const d = prog(t, 28.7, 1.1);
   $('tab9').style.transform = `translateY(${-1000 * (1 - eb(d))}px) rotate(${(1 - eo(d)) * -10}deg)`;
