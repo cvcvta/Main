@@ -3,20 +3,20 @@
 <title>PuzzlePiece Logo Title</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:1080px;height:1920px;overflow:hidden;background:#184e45}
+html,body{overflow:hidden;background:#184e45}
 .abs{position:absolute}
 #cream{inset:0;background:radial-gradient(110% 60% at 20% 10%, #f4edc4 0%, #f6f1df 40%, #f3efe5 75%, #efebe1 100%)}
 .shard{width:139px;height:147px;will-change:transform}
 .ltr{height:118px;background:url(assets/word.png) no-repeat;will-change:transform}
 </style></head>
 <body>
-<div id="stage" class="abs" style="inset:0;transform-origin:540px 960px">
+<div id="stage" class="abs" style="inset:0">
   <div id="cream" class="abs"></div>
-  <svg class="abs" style="left:0;top:0" width="1080" height="1920" id="fx"></svg>
+  <svg class="abs" style="left:0;top:0" id="fx"></svg>
   <div id="shards"></div>
   <img id="icon" class="abs" src="assets/icon.png" style="width:139px;height:147px">
-  <div id="word" class="abs" style="left:257px;top:901px;width:722px;height:118px"></div>
-  <div id="line" class="abs" style="left:480px;top:1080px;width:120px;height:5px;border-radius:3px;background:#f2d77a"></div>
+  <div id="word" class="abs" style="width:722px;height:118px"></div>
+  <div id="line" class="abs" style="width:120px;height:5px;border-radius:3px;background:#f2d77a"></div>
 </div>
 
 <script src="art.js"></script>
@@ -35,9 +35,17 @@ const spring = (dt, f = 1.6, z = .55) => {
 };
 const $ = id => document.getElementById(id);
 
-// Lockup geometry (icon 139×147 · 18 px gap · wordmark 722×118), centred on 1080
-const IX = 100, IY = 887, CX = 540, CY = 960;
-const ICON_CENTRE_X = 540 - 69.5;
+// Frame size: 1080×1920 by default, or ?w=1920&h=1080 for landscape
+const Q = new URLSearchParams(location.search), W = +(Q.get('w') || 1080), H = +(Q.get('h') || 1920);
+document.documentElement.style.width = document.body.style.width = W + 'px';
+document.documentElement.style.height = document.body.style.height = H + 'px';
+$('fx').setAttribute('width', W); $('fx').setAttribute('height', H);
+$('stage').style.transformOrigin = `${W / 2}px ${H / 2}px`;
+// Lockup geometry (icon 139×147 · 18 px gap · wordmark 722×118 → 879 px), centred in the frame
+const CX = W / 2, CY = H / 2, IX = CX - 879 / 2, IY = CY - 73.5;
+const ICON_CENTRE_X = CX - 69.5;
+$('word').style.left = IX + 157 + 'px'; $('word').style.top = IY + 14 + 'px';
+$('line').style.left = CX - 60 + 'px'; $('line').style.top = IY + 193 + 'px';
 
 // Five shards in the logo's own colours, all the icon's silhouette, spiralling in to stack
 const SH = ['#4caf3a', '#5ccfcf', '#f5a800', '#d62a22', '#6b1830'];
@@ -48,7 +56,9 @@ const L = [[0, 73], [80, 150], [161, 219], [229, 287], [296, 328], [333, 393], [
 $('word').innerHTML = L.map(([a, b], i) => `<div class="abs ltr" id="l${i}" style="left:${a}px;width:${b - a}px;background-position:-${a}px 0;transform-origin:50% 100%"></div>`).join('');
 
 // FX: ripple ring + accent pieces at different depths (parallax)
-const ACC = [[150, 300, '#4caf3a', .75, -25, .35], [930, 330, '#5ccfcf', .6, 18, .6], [140, 1620, '#d62a22', .5, 10, .8], [940, 1660, '#f5a800', .7, -12, .5]];
+const ACC = (W > H
+  ? [[260, 200, '#4caf3a', .75, -25, .35], [1660, 210, '#5ccfcf', .6, 18, .6], [250, 900, '#d62a22', .5, 10, .8], [1670, 910, '#f5a800', .7, -12, .5]]
+  : [[150, 300, '#4caf3a', .75, -25, .35], [930, 330, '#5ccfcf', .6, 18, .6], [140, 1620, '#d62a22', .5, 10, .8], [940, 1660, '#f5a800', .7, -12, .5]]);
 $('fx').innerHTML = `<circle id="ring" cx="${CX}" cy="${CY}" r="0" fill="none" stroke="#f9d272" stroke-width="6" opacity="0"/>` +
   `<circle id="ring2" cx="${CX}" cy="${CY}" r="0" fill="none" stroke="#f9d272" stroke-width="3" opacity="0"/>` +
   ACC.map(([x, y, c], i) => `<g id="ac${i}"><path d="${PIECE}" transform="translate(-50 -50)" fill="${c}" opacity=".9"/></g>`).join('');
@@ -58,7 +68,7 @@ function render(t) {
   SH.forEach((_, i) => {
     const p = eio(prog(t, 0 + i * .07, 1.05));
     const a0 = i * 72 * Math.PI / 180, a = a0 + (1 - p) * 3.4 * (i % 2 ? 1 : -1);
-    const r = 950 * Math.pow(1 - p, 1.6);
+    const r = Math.max(W, H) * .5 * Math.pow(1 - p, 1.6);
     const x = CX + Math.cos(a) * r, y = CY + Math.sin(a) * r;
     const s = $('sh' + i);
     s.style.left = x - 69.5 + 'px'; s.style.top = y - 73.5 + 'px';
@@ -85,7 +95,7 @@ function render(t) {
 
   // ── 3. iris opens from the icon into warm cream ──
   const iris = eio(prog(t, 1.3, .75));
-  $('cream').style.clipPath = `circle(${iris * 1250}px at ${CX}px ${CY}px)`;
+  $('cream').style.clipPath = `circle(${iris * Math.hypot(W, H) * .58}px at ${CX}px ${CY}px)`;
 
   // ── 4. wordmark letters spring up one by one as the icon glides over ──
   L.forEach((_, i) => {
