@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PuzzlePiece — Registration</title>
+<!-- Idea: the PuzzlePiece mark is five overlapping translucent colour bands. They float off-register above warm
+     picture-book paper, drift down into register and print; then the wordmark prints beside them with its ink
+     ghosts converging. ACCENT = butter (#f2c14e): light only (the key, the sweep, one ink ghost). -->
+<style>
+:root { --ink: #184e45; --butter: #f2c14e; --teal: #5cc6c4; }
+* { box-sizing: border-box; }
+html, body { margin: 0; overflow: hidden; background: #efebe1; }
+#main { position: absolute; left: 0; top: 0; overflow: hidden;
+  background: radial-gradient(110% 60% at 20% 10%, #f4edc4 0%, #f6f1df 40%, #f3efe5 75%, #efebe1 100%); }
+#cam { position: absolute; inset: 0; will-change: transform; }
+#paper { position: absolute; left: -60%; top: -60%; width: 220%; height: 220%; mix-blend-mode: multiply; opacity: .55; }
+.plate { position: absolute; left: 0; top: 0; width: 100%; height: 100%; will-change: transform; }
+.pw { position: absolute; left: 0; top: 0; width: 100%; height: 100%; will-change: transform; }
+.shd { position: absolute; will-change: opacity; }
+.ltr { position: absolute; top: 0; overflow: visible; }
+.lyr { position: absolute; left: 0; top: 0; width: 100%; height: 100%; will-change: transform; }
+#shade { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 90% at 85% 100%, rgba(120,100,60,.10), rgba(120,100,60,0) 60%); }
+</style>
+</head>
+<body>
+<div id="main">
+  <div id="cam">
+    <svg id="paper" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <filter id="tooth" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="3" seed="7" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 .55  0 0 0 0 .5  0 0 0 0 .4  0 0 0 -.9 .62"/>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#tooth)"/>
+    </svg>
+    <div id="shadows"></div>
+    <div id="plates"></div>
+    <div id="sheen"></div>
+    <div id="word"></div>
+  </div>
+  <div id="shade"></div>
+</div>
+
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script src="./assets/masks.js"></script>
+<script>
+/* SEEK CONTRACT: every frame below is a pure function of t (render(t) writes everything from scratch). */
+const Q = new URLSearchParams(location.search);
+const W = +(Q.get('w') || 1080), H = +(Q.get('h') || 1920), PORTRAIT = H > W;
+const DUR = 5, FPS = 60;
+const main = document.getElementById('main'); main.style.width = W + 'px'; main.style.height = H + 'px';
+document.documentElement.style.width = document.body.style.width = W + 'px';
+document.documentElement.style.height = document.body.style.height = H + 'px';
+const M = Motion.film({ fps: FPS, duration: DUR, width: W, height: H, clock: 'smooth' });
+const E = M.ease, $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), prog = (t, s, d) => clamp((t - s) / d), lerp = (a, b, m) => a + (b - a) * m;
+
+/* ---------- lockup geometry (icon 139x147, gap 18, wordmark 722x118 at S = 1) ---------- */
+const S = PORTRAIT ? .98 : .9;
+const CX = W / 2, CY = H / 2, LW = 879 * S;
+const IX = CX - LW / 2, IY = CY - 73.5 * S, IW = 139 * S, IH = 147 * S;
+const OX = IX + IW / 2, OY = IY + IH / 2;                 // icon centre = the camera's pivot
+const WX = IX + 157 * S, WY = IY + 14 * S, WW = 722 * S, WH = 118 * S;
+['plates', 'shadows'].forEach(id => Object.assign($(id).style, { position: 'absolute', left: IX + 'px', top: IY + 'px', width: IW + 'px', height: IH + 'px' }));
+$('shadows').style.mixBlendMode = 'multiply';
+Object.assign($('word').style, { position: 'absolute', left: WX + 'px', top: WY + 'px', width: WW + 'px', height: WH + 'px' });
+Object.assign($('sheen').style, { position: 'absolute', left: IX + 'px', top: IY + 'px', width: IW + 'px', height: IH + 'px',
+  webkitMask: `url(${ICON_MASK}) center/100% 100% no-repeat`, mask: `url(${ICON_MASK}) center/100% 100% no-repeat`, mixBlendMode: 'screen' });
+
+/* ---------- the five real colour plates of the mark (split from the logo; recomposed they are the logo) ---------- */
+// [file, shadow tint, start offset (x,y in icon widths), start rotation, landing time s]
+const PL = [
+  ['green',     '87,179,71',  [-.95, -.80], -15, 2.60],
+  ['amber',     '239,159,51', [-1.15, .40],  11, 2.85],
+  ['red',       '206,29,18',  [ .30, 1.05], -10, 2.70],
+  ['maroon',    '68,19,13',   [ 1.00, .55],  14, 3.10],
+  ['deepgreen', '47,128,25',  [ .85, -.90],  -8, 2.95],
+];
+const T0 = -.75;                                         // moves began before frame 0: the film opens mid-drift
+const LAST = Math.max(...PL.map(p => p[4]));
+$('plates').innerHTML = PL.map(([n], i) => `<img class="plate" id="pl${i}" src="./assets/band_${n}.png">`).join('');
+// shadows are pre-blurred sprites (soft = high above the paper, near = almost touching), baked from each plate's own silhouette
+const PADF = 160 / 556;                                    // sprite padding as a share of the plate width
+const shd = (n, k) => `<img class="shd" id="s${k}_${n}" src="./assets/shadow_${n}_${k}.png" style="left:${-PADF * IW}px;top:${-PADF * IW}px;width:${IW * (1 + 2 * PADF)}px;height:${IH + 2 * PADF * IW}px">`;
+$('shadows').innerHTML = PL.map(([n], i) => `<div class="pw" id="sw${i}">${shd(n, 'soft')}${shd(n, 'near')}</div>`).join('');
+
+/* ---------- wordmark: 11 letters, each = ink + two registration ghosts (butter, teal) ---------- */
+const LET = [[0, 73], [80, 150], [161, 219], [229, 287], [296, 328], [333, 393], [403, 477], [484, 516], [521, 581], [591, 656], [657, 722]];
+const GAPS = [0, 4, 2, 5, 2, 3, 6, 2, 4, 2, 4];          // 60 fps frames between onsets: uneven, 1.5-4 f @30
+let acc = 0; const ON = GAPS.map(g => (acc += g, 2.92 + acc / FPS));
+const masked = (c, a) => `background:${c};-webkit-mask:url(${WORD_MASK}) -${a * S}px 0/${WW}px ${WH}px no-repeat;mask:url(${WORD_MASK}) -${a * S}px 0/${WW}px ${WH}px no-repeat`;
+$('word').innerHTML = LET.map(([a, b], i) => `<div class="ltr" id="l${i}" style="left:${a * S}px;width:${(b - a) * S}px;height:${WH}px">
+  <div class="lyr" id="g1_${i}" style="${masked('var(--butter)', a)};mix-blend-mode:multiply"></div>
+  <div class="lyr" id="g2_${i}" style="${masked('var(--teal)', a)};mix-blend-mode:multiply"></div>
+  <div class="lyr" id="k_${i}" style="background:url(./assets/word.png) -${a * S}px 0/${WW}px ${WH}px no-repeat"></div></div>`).join('');
+
+/* ---------- events for the edit and for sound later ---------- */
+PL.forEach(([n, , , , L]) => M.mark(Math.round(L * FPS), 'snap', n + ' plate prints'));
+M.mark(Math.round(LAST * FPS), 'press', 'mark in register');
+M.mark(Math.round(ON[0] * FPS), 'word', 'wordmark prints');
+M.mark(Math.round(3.7 * FPS), 'sweep', 'light sweep (not a cut: one continuous shot)');
+
+/* ---------- the frame ---------- */
+function render(t) {
+  // camera: opens 5.2x on the icon (centred), pulls back on a long decelerating glide; after the lockup resolves,
+  // a slow contraction that accelerates into the last frame (ends mid-motion)
+  const c = E.softInOut(prog(t, -.35, 4.0));               // already easing at frame 0; lingers on the macro gels, lands by 3.65 s
+  let s = 1 + 4.2 * (1 - c);                                  // 5.2x macro: the gels fill the frame
+  s *= 1 - .018 * E.cruise(prog(t, 3.75, .7)) - .05 * E.accelExit(prog(t, 4.45, .55));   // creep, then the contraction accelerates into the last frame
+  const tx = (1 - c) * (CX - OX), ty = (1 - c) * (CY - OY);
+  const cam = $('cam'); cam.style.transformOrigin = `${OX}px ${OY}px`; cam.style.transform = `translate(${tx}px,${ty}px) scale(${s})`;
+
+  // rack focus: the plates arrive soft (macro depth of field) and are sharp by 1.15 s
+  const focus = 1.5 * (1 - E.softInOut(prog(t, 0, 1.0)));   // pre-camera px: ~7 px on screen at 5.2x
+
+  // the press: when the last plate touches paper the whole mark gives 2 % for 0.1 s
+  const press = Math.sin(Math.PI * prog(t, LAST, .1)) * .02;
+  $('plates').style.transform = `scale(${1 - press})`;
+  $('plates').style.filter = $('shadows').style.filter = focus > .05 ? `blur(${focus}px)` : 'none';
+
+  PL.forEach(([n, rgb, [dx, dy], r0, L], i) => {
+    const p = E.softLand(prog(t, T0, L - T0));                 // land decelerates: most travel early, long tail
+    const h = 1 - E.softInOut(prog(t, L - .55, .55));          // height above the paper: comes down over the last .55 s
+    const x = dx * IW * (1 - p), y = dy * IH * (1 - p), rot = r0 * (1 - p);
+    const k = 1 + .07 * h;                                      // lifted = nearer the lens
+    const el = $('pl' + i);
+    el.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg) scale(${k})`;
+    // key light from the top-left: the shadow falls down-right; offset grows with height, the soft sprite takes over as it rises,
+    // and both are gone once the plate is printed onto the paper
+    const sx = 16 * S * h, sy = 24 * S * h;
+    $('sw' + i).style.transform = `translate(${x + sx}px,${y + sy}px) rotate(${rot}deg) scale(${k})`;
+    $('ssoft_' + n).style.opacity = (.42 * h).toFixed(3);
+    $('snear_' + n).style.opacity = (.34 * Math.sin(Math.PI * Math.min(h, .5))).toFixed(3);
+    el.style.mixBlendMode = h > .002 ? 'multiply' : 'normal';   // gels mix where they overlap; printed = exact colour
+    el.style.opacity = 1;
+  });
+
+  // wordmark prints letter by letter: ink lands from slightly large + soft, its two colour ghosts converge into register
+  LET.forEach((_, i) => {
+    const o = ON[i], q = prog(t, o, .42), e = E.softLand(q), on = t >= o;
+    const ink = $('k_' + i), g1 = $('g1_' + i), g2 = $('g2_' + i), d = 1 - e;
+    ink.style.opacity = on ? E.cruise(prog(t, o, .07)) : 0;
+    ink.style.transform = `translateY(${7 * S * d}px) scale(${1 + .035 * d})`;
+    ink.style.filter = d > .02 ? `blur(${(2.6 * d).toFixed(2)}px)` : 'none';
+    const ga = on ? .85 * (1 - E.softInOut(prog(t, o + .06, .4))) : 0;
+    g1.style.opacity = ga; g1.style.transform = `translate(${11 * S * d}px,${-7 * S * d}px)`;
+    g2.style.opacity = ga; g2.style.transform = `translate(${-9 * S * d}px,${6 * S * d}px)`;
+  });
+
+  // one sweep of warm light across the printed mark, once
+  const sw = prog(t, 3.7, .65), sh = $('sheen');
+  sh.style.opacity = sw > 0 && sw < 1 ? Math.sin(Math.PI * sw) : 0;
+  sh.style.background = `linear-gradient(115deg, rgba(255,250,225,0) ${lerp(-60, 120, E.softInOut(sw))}%, rgba(255,244,200,.85) ${lerp(-40, 140, E.softInOut(sw))}%, rgba(255,250,225,0) ${lerp(-20, 160, E.softInOut(sw))}%)`;
+}
+
+/* hook render(t) onto the film clock (fromTo + immediateRender:false on M.tl, per the runtime's seek contract) */
+const clock = {}; let _t = 0;
+Object.defineProperty(clock, 't', { get: () => _t, set: v => { _t = v; render(v); } });
+M.tl.fromTo(clock, { t: 0 }, { t: DUR, duration: DUR, ease: 'none', immediateRender: false, lazy: false }, 0);
+render(0);
+window.__ready = Motion.loaded().then(() => { if (/selftest/.test(location.search)) Motion.selfTest(M, { samples: 24 }); });
+</script>
+</body>
+</html>

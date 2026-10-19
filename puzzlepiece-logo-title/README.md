@@ -1,29 +1,16 @@
-# PuzzlePiece logo title (9:16)
+# PuzzlePiece logo title — "Registration"
 
-- `puzzlepiece-logo-title-9x16.mp4` — 1080×1920 (vertical 1080p)
-- `puzzlepiece-logo-title-16x9.mp4` — 1920×1080 (landscape 1080p)
+- `puzzlepiece-logo-title-9x16.mp4` — 1080×1920
+- `puzzlepiece-logo-title-16x9.mp4` — 1920×1080
 
-Both: 60 fps with motion blur, 5 s, no audio, rendered at 2× and downsampled
-(lanczos) for crisp edges, H.264 High, CRF 12.
+Both: 5 s, 60 fps, shutter blur (180°, 8 sub-frames), light grain, no audio. Made with the motionmaxxing method.
 
-Uses the real PuzzlePiece lockup (multicolour puzzle-piece icon + wordmark),
-split into `assets/icon.png` and `assets/word.png`; the wordmark is further split
-into its 11 letters so each one animates on its own spring.
+The PuzzlePiece mark is five overlapping translucent colour bands. The film splits the real logo into those
+bands, floats them just off-register above warm picture-book paper, lets them drift down into register and
+print, then prints the wordmark beside them with its ink ghosts converging. See `registration/STORYBOARD.md`
+(idea, world, beats) and `registration/NOTE.md` (what is real, gate numbers, what to improve).
 
-| Time | Beat |
-|---|---|
-| 0.0–1.2 | Five pieces in the logo's own colours (green, teal, amber, red, maroon) spiral in on deep green, each spinning a different way |
-| 1.2 | They lock together and the real icon "clicks" in — spring pulse + double ripple ring |
-| 1.3–2.1 | Iris opens from the icon into the warm cream background |
-| 1.9–2.6 | Icon springs left into the lockup position |
-| 2.35–3.2 | Wordmark letters pop up one at a time, each with its own bounce |
-| 2.6–3.8 | Corner accent pieces spring in and drift at different depths (parallax) |
-| 3.2–3.8 | Yellow brand underline draws |
-| 1.6–5.0 | Slow camera push-in throughout; icon settles with a soft tilt |
+Re-render (needs the motionmaxxing toolbox's `scripts/render.mjs`, Chrome and ffmpeg):
 
-Motion blur: `render.js` renders 240 sub-frames per second, blends 3 neighbours per
-output frame (≈270° shutter) and writes 60 fps.
-
-    FFMPEG=$(which ffmpeg) W=1080 H=1920 OUT=title_9x16.mp4  node render.js
-    FFMPEG=$(which ffmpeg) W=1920 H=1080 OUT=title_16x9.mp4  node render.js
-    # SS=2 (default) sets the supersampling factor
+    node render.mjs "file://$PWD/registration/index.html?w=1080&h=1920" title_9x16.mp4 --width 1080 --height 1920 --fps 60 --shutter 180 --subframes 8 --grain 0.03
+    node render.mjs "file://$PWD/registration/index.html?w=1920&h=1080" title_16x9.mp4 --width 1920 --height 1080 --fps 60 --shutter 180 --subframes 8 --grain 0.03
