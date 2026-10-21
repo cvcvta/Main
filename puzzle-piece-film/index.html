@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Puzzle Piece — The missing piece</title>
+<meta name="viewport" content="width=1920, height=1080">
+<style>
+/* One world: warm storybook paper lit from the top left. Two faces, the app's own: Lora (story voice) and DM Sans (UI).
+   ACCENT = yellow, "the thing you act on / the word that matters" (the app's button colour). Green bar = "ready". The 4 logo circles = "together". */
+@font-face { font-family: 'Lora'; font-style: normal; font-weight: 400 700; src: url(./assets/fonts/lora-latin-wght-normal.woff2) format('woff2'); }
+@font-face { font-family: 'Lora'; font-style: italic; font-weight: 400 700; src: url(./assets/fonts/lora-latin-wght-italic.woff2) format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 100 1000; src: url(./assets/fonts/dm-sans-latin-opsz-normal.woff2) format('woff2'); }
+:root {
+  --paper: #F3EEDF;
+  --ink: #1F4135;
+  --ink-soft: #5E6E66;
+  --ui: #FBFAF4;
+  --mint: #D9EEE3;
+  --card-green: #1E5240;
+  --yellow: #EDB52B;
+  --yellow-edge: #C9932A;
+  --done: #2E9B3A;
+  --serif: 'Lora', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+#main { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; color: var(--ink); font-family: var(--serif);
+  background: radial-gradient(1500px 1100px at 18% 8%, #FCF9F0 0%, #F4EFE1 48%, #E7DFCB 100%); }
+#paper { position: absolute; inset: 0; background: url(./assets/img/paper.png); background-size: 1024px; mix-blend-mode: multiply; opacity: .5; pointer-events: none; z-index: 50; }
+#light { position: absolute; inset: 0; pointer-events: none; z-index: 49;
+  background: linear-gradient(125deg, rgba(255,250,235,.0) 0%, rgba(255,250,235,0) 45%, rgba(120,95,50,.10) 100%); }
+.scene { position: absolute; inset: 0; }
+.cam { position: absolute; inset: 0; }
+.abs { position: absolute; }
+.cap { position: absolute; left: 0; width: 1920px; text-align: center; font-family: var(--serif); font-weight: 420; color: var(--ink); letter-spacing: -0.01em; white-space: pre; }
+.cap.it { font-style: italic; font-weight: 400; }
+.ink path, .ink circle, .ink line, .ink rect { fill: none; stroke: var(--ink); stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; }
+.ink .wash { stroke: none; }
+.hlb { position: absolute; left: -0.06em; right: -0.06em; bottom: 0.1em; height: 0.4em; background: #F4C850; border-radius: .14em; z-index: -1; transform-origin: 0 50%; }
+.cursor { position: absolute; left: 0; top: 0; overflow: visible; z-index: 40; }
+.shadow { box-shadow: 0 2px 3px rgba(60,48,20,.10), 0 18px 40px -10px rgba(60,48,20,.22), 0 50px 90px -30px rgba(60,48,20,.20); }
+
+/* ---- 1 hook ---- */
+#gateBig { position: absolute; left: 510px; top: 70px; width: 900px; height: 795px; }
+
+/* ---- 2 countdown ---- */
+#ring { position: absolute; left: 660px; top: 230px; width: 600px; height: 600px; }
+#num { position: absolute; left: 660px; top: 330px; width: 600px; text-align: center; font-family: var(--serif); font-size: 330px; line-height: 400px; font-weight: 450; letter-spacing: -0.04em; }
+#numLbl { position: absolute; left: 0; top: 860px; width: 1920px; text-align: center; font-family: var(--serif); font-style: italic; font-size: 54px; color: var(--ink-soft); }
+
+/* ---- 3/4 the strip ---- */
+#strip { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.piece { position: absolute; top: 340px; width: 560px; height: 460px; overflow: visible; }
+.piece svg { overflow: visible; }
+.pcap { position: absolute; left: 0; top: 368px; width: 430px; text-align: center; font-family: var(--serif); font-style: italic; font-size: 44px; color: var(--ink); white-space: pre; }
+#markSlot { position: absolute; left: 1395px; top: 380px; width: 400px; height: 424px; }
+.mark { display: block; overflow: visible; }
+#wordmark { position: absolute; left: 0; top: 0; }
+
+/* ---- 5 social story ---- */
+#storyCard { position: absolute; left: 470px; top: 300px; width: 980px; border-radius: 28px; background: #fff; overflow: hidden; }
+#storyCard img { display: block; width: 980px; height: 480px; object-fit: cover; object-position: 50% 30%; }
+#storyCard .body { padding: 34px 44px 40px; font-family: var(--sans); }
+.kick { font-family: var(--sans); font-weight: 700; font-size: 19px; letter-spacing: .06em; color: #3A5148; }
+
+/* ---- 6 tell it ---- */
+#guide { position: absolute; left: 400px; top: 300px; width: 1120px; height: 1000px; border-radius: 36px; background: var(--mint); padding: 56px 64px; }
+#gq { font-family: var(--serif); font-size: 46px; line-height: 62px; color: #1E3A31; }
+#gLbl { margin-top: 30px; font-family: var(--sans); font-weight: 650; font-size: 26px; color: #2B4A40; }
+#gField { position: relative; margin-top: 14px; height: 168px; border-radius: 20px; background: #fff; border: 4px solid #4A9C8C; box-shadow: 0 0 0 6px rgba(74,156,140,.18); }
+#gText { position: absolute; left: 28px; top: 22px; width: 960px; font-family: var(--sans); font-size: 36px; line-height: 50px; color: #24332D; white-space: pre-wrap; }
+#gCaret { position: absolute; left: 28px; top: 28px; width: 3px; height: 40px; background: #24332D; }
+#gBtn { position: relative; margin-top: 30px; height: 92px; border-radius: 22px; background: var(--yellow); border-bottom: 5px solid var(--yellow-edge); font-family: var(--sans); font-weight: 650; font-size: 32px; color: #3A2C08; display: flex; align-items: center; justify-content: center; gap: 14px; }
+#reply { position: absolute; left: 470px; top: 1000px; width: 980px; border-radius: 28px; background: #fff; padding: 34px 40px; font-family: var(--sans); font-size: 34px; line-height: 50px; color: #24332D; }
+#reply .who { font-size: 24px; font-weight: 650; color: #4A6A5F; margin-bottom: 8px; }
+
+/* ---- 7 their face ---- */
+#faceCard { position: absolute; left: 360px; top: 180px; width: 1200px; height: 1240px; border-radius: 44px; background: #EDEBD5; }
+#faceCard .ic { position: absolute; left: 560px; top: 56px; width: 80px; height: 80px; border-radius: 22px; background: #FAF7EA; }
+#faceCard .kick { position: absolute; left: 0; top: 168px; width: 1200px; text-align: center; font-size: 24px; letter-spacing: .1em; color: #4A5A52; }
+#faceH { position: absolute; left: 0; top: 214px; width: 1200px; text-align: center; font-family: var(--serif); font-size: 76px; line-height: 92px; color: #1E3A31; white-space: pre; }
+#tf { position: absolute; left: 300px; top: 420px; width: 600px; height: 598px; }
+#tfImg { position: absolute; left: 0; top: 0; width: 600px; height: 598px; background: url(./assets/img/transform.png) 0 0 / 600px 598px no-repeat; --rv: 37;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--rv) * 1%), transparent calc(var(--rv) * 1% + 9%)); mask-image: linear-gradient(90deg, #000 calc(var(--rv) * 1%), transparent calc(var(--rv) * 1% + 9%)); }
+#mumScene { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; }
+
+/* ---- 8 styles ---- */
+#styleBig { position: absolute; left: 560px; top: 250px; width: 800px; height: 666px; border-radius: 34px; overflow: hidden; }
+#styleBig img { position: absolute; left: 0; top: 0; width: 800px; height: 666px; object-fit: cover; }
+#tiles { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.tile { position: absolute; top: 330px; width: 430px; height: 476px; border-radius: 30px; background: #FBFAF4; padding: 14px; }
+.tile img { display: block; width: 402px; height: 335px; border-radius: 20px; object-fit: cover; }
+.tile .lbl { margin-top: 38px; text-align: center; font-family: var(--sans); font-weight: 650; font-size: 30px; color: #1E4A3C; letter-spacing: .01em; }
+.tile .sel { position: absolute; inset: -9px; border-radius: 38px; border: 7px solid var(--yellow); }
+
+/* ---- 9 practice ---- */
+#rows { position: absolute; left: 400px; top: 300px; width: 1120px; }
+.row { position: relative; height: 160px; margin-bottom: 26px; border-radius: 28px; background: #fff; overflow: hidden; display: flex; align-items: center; }
+.row img, .row .ph { width: 250px; height: 160px; object-fit: cover; flex: none; }
+.row .ph { background: #E3F1EA; display: flex; align-items: center; justify-content: center; }
+.row .t { padding-left: 50px; font-family: var(--sans); }
+.row .k { font-weight: 700; font-size: 22px; letter-spacing: .06em; color: #4A5A52; }
+.row .n { margin-top: 10px; font-weight: 560; font-size: 44px; color: #1E4A3C; }
+
+/* ---- 10 book ---- */
+#book { position: absolute; left: 260px; top: 250px; width: 1400px; height: 610px; perspective: 2600px; }
+.leaf { position: absolute; top: 0; width: 700px; height: 610px; overflow: hidden; background: #FFFDF6; }
+.leaf img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.leaf.l { left: 0; border-radius: 22px 0 0 22px; }
+.leaf.r { left: 700px; border-radius: 0 22px 22px 0; }
+.turn { position: absolute; left: 700px; top: 0; width: 700px; height: 610px; transform-origin: 0 50%; transform-style: preserve-3d; }
+.turn .f, .turn .b { position: absolute; inset: 0; backface-visibility: hidden; overflow: hidden; background: #FFFDF6; }
+.turn .f { border-radius: 0 22px 22px 0; }
+.turn .b { transform: rotateY(180deg); border-radius: 22px 0 0 22px; }
+.turn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+#book img.hL, #book img.hR { position: absolute; top: 0; width: 1400px; height: 610px; max-width: none; object-fit: cover; }
+#book img.hL { left: 0; } #book img.hR { left: -700px; }
+.turn .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(40,30,10,.0), rgba(40,30,10,.35)); opacity: 0; }
+#gutter { position: absolute; left: 676px; top: 0; width: 48px; height: 610px; background: linear-gradient(90deg, rgba(60,40,10,0), rgba(60,40,10,.22) 50%, rgba(60,40,10,0)); z-index: 5; pointer-events: none; }
+
+/* ---- 11 together ---- */
+.disc { position: absolute; width: 760px; height: 760px; border-radius: 50%; mix-blend-mode: multiply; }
+
+/* ---- 12 sign-up ---- */
+#signup { position: absolute; left: 360px; top: 250px; width: 1200px; }
+#meet { position: relative; height: 420px; border-radius: 36px; background: var(--mint); overflow: hidden; }
+#meet .chr { position: absolute; left: 470px; top: 14px; width: 260px; height: 290px; background: url(./assets/img/transform.png) -118px -8px / 335px 334px no-repeat; -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); }
+#meet .h { position: absolute; left: 0; top: 305px; width: 1200px; text-align: center; font-family: var(--serif); font-size: 56px; color: #1E3A31; }
+#meet .s { position: absolute; left: 0; top: 372px; width: 1200px; text-align: center; font-family: var(--sans); font-size: 24px; color: #4A5A52; }
+#ready { position: relative; margin-top: 26px; height: 250px; border-radius: 30px; background: #fff; padding: 34px 48px; }
+#ready .h { margin-top: 12px; font-family: var(--serif); font-size: 54px; color: #1E3A31; }
+#bar { margin-top: 26px; height: 16px; border-radius: 8px; background: #E4E6DF; overflow: hidden; }
+#barFill { width: 100%; height: 100%; background: var(--done); transform-origin: 0 50%; }
+#price { position: relative; margin-top: 26px; height: 250px; border-radius: 30px; background: #fff; padding: 34px 48px; }
+#price .p { font-family: var(--serif); font-size: 76px; color: #1E3A31; }
+#price .p small { font-family: var(--sans); font-size: 26px; color: #5E6E66; margin-left: 14px; }
+#trial { position: absolute; left: 48px; right: 48px; top: 140px; height: 88px; border-radius: 22px; background: var(--yellow); border-bottom: 5px solid var(--yellow-edge); font-family: var(--sans); font-weight: 650; font-size: 32px; color: #3A2C08; display: flex; align-items: center; justify-content: center; gap: 14px; }
+
+/* ---- 13 close ---- */
+#endMark { position: absolute; left: 0; top: 0; }
+#endWord { position: absolute; }
+</style>
+</head>
+<body>
+<div id="main">
+
+  <!-- ============ 1 HOOK 0-84 : an ink park gate draws itself; "Leaving the park can mean a meltdown." ============ -->
+  <section id="s1" class="scene"><div id="cam1" class="cam">
+    <div id="gateWrap" class="abs" style="left:0;top:0;width:1920px;height:1080px"><svg id="gateBig" class="ink" viewBox="0 0 430 380"></svg></div>
+    <div id="c1a" class="cap it" style="top:880px;font-size:56px">My son is autistic.</div>
+    <div id="c1b" class="cap" style="top:870px;font-size:72px">Leaving the park can mean a meltdown.</div>
+  </div></section>
+
+  <!-- ============ 2 TURN 84-164 : the warning counts down; it only says WHEN ============ -->
+  <section id="s2" class="scene"><div id="cam2" class="cam">
+    <div id="c2a" class="cap it" style="top:110px;font-size:56px">I gave warnings. I counted down.</div>
+    <div id="c2b" class="cap" style="top:110px;font-size:62px">But a warning only tells him when.</div>
+    <div id="clock" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+      <svg id="ring" viewBox="-300 -300 600 600"></svg>
+      <div id="num">5</div>
+    </div>
+    <div id="numLbl">more minutes</div>
+  </div></section>
+
+  <!-- ============ 3 TURN 164-260 : "It doesn't show him what happens next:" three story pieces lock ============ -->
+  <!-- ============ 4 NAME 260-306 : the missing piece is Puzzle Piece ============ -->
+  <section id="s3" class="scene"><div id="cam3" class="cam">
+    <div id="c3a" class="cap" style="top:150px;font-size:62px">It doesn’t show him what happens next:</div>
+    <div id="c4a" class="cap it" style="top:150px;font-size:62px">That’s why we use</div>
+    <div id="strip"></div>
+  </div></section>
+
+  <!-- ============ 5 CLAIM 306-386 : a social story (real story card) ============ -->
+  <section id="s5" class="scene"><div id="cam5" class="cam">
+    <div id="storyWrap" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+      <div id="storyCard" class="shadow" data-ui="captured">
+        <img src="./assets/img/switch.png" alt="">
+        <div class="body">
+          <div class="kick">START HERE</div>
+          <div style="margin-top:14px;font-family:var(--serif);font-size:60px;color:#1E3A31">When It’s Time to Switch</div>
+          <div style="margin-top:14px;font-size:30px;line-height:44px;color:#5E6E66">This story helps David practice stopping a favorite activity and moving to what comes next.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div id="capBand5" class="abs" style="left:0;top:0;width:1920px;height:270px;background:linear-gradient(180deg,#F8F4E8 0%,#F7F3E6 72%,rgba(247,243,230,0) 100%)"></div>
+    <div id="c5a" class="cap" style="top:110px;font-size:66px">It makes social stories:</div>
+    <div id="c5b" class="cap it" style="top:96px;font-size:50px;line-height:66px">short stories that walk your child through
+a moment before it happens.</div>
+    <div id="c5c" class="cap it" style="top:236px;font-size:30px;color:#5E6E66">On a university list of evidence-based practices for autistic kids.</div>
+  </section>
+
+  <!-- ============ 6 PROOF 386-476 : tell it the hard part (real story-guide question and answer) ============ -->
+  <section id="s6" class="scene"><div id="cam6" class="cam">
+    <div id="guide" class="shadow" data-ui="captured">
+      <div id="gq">Now, to start us off, before we go through a few everyday areas, what are one or two situations that are hardest for David right now?</div>
+      <div id="gLbl">Your answer</div>
+      <div id="gField"><div id="gText">He struggles with leaving the park, leaving school, and saying goodbye</div><i id="gCaret"></i></div>
+      <div id="gBtn">Send answer <svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="#3A2C08" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    </div>
+    <div id="reply" class="shadow" data-ui="captured"><div class="who">Story guide</div>Thanks for sharing that—sounds like goodbyes are really tough. Can you tell me more about what usually happens when it’s time to leave the park?</div>
+    <svg id="cur6" class="cursor" width="40" height="58" viewBox="0 0 32 46"><path d="M0 0 L0 38 L10 29 L17 45 L25 41 L18 26 L31 26 Z" fill="#111" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke"/></svg>
+  </div>
+    <div id="capBand6" class="abs" style="left:0;top:0;width:1920px;height:250px;background:linear-gradient(180deg,#F8F4E8 0%,#F7F3E6 70%,rgba(247,243,230,0) 100%)"></div>
+    <div id="c6a" class="cap" style="top:96px;font-size:58px">I just tell it the hard part, the way I’d tell a friend,</div>
+    <div id="c6b" class="cap it" style="top:96px;font-size:58px">and it writes a story about his moment.</div>
+  </section>
+
+  <!-- ============ 7 PROOF 476-536 : you put them right into the story ============ -->
+  <section id="s7" class="scene"><div id="cam7" class="cam">
+    <div id="faceCard" class="shadow" data-ui="captured">
+      <div class="ic"><svg width="80" height="80" viewBox="0 0 80 80"><path d="M38 22 C40 34 44 38 56 40 C44 42 40 46 38 58 C36 46 32 42 20 40 C32 38 36 34 38 22 Z M56 18 C57 23 58 24 62 25 C58 26 57 27 56 32 C55 27 54 26 50 25 C54 24 55 23 56 18 Z" fill="none" stroke="#B88A22" stroke-width="2.6" stroke-linejoin="round"/></svg></div>
+      <div class="kick">A STARRING ROLE, MADE PERSONAL</div>
+      <div id="faceH">Their face.
+A little storybook magic.</div>
+      <div id="tf"><div id="tfImg"></div></div>
+    </div>
+  </div>
+    <div id="mumScene"><div id="mumImg" class="abs shadow" style="left:560px;top:250px;width:800px;height:666px;border-radius:34px;overflow:hidden"><img src="./assets/img/style2@2x.jpg" style="width:100%;height:100%;object-fit:cover;display:block" alt=""></div></div>
+    <div id="capBand7" class="abs" style="left:0;top:0;width:1920px;height:240px;background:linear-gradient(180deg,#F8F4E8 0%,#F7F3E6 70%,rgba(247,243,230,0) 100%)"></div>
+    <div id="c7a" class="cap" style="top:96px;font-size:62px">You put them right into the story,</div>
+    <div id="c7b" class="cap it" style="top:96px;font-size:62px">with the people they know beside them.</div>
+  </section>
+
+  <!-- ============ 8 PROOF (hero 2) 536-614 : pick their favorite art style ============ -->
+  <section id="s8" class="scene"><div id="cam8" class="cam">
+    <div id="styleBig" class="shadow">
+      <img id="sb2" src="./assets/img/style2@2x.jpg" alt="">
+      <img id="sb0" src="./assets/img/style0@2x.jpg" alt="">
+      <img id="sb1" src="./assets/img/style1@2x.jpg" alt="">
+      <img id="sb3" src="./assets/img/style3@2x.jpg" alt="">
+      <div id="wipeEdge" class="abs" style="left:0;top:-200px;width:14px;height:1100px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,252,240,.95),rgba(255,255,255,0));"></div>
+    </div>
+    <div id="tiles" data-ui="captured">
+      <div class="tile shadow" id="t0" style="left:63px"><img src="./assets/img/style0.png" alt=""><div class="lbl">LEGO-inspired</div></div>
+      <div class="tile shadow" id="t1" style="left:528px"><img src="./assets/img/style1.png" alt=""><div class="lbl">Minecraft-inspired</div></div>
+      <div class="tile shadow" id="t2" style="left:993px"><img src="./assets/img/style2.png" alt=""><div class="lbl">Pixar-inspired</div><i class="sel" id="sel2"></i></div>
+      <div class="tile shadow" id="t3" style="left:1458px"><img src="./assets/img/style3.png" alt=""><div class="lbl">Simpsons-inspired</div></div>
+    </div>
+    <svg id="cur8" class="cursor" width="40" height="58" viewBox="0 0 32 46"><path d="M0 0 L0 38 L10 29 L17 45 L25 41 L18 26 L31 26 Z" fill="#111" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke"/></svg>
+  </div>
+    <div id="c8a" class="cap" style="top:110px;font-size:66px">Pick their favorite art style,</div>
+  </section>
+
+  <!-- ============ 9 PROOF 614-668 : practice tricky moments (real story list) ============ -->
+  <section id="s9" class="scene"><div id="cam9" class="cam">
+    <div id="rows" data-ui="captured">
+      <div class="row shadow" id="r0"><img src="./assets/img/thumb0.png" alt=""><div class="t"><div class="k">STORY 02</div><div class="n">Leaving the Park</div></div></div>
+      <div class="row shadow" id="r1"><img src="./assets/img/thumb1.png" alt=""><div class="t"><div class="k">STORY 03</div><div class="n">Leaving a Favorite Place</div></div></div>
+      <div class="row shadow" id="r2"><img src="./assets/img/thumb2.png" alt=""><div class="t"><div class="k">STORY 04</div><div class="n">Saying Goodbye</div></div></div>
+      <div class="row shadow" id="r3"><div class="ph"><svg width="70" height="70" viewBox="0 0 80 80"><path d="M38 22 C40 34 44 38 56 40 C44 42 40 46 38 58 C36 46 32 42 20 40 C32 38 36 34 38 22 Z" fill="none" stroke="#3E6E5E" stroke-width="2.6" stroke-linejoin="round"/></svg></div><div class="t"><div class="k">STORY 07</div><div class="n">Getting Ready in the Morning</div></div></div>
+    </div>
+  </div>
+    <div id="capBand9" class="abs" style="left:0;top:0;width:1920px;height:260px;background:linear-gradient(180deg,#F8F4E8 0%,#F7F3E6 70%,rgba(247,243,230,0) 100%)"></div>
+    <div id="c9a" class="cap it" style="top:96px;font-size:60px">and practice tricky moments before they even happen.</div>
+  </section>
+
+  <!-- ============ 10 PROOF 668-724 : read it first, together, again at his pace ============ -->
+  <section id="s10" class="scene"><div id="cam10" class="cam">
+    <div id="bookWrap" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+      <div id="book" class="shadow" style="border-radius:22px">
+        <div class="leaf l" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;background:#FFFDF6">
+          <svg width="70" height="70" viewBox="0 0 80 80"><path d="M38 22 C40 34 44 38 56 40 C44 42 40 46 38 58 C36 46 32 42 20 40 C32 38 36 34 38 22 Z" fill="none" stroke="#B88A22" stroke-width="2.6" stroke-linejoin="round"/></svg>
+          <div style="font-family:var(--serif);font-size:58px;line-height:70px;color:#1E3A31;text-align:center">When It’s Time<br>to Switch</div></div>
+        <div class="leaf r"><img class="hR" src="./assets/img/style2@2x.jpg" alt=""></div>
+        <div class="turn" id="turn1"><div class="f"><img src="./assets/img/switch.png" alt=""></div><div class="b"><img class="hL" src="./assets/img/style2@2x.jpg" alt=""></div><div class="shade" id="sh1"></div></div>
+        <div class="turn" id="turn2"><div class="f"><img class="hR" src="./assets/img/style2@2x.jpg" alt=""></div><div class="b"><img class="hL" src="./assets/img/switch.png" alt=""></div><div class="shade" id="sh2"></div></div>
+        <div class="turn" id="turn3"><div class="f"><img class="hR" src="./assets/img/switch.png" alt=""></div><div class="b"><img class="hL" src="./assets/img/style2@2x.jpg" alt=""></div><div class="shade" id="sh3"></div></div>
+        <div id="gutter"></div>
+      </div>
+    </div>
+    <div id="c10a" class="cap" style="top:930px;font-size:60px">I read it first.</div>
+    <div id="c10b" class="cap" style="top:930px;font-size:60px">Then we read it together,</div>
+    <div id="c10c" class="cap it" style="top:930px;font-size:60px">and again at his pace.</div>
+  </div></section>
+
+  <!-- ============ 11 TURN 724-776 : not a therapist; a way to prepare together ============ -->
+  <section id="s11" class="scene"><div id="cam11" class="cam">
+    <div id="discs" class="abs" style="left:0;top:0;width:1920px;height:1080px;isolation:isolate">
+      <div class="disc" id="dG" style="background:#4AB43A"></div>
+      <div class="disc" id="dT" style="background:#53C3C3"></div>
+      <div class="disc" id="dO" style="background:#F39E0F"></div>
+      <div class="disc" id="dR" style="background:#D92231"></div>
+    </div>
+    <div id="c11a" class="cap it" style="top:380px;font-size:56px">It doesn’t replace his therapist.</div>
+    <div id="c11b" class="cap" style="top:470px;font-size:84px;line-height:104px;font-weight:460">But it finally gives us
+a way to prepare together.</div>
+  </div></section>
+
+  <!-- ============ 12 CTA PROOF 776-846 : free account, see before you pay ============ -->
+  <section id="s12" class="scene"><div id="cam12" class="cam">
+    <div id="signup" data-ui="captured">
+      <div id="meet" class="shadow"><div class="chr"></div><div class="h">Meet storybook David.</div><div class="s">This is how David will appear in their personalized stories.</div></div>
+      <div id="ready" class="shadow"><div class="kick">THEIR STARTING LIBRARY IS READY</div><div class="h"><span id="rdN">0</span> of 10 story previews ready</div><div id="bar"><div id="barFill"></div></div></div>
+      <div id="price" class="shadow"><div class="p">$0.00<small>today</small></div><div id="trial">Start my 7-day free trial <svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="#3A2C08" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+    </div>
+    <svg id="cur12" class="cursor" width="40" height="58" viewBox="0 0 32 46"><path d="M0 0 L0 38 L10 29 L17 45 L25 41 L18 26 L31 26 Z" fill="#111" stroke="#fff" stroke-width="2.6" stroke-linejoin="round" paint-order="stroke"/></svg>
+  </div>
+    <div id="capBand12" class="abs" style="left:0;top:0;width:1920px;height:260px;background:linear-gradient(180deg,#F8F4E8 0%,#F7F3E6 70%,rgba(247,243,230,0) 100%)"></div>
+    <div id="c12a" class="cap" style="top:96px;font-size:62px">Make a free account,</div>
+    <div id="c12b" class="cap it" style="top:96px;font-size:54px">see story ideas and his character before you pay anything.</div>
+  </section>
+
+  <!-- ============ 13 CTA 846-900 : the four circles close into the mark ============ -->
+  <section id="s13" class="scene"><div id="cam13" class="cam">
+    <div id="lock" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+      <div id="endMarkBox" class="abs" style="left:455px;top:300px;width:330px;height:350px"></div>
+      <div id="endWordBox" class="abs" style="left:817px;top:436px;width:640px;height:80px"></div>
+    </div>
+    <div id="c13a" class="cap" style="top:700px;font-size:58px">Try it free for seven days.</div>
+  </div></section>
+
+  <div id="light"></div>
+  <div id="paper"></div>
+</div>
+
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script>
+/* SEEK CONTRACT: every frame is a pure function of t. The DOM below is BUILT once (deterministic), then animated only through Motion calls. */
+const M = Motion.film({ fps: 30, duration: 30, width: 1920, height: 1080, clock: 'smooth' });
+const NS = 'http://www.w3.org/2000/svg';
+const $ = s => document.querySelector(s);
+const YEL = '#E3A21A';
+
+/* ---------- the brand mark, rebuilt from the PDF vector: four multiplied circles clipped to the piece ---------- */
+const PIECE_D = 'M 302.136719 142.65625 C 294.519531 161.90625 307.304688 176.175781 305.203125 181.488281 C 303.105469 186.800781 301.128906 189.855469 284.414062 187.46875 C 267.699219 185.082031 204.382812 154.929688 204.382812 154.929688 C 204.382812 154.929688 182.109375 198.324219 179.722656 215.039062 C 177.332031 231.753906 180.390625 233.730469 185.699219 235.832031 C 187.941406 236.71875 191.777344 234.953125 196.90625 233.191406 C 203.9375 230.777344 213.402344 228.359375 224.535156 232.761719 C 243.789062 240.375 248.914062 262.363281 241.824219 280.289062 C 234.734375 298.214844 215.957031 310.753906 196.703125 303.136719 C 177.449219 295.523438 175.785156 276.4375 170.472656 274.339844 C 165.164062 272.238281 161.582031 271.589844 151.890625 285.414062 C 142.199219 299.242188 120.894531 366.054688 120.894531 366.054688 C 120.894531 366.054688 184.207031 396.207031 200.921875 398.59375 C 217.636719 400.980469 219.613281 397.925781 221.710938 392.613281 C 223.8125 387.300781 211.027344 373.03125 218.644531 353.78125 C 226.257812 334.527344 248.246094 329.402344 266.171875 336.492188 C 284.097656 343.578125 296.632812 362.355469 289.019531 381.609375 C 281.40625 400.863281 262.320312 402.53125 260.21875 407.839844 C 258.117188 413.152344 257.46875 416.734375 271.296875 426.425781 C 285.121094 436.113281 351.933594 457.421875 351.933594 457.421875 C 351.933594 457.421875 382.089844 394.105469 384.476562 377.394531 C 386.863281 360.679688 383.804688 358.703125 378.492188 356.601562 C 376.253906 355.71875 372.417969 357.480469 367.285156 359.242188 C 360.257812 361.65625 350.792969 364.074219 339.660156 359.671875 C 320.40625 352.058594 315.28125 330.070312 322.371094 312.144531 C 329.460938 294.21875 348.238281 281.683594 367.492188 289.296875 C 386.746094 296.910156 388.410156 315.996094 393.722656 318.09375 C 399.03125 320.195312 402.617188 320.84375 412.304688 307.019531 C 421.996094 293.191406 435.425781 246.296875 435.425781 246.296875 C 435.425781 246.296875 368.613281 224.988281 354.789062 215.300781 C 340.960938 205.609375 341.609375 202.027344 343.710938 196.714844 C 345.8125 191.402344 364.898438 189.738281 372.511719 170.484375 C 380.125 151.230469 367.589844 132.453125 349.664062 125.367188 C 344.574219 123.351562 339.15625 122.324219 333.835938 122.324219 C 320.410156 122.324219 307.589844 128.867188 302.136719 142.65625';
+const CIRCLES = [ // [dx, dy, d, colour] exactly as in the PDF
+  [129.304688, 122.0, 'M 226.84375 140.277344 C 179.988281 193.9375 98.507812 199.457031 44.847656 152.605469 C -8.8125 105.753906 -14.332031 24.273438 32.519531 -29.386719 C 79.375 -83.046875 160.855469 -88.566406 214.515625 -41.714844 C 268.175781 5.136719 273.695312 86.621094 226.84375 140.277344', '#4AB43A'],
+  [263.203125, 165.140625, 'M 220.984375 221.046875 C 170.613281 271.417969 88.945312 271.417969 38.574219 221.046875 C -11.796875 170.679688 -11.796875 89.011719 38.574219 38.636719 C 88.945312 -11.734375 170.613281 -11.734375 220.984375 38.636719 C 271.355469 89.011719 271.355469 170.679688 220.984375 221.046875', '#53C3C3'],
+  [120.0, 197.777344, 'M 184.738281 220.414062 C 134.367188 270.785156 52.699219 270.785156 2.328125 220.414062 C -48.042969 170.042969 -48.042969 88.375 2.328125 38.003906 C 52.699219 -12.367188 134.367188 -12.367188 184.738281 38.003906 C 235.109375 88.375 235.109375 170.042969 184.738281 220.414062', '#F39E0F'],
+  [148.824219, 268.339844, 'M 220.363281 220.847656 C 169.992188 271.21875 88.324219 271.21875 37.953125 220.847656 C -12.417969 170.476562 -12.417969 88.808594 37.953125 38.4375 C 88.324219 -11.933594 169.992188 -11.933594 220.363281 38.4375 C 270.734375 88.808594 270.734375 170.476562 220.363281 220.847656', '#D92231'],
+];
+let markN = 0;
+function markSVG(w, prefix) {
+  const id = 'markclip' + (++markN);
+  const h = w * 352 / 332;
+  return `<svg class="mark" width="${w}" height="${h}" viewBox="112 114 332 352"><defs><clipPath id="${id}"><path d="${PIECE_D}"/></clipPath></defs>` +
+    `<g clip-path="url(#${id})" style="isolation:isolate">` +
+    CIRCLES.map((c, i) => `<g id="${prefix}c${i}"><path transform="translate(${c[0]} ${c[1]})" d="${c[2]}" fill="${c[3]}" style="mix-blend-mode:multiply"/></g>`).join('') +
+    `</g></svg>`;
+}
+
+/* ---------- ink drawings (430 x 380), each path drawn with pathLength=1 ---------- */
+const DRAW = {
+  gate: {
+    wash: [['M40 120 C20 80 60 40 100 55 C120 20 180 35 175 75 C210 90 195 140 160 135 C140 150 70 155 40 120 Z', '#CFE3BE'], ['M334 70 a26 26 0 1 0 52 0 a26 26 0 1 0 -52 0', '#F6D27A'], ['M150 330 V150 H172 V330 Z', '#E9DCC0'], ['M258 330 V150 H280 V330 Z', '#E9DCC0']],
+    ink: ['M14 330 C140 322 290 336 416 328', 'M40 120 C20 80 60 40 100 55 C120 20 180 35 175 75 C210 90 195 140 160 135 C140 150 70 155 40 120', 'M100 140 C104 170 98 190 102 214',
+      'M150 330 V150 H172 V330', 'M258 330 V150 H280 V330', 'M161 150 C165 92 265 92 269 150', 'M172 182 H258', 'M172 262 H258', 'M187 182 V326', 'M201 168 V326', 'M215 166 V326', 'M229 168 V326', 'M243 182 V326',
+      'M22 228 H150', 'M22 290 H150', 'M36 214 V326', 'M64 214 V326', 'M92 214 V326', 'M120 214 V326', 'M280 228 H408', 'M280 290 H408', 'M308 214 V326', 'M336 214 V326', 'M364 214 V326', 'M392 214 V326',
+      'M190 332 L168 380', 'M240 332 L268 380'],
+  },
+  car: {
+    wash: [['M70 290 L70 240 C70 225 80 220 95 218 L135 215 L170 170 C178 160 188 156 200 156 L290 156 C305 156 315 162 322 172 L350 214 L372 220 C385 224 392 234 392 248 L392 290 Z', '#F5CF6B'],
+      ['M182 212 L204 176 L248 176 L248 212 Z', '#E4F0EC'], ['M262 212 L262 176 L296 176 C303 176 307 179 311 185 L328 212 Z', '#E4F0EC']],
+    ink: ['M14 322 C150 316 280 326 416 318', 'M70 290 L70 240 C70 225 80 220 95 218 L135 215 L170 170 C178 160 188 156 200 156 L290 156 C305 156 315 162 322 172 L350 214 L372 220 C385 224 392 234 392 248 L392 290 L360 290',
+      'M100 290 L300 290', 'M182 212 L204 176 L248 176 L248 212 Z', 'M262 212 L262 176 L296 176 C303 176 307 179 311 185 L328 212 Z', 'M255 218 V286', 'M268 236 H286',
+      'M130 262 a30 30 0 1 0 0.01 0', 'M330 262 a30 30 0 1 0 0.01 0', 'M130 284 a8 8 0 1 0 0.01 0', 'M330 284 a8 8 0 1 0 0.01 0', 'M378 236 h10'],
+  },
+  home: {
+    wash: [['M90 60 a30 30 0 1 0 0.01 0', '#F6C56A'], ['M285 250 V165 H395 V250 Z', '#F4E7CB'], ['M300 180 H320 V200 H300 Z', '#F5C548'], ['M360 180 H380 V200 H360 Z', '#F5C548'], ['M0 236 C90 196 180 206 250 230 C320 200 390 196 430 210 L430 380 L0 380 Z', '#DCEBD0']],
+    ink: ['M0 236 C90 196 180 206 250 230 C320 200 390 196 430 210', 'M285 250 V165 H395 V250', 'M270 174 L340 116 L410 174', 'M376 143 V118 H392 V156', 'M326 250 V208 H352 V250',
+      'M300 180 H320 V200 H300 Z', 'M360 180 H380 V200 H360 Z', 'M268 252 H412', 'M20 380 C110 330 190 300 300 256', 'M150 380 C210 330 260 300 330 256', 'M85 360 C130 334 170 318 205 304', 'M90 60 a30 30 0 1 0 0.01 0'],
+  },
+};
+function drawSVG(svg, key, prefix) {
+  const D = DRAW[key];
+  svg.innerHTML = D.wash.map((w, i) => `<path id="${prefix}w${i}" class="wash" d="${w[0]}" style="fill:${w[1]}"/>`).join('') +
+    D.ink.map((d, i) => `<path id="${prefix}i${i}" d="${d}" pathLength="1" stroke-dasharray="1 1" stroke-dashoffset="1"/>`).join('');
+  return { nW: D.wash.length, nI: D.ink.length };
+}
+// draw an ink drawing: lines in a hand order, washes arrive after their outline
+function animateDrawing(prefix, info, at, span, washAt) {
+  for (let i = 0; i < info.nI; i++) {
+    const a = at + Math.round(i * span / info.nI * 0.8), d = 7 + (i % 3) * 2;
+    M.kf('#' + prefix + 'i' + i, 'strokeDashoffset', [[a, 1], [a + d, 0, 'softInOut']]);
+  }
+  for (let i = 0; i < info.nW; i++) {
+    const a = (washAt == null ? at + span * .45 : washAt) + i * 2;
+    M.kf('#' + prefix + 'w' + i, 'opacity', [[Math.round(a), 0], [Math.round(a) + 8, 1, 'softInOut']]);
+  }
+}
+
+/* ---------- jigsaw piece outline (body W x H; right tab / left blank share one geometry) ---------- */
+function piecePath(W, H, left, right) {
+  const rr = 22, cy = H * .42, n = 30, r = 46, s = 10;
+  let d = `M ${rr} 0 H ${W - rr} Q ${W} 0 ${W} ${rr} `;
+  d += right ? `V ${cy - n} H ${W + s} A ${r} ${r} 0 1 1 ${W + s} ${cy + n} H ${W} V ${H - rr} ` : `V ${H - rr} `;
+  d += `Q ${W} ${H} ${W - rr} ${H} H ${rr} Q 0 ${H} 0 ${H - rr} `;
+  d += left ? `V ${cy + n} H ${s} A ${r} ${r} 0 1 0 ${s} ${cy - n} H 0 V ${rr} ` : `V ${rr} `;
+  return d + `Q 0 0 ${rr} 0 Z`;
+}
+
+/* ================= BUILD ================= */
+// 1: the big gate
+const gateInfo = drawSVG($('#gateBig'), 'gate', 'g1');
+
+// 2: countdown ring of 60 ticks
+(function () {
+  let h = '';
+  for (let i = 0; i < 60; i++) {
+    const a = i / 60 * Math.PI * 2 - Math.PI / 2, big = i % 5 === 0, r1 = big ? 236 : 248, r2 = 270;
+    h += `<line id="tk${i}" x1="${(Math.cos(a) * r1).toFixed(1)}" y1="${(Math.sin(a) * r1).toFixed(1)}" x2="${(Math.cos(a) * r2).toFixed(1)}" y2="${(Math.sin(a) * r2).toFixed(1)}" stroke="#1F4135" stroke-width="${big ? 7 : 4}" stroke-linecap="round"/>`;
+  }
+  $('#ring').innerHTML = h;
+})();
+
+// 3: the strip: three story pieces + the missing slot
+const PW = 430, PH = 440, PX = [96, 526, 956, 1386];
+const capsTxt = ['the gate,', 'the car,', 'the drive home.'], keys = ['gate', 'car', 'home'];
+const pInfo = [];
+PX.forEach((x, i) => {
+  const el = document.createElement('div'); el.className = 'piece'; el.id = 'pc' + i; el.style.left = x + 'px';
+  const left = i > 0, right = i < 3;
+  if (i < 3) {
+    el.innerHTML = `<svg width="${PW + 100}" height="${PH}" viewBox="0 0 ${PW + 100} ${PH}" style="position:absolute;left:0;top:0;filter:drop-shadow(0 16px 22px rgba(70,52,20,.22)) drop-shadow(0 2px 2px rgba(70,52,20,.12))"><path d="${piecePath(PW, PH, left, right)}" fill="#FFFDF6"/></svg>` +
+      `<div class="abs" style="left:0;top:0;width:${PW}px;height:${PH}px;clip-path:path('${piecePath(PW, PH, left, false)}')"><svg id="pd${i}" class="ink" viewBox="0 0 430 380" style="position:absolute;left:30px;top:16px;width:370px;height:327px"></svg></div>` +
+      `<div class="pcap" id="pcap${i}">${capsTxt[i]}</div>`;
+  } else {
+    el.innerHTML = `<svg width="${PW + 100}" height="${PH}" viewBox="0 0 ${PW + 100} ${PH}" style="position:absolute;left:0;top:0"><path id="slotLine" d="${piecePath(PW, PH, true, false)}" fill="rgba(31,65,53,.04)" stroke="#1F4135" stroke-width="4" stroke-dasharray="14 12" stroke-linecap="round"/></svg>`;
+  }
+  $('#strip').appendChild(el);
+  if (i < 3) pInfo.push(drawSVG(el.querySelector('#pd' + i), keys[i], 'p' + i));
+});
+// the mark that falls into the slot, and the wordmark beside it
+const markHost = document.createElement('div'); markHost.id = 'mk4'; markHost.className = 'abs'; markHost.style.cssText = 'left:1418px;top:356px;width:372px;height:394px';
+markHost.innerHTML = markSVG(372, 'm4'); $('#strip').appendChild(markHost);
+const wmHost = document.createElement('div'); wmHost.id = 'wm4'; wmHost.className = 'abs'; wmHost.style.cssText = 'left:752px;top:505px;width:780px;height:96px';
+$('#cam3').appendChild(wmHost);
+
+// 13: end mark + wordmark
+$('#endMarkBox').innerHTML = markSVG(330, 'm13');
+$('#endWordBox').style.cssText += ';';
+
+/* the wordmark paths (from the brand PDF, page 2), loaded inline below */
+function wordmarkSVG(w) { return `<svg width="${w}" height="${(w * 51.22 / 419.82).toFixed(1)}" viewBox="77.25 336.9 419.82 51.22" style="display:block"><g fill="#373644">${WM_PATHS.map(d => `<path d="${d}"/>`).join('')}</g></svg>`; }
+</script>
+<script src="./assets/wordmark.js"></script>
+<script>
+wmHost.innerHTML = wordmarkSVG(780);
+$('#endWordBox').innerHTML = wordmarkSVG(640);
+
+/* ================= TIMELINE ================= */
+const CAP = (sel, at, o) => M.words(sel, Object.assign({ at, mech: 'rise', dist: 36, frames: 12, gaps: 3, smear: false }, o || {}));
+const HL = (sel, on, idxs, d) => idxs.forEach(i => {   // a yellow marker stroke under the word that matters (the app's button colour)
+  const sp = document.querySelectorAll(sel + ' .mw')[i]; sp.style.position = 'relative'; sp.style.zIndex = '0';
+  const b = document.createElement('i'); b.className = 'hlb'; sp.appendChild(b);
+  M.kf(b, 'scaleX', [[on[i] + (d || 4), 0], [on[i] + (d || 4) + 9, 1, 'softInOut']]);
+});
+const OUT = (sel, at, o) => M.exit(sel, Object.assign({ at, frames: 8, to: { y: -26, opacity: 0 }, fadeFrames: 6 }, o || {}));
+
+/* ---- 1 HOOK 0-84 ---- */
+M.show('#s1', 0, 84);
+animateDrawing('g1', gateInfo, 0, 40, 26);
+M.drift('#cam1', { prop: 'scale', from: 1.0, to: 1.07, start: 0, end: 84 });
+CAP('#c1a', 2, { gaps: 4 });
+OUT('#c1a', 32);
+const on1 = CAP('#c1b', 40, { gaps: [3, 3, 3, 3, 3, 4, 8], words: (i, w) => (w === 'meltdown.' ? { dist: 0, scale: 1.35, frames: 10 } : null) });
+const melt = document.querySelectorAll('#c1b .mw')[6];
+M.kf(melt, 'color', [[0, '#1F4135'], [on1[6], '#1F4135'], [on1[6], '#B83A2A']]);
+M.kf(melt, 'x', [[64, 0], [66, 3], [68, -4], [70, 3], [72, -3], [74, 2], [76, -2], [78, 0]]);
+// "meltdown": the drawing and the word tremble (deterministic jitter), then the camera dives through the gate
+(function () {
+  let s = 7; const r = () => (s = (s * 16807) % 2147483647) / 2147483647 - .5;
+  const kx = [[64, 0]], ky = [[64, 0]];
+  for (let f = 66; f <= 78; f += 2) { kx.push([f, r() * 7]); ky.push([f, r() * 5]); }
+  kx.push([80, 0]); ky.push([80, 0]);
+  M.kf('#gateWrap', 'x', kx); M.kf('#gateWrap', 'y', ky);
+  M.kf('#gateWrap', 'rotation', [[64, 0], [68, -.5], [72, .45], [76, -.3], [80, 0]]);
+})();
+M.dive('#gateWrap', { at: 78, frames: 6, perStep: 1.45, origin: [960, 520] });
+M.exit('#c1b', { at: 78, frames: 6, to: { y: 40, opacity: 0 }, fadeFrames: 5 });
+
+/* ---- 2 TURN 84-164 ---- */
+M.cut(84, { hide: ['#s1'], show: ['#s2'], label: 'dive through the gate -> countdown' });
+M.snap('#clock', { at: 84, from: { scale: 1.9 }, to: { scale: 1 }, firstFrameShare: .62, tail: 14, origin: '960px 530px' });
+CAP('#c2a', 86, { gaps: [3, 6, 3, 4] });
+// 5,4,3,2,1 more minutes: each step is a warning; ticks empty as it counts
+const steps = [[84, '5'], [100, '4'], [112, '3'], [122, '2'], [131, '1']];
+const numK = [[84, 1]];
+steps.forEach(([f, v], i) => {
+  if (i) numK.push([f, 1], [f, 1.22], [f + 7, 1, 'softLand']);
+  M.mark(f, 'count', 'warning ' + v);
+});
+M.kf('#num', 'scale', numK);
+(function () { // text steps (seek-safe through a counter-like kf on a data attr is not possible; use per-digit spans)
+  const n = $('#num'); n.innerHTML = steps.map(s => `<span class="dg" id="dg${s[1]}" style="position:absolute;left:0;top:0;width:600px">${s[1]}</span>`).join('');
+  steps.forEach(([f, v], i) => M.show('#dg' + v, f, i < 4 ? steps[i + 1][0] : 300));
+})();
+for (let i = 0; i < 60; i++) { const f = 92 + Math.floor(i * 0.72); M.kf('#tk' + i, 'opacity', [[f, 1], [f + 3, .12]]); }
+M.enter('#numLbl', { at: 88, frames: 12, from: { y: 24, opacity: 0 } });
+OUT('#c2a', 128);
+const on2 = CAP('#c2b', 136, { gaps: [3, 3, 3, 3, 3, 3, 6], words: (i, w) => (w === 'when.' ? { dist: 0, scale: 1.5, frames: 10 } : null) });
+HL('#c2b', on2, [6], 6);
+OUT('#numLbl', 140);
+M.kf('#clock', 'scale', [[146, 1], [164, .08, 'gentleIn']]);
+M.kf('#clock', 'y', [[146, 0], [164, 60, 'gentleIn']]);
+
+/* ---- 3 TURN 164-260 : the pieces ---- */
+M.cut(164, { hide: ['#s2'], show: ['#s3'], label: 'the "1" becomes the gap -> story pieces' });
+const on3 = CAP('#c3a', 166, { gaps: [3, 3, 3, 3, 3, 3] });
+HL('#c3a', on3, [4, 5, 6], 8);
+const land = [180, 200, 220];
+land.forEach((f, i) => {
+  M.enter('#pc' + i, { at: f - 10, frames: 12, ease: 'softLand', from: { x: 520, rotation: 7, y: -30 }, smear: { axis: 'x', px: 40, frames: 3 } });
+  M.kf('#pc' + i, 'scale', [[f + 1, 1], [f + 3, .975], [f + 7, 1, 'softLand']]);
+  M.mark(f + 2, 'snap', 'piece locks: ' + capsTxt[i]);
+  animateDrawing('p' + i, pInfo[i], f - 2, 26, f + 12);
+  M.enter('#pcap' + i, { at: f + 4, frames: 12, from: { y: 22, opacity: 0 } });
+});
+M.enter('#pc3', { at: 232, frames: 10, from: { opacity: 0, scale: 1.06 } });
+M.camera('#cam3', [[164, { scale: 1.04, x: 70 }], [240, { scale: 1, x: 0 }, 'glide']], { origin: '960px 560px' });
+OUT('#c3a', 242);
+
+/* ---- 4 NAME 260-306 : the missing piece ---- */
+CAP('#c4a', 254, { gaps: [3, 3, 4] });
+M.enter('#mk4', { at: 260, frames: 11, ease: 'snapSettle', from: { scale: 3.2, rotation: -24, blur: 10 } });
+M.mark(262, 'snap', 'the mark lands in the slot');
+M.kf('#pc3', 'opacity', [[262, 1], [266, 0]]);
+// pull the strip left; the mark travels to the lockup; the wordmark arrives beside it
+M.kf('#strip', 'x', [[272, 0], [292, -1064, 'whip']]);
+['#pc0', '#pc1', '#pc2'].forEach((s, i) => M.exit(s, { at: 272 + i, frames: 12, to: { x: -360, opacity: 0 }, fadeFrames: 8, hide: true }));
+M.kf('#mk4', 'scale', [[272, 1], [292, .82, 'whip']]);
+M.enter('#wm4', { at: 284, frames: 13, ease: 'softLand', from: { x: 120, opacity: 0 }, fadeFrames: 4, smear: { axis: 'x', px: 30, frames: 3 } });
+M.kf('#cam3', 'scale', [[292, 1], [306, 1.03]]);
+OUT('#c4a', 298);
+
+/* ---- 5 CLAIM 306-386 ---- */
+M.cut(306, { hide: ['#s3'], show: ['#s5'], label: 'name -> a real social story' });
+M.enter('#storyWrap', { at: 306, frames: 16, ease: 'softLand', from: { y: 420 }, smear: { axis: 'y', px: 30, frames: 3 } });
+M.camera('#cam5', [[306, { scale: 1, y: 20 }], [386, { scale: 1.06, y: -20 }, 'softInOut']], { origin: '960px 600px' });
+CAP('#c5a', 308, { gaps: [3, 3, 4] });
+OUT('#c5a', 330);
+CAP('#c5b', 336, { gaps: 2 });
+M.enter('#c5c', { at: 352, frames: 12, from: { y: 18, opacity: 0 } });
+M.exit('#c5b', { at: 378, frames: 8, to: { y: -26, opacity: 0 }, fadeFrames: 6 });
+M.exit('#c5c', { at: 378, frames: 8, to: { y: -26, opacity: 0 }, fadeFrames: 6 });
+
+/* ---- 6 PROOF 386-476 : tell it the hard part ---- */
+M.cut(386, { hide: ['#s5'], show: ['#s6'], label: 'story -> the conversation' });
+M.camera('#cam6', [[386, { scale: 1.06, y: 40 }], [446, { scale: 1, y: -60 }, 'glide'], [454, { scale: 1, y: -60 }], [472, { scale: 1, y: -520 }, 'whip'], [476, { scale: 1, y: -560 }]], { origin: '960px 540px' });
+M.enter('#guide', { at: 386, frames: 14, from: { y: 160 }, smear: { axis: 'y', px: 24, frames: 3 } });
+CAP('#c6a', 388, { gaps: 3 });
+M.type('#gText', { at: 400, style: 'prompt', seed: 11, caret: '#gCaret', caretGap: 4 });
+M.cursor('#cur6', { keys: [[426, 1560, 1300, 2.6, -18], [440, 1010, 935, 1, 0]], ease: 'glide' });
+M.press('#cur6', '#gBtn', { at: 444, cursorDepth: .82, targetDepth: .95, lag: 1, frames: 3 });
+M.hide('#cur6', 456);
+M.enter('#reply', { at: 452, frames: 14, from: { y: 120 } });
+OUT('#c6a', 440);
+CAP('#c6b', 448, { gaps: 3 });
+OUT('#c6b', 470, { frames: 6 });
+
+/* ---- 7 PROOF 476-536 : put them right into the story ---- */
+M.cut(476, { hide: ['#s6'], show: ['#s7'], label: 'scroll -> their face' });
+M.enter('#faceCard', { at: 476, frames: 9, ease: 'whip', from: { y: 380 }, smear: { axis: 'y', px: 40, frames: 3 } });
+M.camera('#cam7', [[476, { scale: 1.08, y: -400 }], [516, { scale: 1.12, y: -410 }, 'glide']], { origin: '960px 700px' });
+CAP('#c7a', 478, { gaps: 3 });
+// their photo, then the arrow, then their character: one feathered reveal travelling the way the arrow points
+M.kf('#tfImg', '--rv', [[480, 37], [500, 112, 'softInOut']]);
+M.kf('#tf', 'scale', [[476, .96], [500, 1, 'softLand']]);
+M.mark(488, 'enter', 'storybook David appears');
+OUT('#c7a', 504);
+CAP('#c7b', 510, { gaps: 3 });
+// the character's frame grows into the scene with his mum beside him
+M.enter('#mumScene', { at: 516, frames: 1, from: { opacity: 1 } });
+M.kf('#mumImg', 'clipPath', [[516, 'inset(0% 16% 12% 52% round 40px)'], [530, 'inset(0% 0% 0% 0% round 34px)', 'whip']]);
+M.kf('#mumImg', 'scale', [[516, 1.08], [534, 1, 'softLand']]);
+
+/* ---- 8 PROOF (hero 2) 536-614 : styles ---- */
+M.cut(536, { hide: ['#s7'], show: ['#s8'], label: 'pick a style' });
+CAP('#c8a', 536, { gaps: 3 });
+// a moving wipe through LEGO, Minecraft, Simpsons over the same scene
+const wipes = [['#sb0', 542], ['#sb1', 552], ['#sb3', 562]];
+wipes.forEach(([s, f]) => M.kf(s, 'clipPath', [[f, 'inset(0 100% 0 0)'], [f + 8, 'inset(0 0% 0 0)', 'softInOut']]));
+M.kf('#wipeEdge', 'x', [[542, -20], [550, 800, 'softInOut'], [552, -20], [560, 800, 'softInOut'], [562, -20], [570, 800, 'softInOut']]);
+M.show('#wipeEdge', 542, 571);
+// the scene shrinks into the Simpsons tile; the others slide in around it
+M.camera('#styleBig', [[536, { scale: 1 }], [574, { scale: 1.03 }, 'cruise'], [586, { scale: .5025, x: 713, y: -71.5 }, 'whip']], { origin: '50% 50%' });
+M.hide('#styleBig', 586);
+M.show('#t3', 586);
+M.cascade(['#t2', '#t1', '#t0'], { at: 578, gaps: 2, fn: (el, f, i) => M.enter(el, { at: f, frames: 14, ease: 'softLand', from: { x: 300 + i * 80, opacity: 0 }, fadeFrames: 4 }) });
+M.cursor('#cur8', { keys: [[590, 1620, 1100, 2.4, -14], [600, 1220, 560, 1, 0]], ease: 'glide' });
+M.press('#cur8', '#t2', { at: 602, cursorDepth: .82, targetDepth: .96, lag: 1, frames: 3 });
+M.enter('#sel2', { at: 603, frames: 8, from: { scale: 1.06, opacity: 0 }, fadeFrames: 3 });
+M.hide('#cur8', 612);
+OUT('#c8a', 606);
+
+/* ---- 9 PROOF 614-668 : tricky moments ---- */
+M.cut(614, { hide: ['#s8'], show: ['#s9'], label: 'Pixar picked -> story list' });
+M.cascade(['#r0', '#r1', '#r2', '#r3'], { at: 614, gaps: 3, fn: (el, f, i) => M.enter(el, { at: f, frames: 13, ease: 'softLand', from: { y: 140 + i * 40 }, smear: { axis: 'y', px: 20, frames: 2 } }) });
+M.camera('#cam9', [[614, { scale: 1.0, y: 40 }], [668, { scale: 1.1, y: -40 }, 'softInOut']], { origin: '960px 440px' });
+CAP('#c9a', 616, { gaps: 3 });
+OUT('#c9a', 662);
+
+/* ---- 10 PROOF 668-724 : read it first / together / again at his pace ---- */
+M.cut(668, { hide: ['#s9'], show: ['#s10'], label: 'list -> the book' });
+M.enter('#bookWrap', { at: 668, frames: 14, ease: 'softLand', from: { y: 200, scale: .92 } });
+M.drift('#cam10', { prop: 'scale', from: 1, to: 1.04, start: 668, end: 724 });
+CAP('#c10a', 670, { gaps: 3 });
+OUT('#c10a', 684, { frames: 6 });
+CAP('#c10b', 690, { gaps: 3 });
+OUT('#c10b', 702, { frames: 6 });
+CAP('#c10c', 706, { gaps: [4, 4, 5, 6] });
+// page turns: brisk, brisk, then slow ("at his pace"); a turned leaf ends on the left
+[['#turn1', '#sh1', 680, 12], ['#turn2', '#sh2', 694, 12], ['#turn3', '#sh3', 708, 22]].forEach(([t, sh, f, d], i) => {
+  M.kf(t, 'rotationY', [[f, 0], [f + d, -180, 'softInOut']]);
+  M.kf(sh, 'opacity', [[f, 0], [f + d / 2, 1, 'softInOut'], [f + d, 0, 'softInOut']]);
+  M.kf(t, 'zIndex', [[0, 4 - i], [f, 4 - i], [f, 10 + i]]);
+  M.mark(f, 'whip', 'page turn ' + (i + 1));
+});
+
+/* ---- 11 TURN 724-776 : together ---- */
+M.cut(724, { hide: ['#s10'], show: ['#s11'], label: 'book closes -> together' });
+const DSC = [['#dG', -260, -380, 260, 40], ['#dT', 1430, -340, 900, 90], ['#dO', -300, 620, 440, 280], ['#dR', 1460, 640, 760, 300]];
+DSC.forEach(([s, x0, y0, x1, y1]) => {
+  M.kf(s, 'x', [[724, x0], [776, x1, 'glide']]); M.kf(s, 'y', [[724, y0], [776, y1, 'glide']]);
+  M.kf(s, 'opacity', [[724, .2], [776, .26]]);
+});
+CAP('#c11a', 726, { gaps: 3 });
+const on11 = CAP('#c11b', 742, { gaps: [3, 3, 3, 4, 3, 3, 3, 3, 6] });
+HL('#c11b', on11, [9], 6);
+M.kf('#cam11', 'scale', [[724, 1.05], [776, 1]]);
+M.drift('#cam2', { prop: 'scale', from: 1, to: 1.05, start: 84, end: 164 });
+M.drift('#tiles', { prop: 'scale', from: 1, to: 1.035, start: 576, end: 614 });
+
+/* ---- 12 CTA PROOF 776-846 ---- */
+M.cut(776, { hide: ['#s11'], show: ['#s12'], label: 'together -> free account' });
+M.cascade(['#meet', '#ready', '#price'], { at: 776, gaps: 3, fn: (el, f) => M.enter(el, { at: f, frames: 14, ease: 'softLand', from: { y: 160 }, smear: { axis: 'y', px: 20, frames: 2 } }) });
+M.camera('#cam12', [[776, { scale: 1, y: 60 }], [808, { scale: 1, y: 30 }, 'glide'], [830, { scale: 1.08, y: -300 }, 'softInOut'], [846, { scale: 1.16, y: -380 }, 'gentleIn']], { origin: '960px 760px' });
+M.count('#rdN', { at: 788, from: 0, to: 10, frames: 18, seed: 4 });
+M.kf('#barFill', 'scaleX', [[788, 0], [806, 1, 'softInOut']]);
+const on12 = CAP('#c12a', 778, { gaps: 3 });
+HL('#c12a', on12, [2], 4);
+OUT('#c12a', 798);
+CAP('#c12b', 804, { gaps: 2 });
+M.cursor('#cur12', { keys: [[818, 1640, 1420, 2.4, -16], [834, 1010, 1165, 1, 0]], ease: 'glide' });
+M.press('#cur12', '#trial', { at: 838, cursorDepth: .82, targetDepth: .95, lag: 1, frames: 3, release: false });
+
+/* ---- 13 CTA 846-900 : the circles come together as the mark ---- */
+M.cut(846, { hide: ['#s12'], show: ['#s13'], label: 'trial pressed -> the mark' });
+const ENDOFF = [[-260, -200], [260, -190], [-280, 160], [230, 230]];
+ENDOFF.forEach(([x, y], i) => {
+  M.kf('#m13c' + i, 'x', [[846, x], [862 + i * 2, 0, 'whip']]);
+  M.kf('#m13c' + i, 'y', [[846, y], [862 + i * 2, 0, 'whip']]);
+});
+M.mark(866, 'snap', 'mark complete');
+M.enter('#endWordBox', { at: 860, frames: 13, ease: 'softLand', from: { x: 90, opacity: 0 }, fadeFrames: 4 });
+CAP('#c13a', 868, { gaps: [3, 3, 3, 3, 5] });
+M.kf('#lock', 'scale', [[846, 1.04], [900, .985]]);
+
+window.__ready = Motion.loaded().then(() => { if (/selftest/.test(location.search)) Motion.selfTest(M, { samples: 24 }); });
+</script>
+</body>
+</html>
