@@ -75,6 +75,21 @@ Captions run at speech rhythm in one fixed place. `mm/STORYBOARD.md` has the pla
 numbers. Build with `mm/build.sh` (`DRAFT=1` for a quick half-size pass). It uses the vendored renderer in `mm/tools/`
 and the runtime in `mm/runtime/` (Apache-2.0, see `mm/runtime/NOTICE`).
 
+## "Mo is the o" (motionmaxxing, from scratch)
+
+`mm2/` is a third version, made from scratch with the same voiceover, the same Mo and the same paper white, but no
+cards, panels or search bar. The words are the picture, and Mo is round like the letter o, so he plays the "o" in
+whatever is being said:
+1. The agency drains "money" letter by letter until only its "o" is left, and that "o" grows into Mo ("Mo").
+2. He is the "o" of "growth", then rolls along a line and the ad copy appears behind him.
+3. The calendar is a grid of empty o's. He hops from slot to slot and each landing books a job (16).
+4. A ring of 24 o's lights up around him on "24/7". He sits on "raise" until it sinks, and ideas stream out of him.
+5. In a row of seven o's (the team) he is the one that stays lit; on "hire" a lime disc grows behind him.
+6. He hops into the "o" of "today.", then lands on the personaos wordmark as it arrives.
+
+The film is 27.6 s and ends on the wordmark (no search bar). `mm2/STORYBOARD.md` has the plan and `mm2/NOTE.md` the
+review numbers. Build with `mm2/build.sh` (`DRAFT=1` for a quick half-size pass).
+
 ## Assets
 
 All assets come from personaos.com screenshots. The stone & oak remodeler content is the

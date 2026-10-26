@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>personaos: Mo is the o</title>
+<meta name="viewport" content="width=1080, height=1920">
+<!--
+  personaos, "Mo is the o": a typographic essay with a character (see STORYBOARD.md, NOTE.md). 1080x1920, 30 fps.
+  The voiceover's sentence is the picture, and Mo is its letter o: he hops into whichever word is being said.
+  Built on runtime/motion.js. Every frame is a pure function of t: Motion.* calls for the type and objects, plus one
+  draw(t) for Mo (position, hops, squash, shadow, eyes) and the ad copy's write-on, driven on every seek.
+  Colour meanings: purple = Mo / the brand; lime #EBFDA0 = booked, done; ink for words.
+-->
+<link rel="stylesheet" href="./runtime/fonts.css">
+<style>
+:root { --paper: #FAFAF7; --ink: #111115; --soft: #6E6D76; --faint: #A3A1AB; --purple: #623AEC; --lime: #EBFDA0; --lime-edge: #CFE57A; --lime-ink: #2A3410; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#main { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: "Inter", system-ui, sans-serif; }
+#ground { position: absolute; inset: 0; background:
+  radial-gradient(120% 70% at 10% -5%, rgba(255,255,255,.75), rgba(255,255,255,0) 60%),
+  radial-gradient(90% 60% at 100% 105%, rgba(70,60,40,.035), rgba(70,60,40,0) 70%),
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='9' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .33  0 0 0 0 .3  0 0 0 .07 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"),
+  var(--paper); }
+/* the sentence: small words at speech rhythm, one performed word at display size */
+.cap { position: absolute; left: 0; width: 1080px; text-align: center; white-space: pre; font-size: 64px; line-height: 74px; font-weight: 600; letter-spacing: -0.028em; }
+.big { position: absolute; left: 0; width: 1080px; text-align: center; white-space: pre; line-height: 1; font-weight: 760; letter-spacing: -0.05em; }
+.big .o { opacity: 0; }                                   /* Mo takes the place of the o */
+.lt { display: inline-block; }
+/* C1 · the ad Mo writes */
+.copy { position: absolute; left: 0; width: 1080px; text-align: center; white-space: pre; line-height: 1; }
+.row { position: absolute; left: 0; width: 1080px; height: 96px; }
+.row .lg { position: absolute; left: 70px; top: 12px; width: 72px; height: 72px; border-radius: 50%; background: #fff; box-shadow: 2px 6px 16px rgba(40,30,70,.12); display: grid; place-items: center; }
+.row .lg svg { width: 44px; height: 44px; }
+.row .vw { position: absolute; left: 170px; top: 0; width: 840px; height: 96px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); }
+.row .st { position: absolute; left: 0; top: 24px; white-space: pre; font-size: 44px; line-height: 48px; font-weight: 650; letter-spacing: -0.02em; color: #2B2A33; }
+/* C2 · the calendar of o's */
+.slot { position: absolute; left: 0; top: 0; width: 132px; height: 132px; margin: -66px 0 0 -66px; border-radius: 50%; border: 7px solid rgba(17,17,21,.16); }
+.fill { position: absolute; left: 0; top: 0; width: 132px; height: 132px; margin: -66px 0 0 -66px; border-radius: 50%; background: var(--lime); border: 4px solid var(--lime-edge); display: grid; place-items: center; }
+.fill svg { width: 54px; height: 54px; }
+.dl { position: absolute; top: 720px; width: 140px; margin-left: -70px; text-align: center; font-size: 30px; font-weight: 650; color: var(--ink); opacity: .5; }
+#cnt { position: absolute; left: 0; width: 1080px; top: 1505px; text-align: center; }
+#cnt span { display: inline-flex; align-items: center; gap: 12px; height: 80px; padding: 0 34px; border-radius: 40px; background: var(--lime); border: 3px solid var(--lime-edge); color: var(--lime-ink); font-size: 40px; font-weight: 750; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+/* D · the ring of 24, the ideas */
+.tick { position: absolute; left: 0; top: 0; width: 38px; height: 38px; margin: -19px 0 0 -19px; border-radius: 50%; border: 5px solid rgba(17,17,21,.18); }
+.tick.on { border-color: var(--lime-edge); background: var(--lime); }
+.idea { position: absolute; left: 0; top: 0; padding: 14px 26px; border-radius: 999px; background: #fff; box-shadow: 0 1px 2px rgba(40,30,70,.08), 4px 12px 26px rgba(40,30,70,.12); display: flex; align-items: center; gap: 10px; font-size: 30px; font-weight: 650; white-space: nowrap; transform-origin: 50% 50%; }
+.idea svg { width: 32px; height: 32px; }
+/* E · the team of o's, the hire */
+.mate { position: absolute; left: 0; top: 0; width: 110px; height: 110px; margin: -55px 0 0 -55px; border-radius: 50%; border: 12px solid var(--ink); }
+#disc { position: absolute; left: 350px; top: 1100px; width: 380px; height: 380px; border-radius: 50%; background: var(--lime); border: 5px solid var(--lime-edge); }
+/* G · the wordmark */
+#wm { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 55px; font-size: 128px; line-height: 1; font-weight: 700; letter-spacing: -0.045em; }
+#wm svg { width: 104px; height: 104px; margin-top: -10px; }
+/* Mo */
+#mo { position: absolute; left: 0; top: 0; width: 520px; height: 520px; z-index: 20; }
+#mo img, #mo svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#sh { position: absolute; left: 0; top: 0; width: 520px; height: 84px; z-index: 19; border-radius: 50%; background: radial-gradient(ellipse 50% 50% at 52% 50%, rgba(110,80,220,.34), rgba(110,80,220,.12) 50%, rgba(110,80,220,0) 72%); filter: blur(5px); }
+</style>
+</head>
+<body>
+<div id="main">
+  <div id="ground"></div>
+  <div id="sh"></div>
+
+  <!-- A -->
+  <div id="money" class="big" style="top:720px;font-size:260px"><span class="lt" id="m0">m</span><span class="lt" id="mO">o</span><span class="lt" id="m2">n</span><span class="lt" id="m3">e</span><span class="lt" id="m4">y</span></div>
+  <!-- B -->
+  <div id="bigM" class="big" style="top:612px;font-size:560px">M<span class="o" id="MoO">o</span></div>
+  <div id="growth" class="big" style="top:770px;font-size:230px">gr<span class="o" id="grO">o</span>wth</div>
+  <!-- C1 -->
+  <div id="adl" class="copy" style="top:820px;font-size:84px;font-weight:760;letter-spacing:-0.035em"><span id="adlS">AC not keeping up?</span></div>
+  <div id="ads" class="copy" style="top:930px;font-size:44px;font-weight:550;color:#4A4952;letter-spacing:-0.015em"><span id="adsS">Same-day repair from local pros.</span></div>
+  <div id="rows"></div>
+  <!-- C2 -->
+  <div id="grid"></div>
+  <div id="cnt"><span><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="#2A3410" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><b id="cntv">0 jobs</b>&nbsp;booked</span></div>
+  <!-- D -->
+  <div id="ring"></div>
+  <div id="n247" class="big" style="top:1200px;font-size:230px">24/7,</div>
+  <div id="raise" class="big" style="top:860px;font-size:260px">raise</div>
+  <div id="ideasW" class="big" style="top:690px;font-size:240px">ideas.</div>
+  <div id="ideas"></div>
+  <!-- E -->
+  <div id="team"></div>
+  <div id="disc"></div>
+  <div id="hire" class="big" style="top:640px;font-size:260px">hire</div>
+  <!-- F, G -->
+  <div id="today" class="big" style="top:760px;font-size:240px">t<span class="o" id="tdO">o</span>day.</div>
+  <div id="wm" style="top:884px"><svg viewBox="-1 -1 2 2"><path id="spark" fill="#623AEC"/></svg><span>personaos</span></div>
+
+  <div id="caps"></div>
+  <div id="mo"><img src="assets/mo-body.png" alt=""><svg viewBox="0 0 1050 1050"></svg></div>
+</div>
+
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script src="./vo-words.js"></script>
+<script>
+'use strict';
+const DUR = 27.6, FPS = 30;
+const M = window.__M = Motion.film({ fps: FPS, duration: DUR, width: 1080, height: 1920, clock: 'smooth' });
+const f = s => Math.round(s * FPS), $ = s => document.querySelector(s);
+const T0 = i => VO[i][1], T1 = i => VO[i][2], at = i => T0(i) - 2 / FPS;
+const sfx = (t, kind, g = 1, p) => M.mark(f(t), 'sfx', [kind, g, p == null ? '' : p].join(':'));
+const lerp = (a, b, k) => a + (b - a) * k, clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), P = (t, a, d) => clamp((t - a) / d);
+const io = p => (p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2), out3 = p => 1 - Math.pow(1 - p, 3);
+const END = T1(64);
+const XAB = T0(7) - .05, XBC = T0(16) - .3, XC12 = T0(22) - .3, XCD = T0(29) - .3, XD12 = T0(33) - .3, XD23 = T0(38) - .3, XDE = T0(43) - .3, XE12 = T0(51) - .3, XEF = T0(57) - .3;
+
+/* ---------- the small words of each line, at speech rhythm, stacked and centred ---------- */
+function cap(id, text, idx, top, exitT) {
+  const el = document.createElement('div'); el.id = id; el.className = 'cap'; el.style.top = top + 'px'; el.textContent = text; $('#caps').appendChild(el);
+  const on = idx.map(i => f(at(i)));
+  M.words('#' + id, { at: on[0], mech: 'rise', dist: 40, frames: 10, ease: 'softLand', gaps: on.slice(1).map((v, k) => Math.max(1, v - on[k])) });
+  M.exit('#' + id, { at: f(exitT), frames: 8, ease: 'accelExit', to: { y: -30 }, hide: true });
+}
+// the performed word: shrinks in from oversize on its word, leaves by accelerating
+const bigIn = (sel, t, from = 1.5) => M.enter(sel, { at: f(t), frames: 10, ease: 'softLand', from: { scale: from } });
+const bigOut = (sel, t, to) => M.exit(sel, { at: f(t), frames: 11, ease: 'accelExit', to: to || { y: -120 }, hide: true });
+
+/* ---------- A · "money" drains overseas until only its o is left ---------- */
+cap('a1', 'Stop wasting your', [0, 1, 2], 640, XAB - .45);
+cap('a2', 'on overseas agencies.', [4, 5, 6], 1010, XAB - .42);
+bigIn('#money', at(3), 1.6);
+sfx(at(3), 'stamp', .35);
+[['#m4', 1.42], ['#m3', 1.55], ['#m2', 1.68], ['#m0', 1.83]].forEach(([s, t], k) => {
+  const a = f(t);
+  M.kf(s, 'x', [[a, 0], [a + 15, 1250 - k * 60, 'accelExit']]);
+  M.kf(s, 'y', [[a, 0], [a + 15, -340 - k * 50, 'accelExit']]);
+  M.kf(s, 'rotation', [[a, 0], [a + 15, 28 + k * 9, 'accelExit']]);
+  M.hide(s, a + 15);
+  sfx(t, 'whoosh', .28, .25);
+});
+sfx(1.0, 'cash', .5);
+const MOIN = XAB - .2;                                     // the lone o comes alive just before "Meet"
+M.kf('#mO', 'opacity', [[0, 1], [f(MOIN), 1], [f(MOIN), 0]]);
+M.hide('#money', f(MOIN) + 1);
+sfx(MOIN, 'bloop', .8);
+
+/* ---------- B · "Mo." and "growth" ---------- */
+M.enter('#bigM', { at: f(at(8)) - 3, frames: 9, ease: 'softLand', from: { scale: 2.3, x: -120 } });
+M.exit('#bigM', { at: f(T0(9) - .25), frames: 10, ease: 'accelExit', to: { x: -900 }, hide: true });
+sfx(at(8) - .1, 'stamp', .55);
+bigIn('#growth', at(11), 1.45);
+cap('b2', 'agent for HVAC companies.', [12, 13, 14, 15], 1032, XBC - .02);
+bigOut('#growth', XBC, { y: -160 });
+
+/* ---------- C1 · Mo writes the ad by rolling along the line; on "runs" it runs everywhere ---------- */
+cap('c1', 'He writes your ads,', [16, 17, 18, 19], 600, XC12 - .05);
+cap('c1b', 'runs them,', [20, 21], 674, XC12 - .02);
+M.show('#adl', f(XBC) + 6); M.show('#ads', f(XBC) + 6);
+M.exit('#adl', { at: f(XC12), frames: 11, ease: 'accelExit', to: { y: -260 }, hide: true });
+M.exit('#ads', { at: f(XC12) + 1, frames: 11, ease: 'accelExit', to: { y: -260 }, hide: true });
+const WRITE = [at(17), T0(19) + .12, T0(19) + .2, T0(20) + .08];   // first line, then the second
+for (let t = WRITE[0]; t < WRITE[3]; t += .1) sfx(t, 'key', .22, Math.round(t * 10));
+const LOGOS = {
+  g: '<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>',
+  f: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#1877F2"/><path fill="#fff" d="M26.6 44V29.6h5l.8-5.9h-5.8v-3.8c0-1.7.5-2.9 2.9-2.9h3.1v-5.2c-.5-.1-2.4-.2-4.5-.2-4.5 0-7.5 2.7-7.5 7.7v4.4H15.6v5.9h5V44z"/></svg>',
+  i: '<svg viewBox="0 0 48 48"><defs><radialGradient id="igg" cx=".3" cy="1.05" r="1.2"><stop offset="0" stop-color="#FEDA75"/><stop offset=".3" stop-color="#FA7E1E"/><stop offset=".55" stop-color="#D62976"/><stop offset=".8" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></radialGradient></defs><rect x="4" y="4" width="40" height="40" rx="11" fill="url(#igg)"/><rect x="12" y="12" width="24" height="24" rx="7" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="24" cy="24" r="5.6" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="31.4" cy="16.6" r="1.9" fill="#fff"/></svg>' };
+['g', 'f', 'i'].forEach((k, i) => {
+  const r = document.createElement('div'); r.className = 'row'; r.id = 'row' + i; r.style.top = (1080 + i * 108) + 'px';
+  r.innerHTML = `<div class="lg">${LOGOS[k]}</div><div class="vw"><div class="st" id="st${i}">${'AC not keeping up?  Same-day repair from local pros.   ·   '.repeat(3)}</div></div>`;
+  $('#rows').appendChild(r);
+  const a = f(T0(20)) + i * 4;
+  M.enter('#row' + i, { at: a, frames: 10, ease: 'softLand', from: { y: 60 } });
+  M.kf('#st' + i, 'x', [[a, -i * 140], [f(XC12) + 12, -i * 140 - 520, 'cruise']]);
+  M.exit('#row' + i, { at: f(XC12) + 2 + i * 2, frames: 11, ease: 'accelExit', to: { y: -320 }, hide: true });
+  sfx(a / FPS, 'toggle', .45, i);
+});
+
+/* ---------- C2 · the calendar is a grid of o's; Mo hops slot to slot and each one fills ---------- */
+cap('c2a', 'and fills your calendar', [22, 23, 24, 25], 520, XCD - .25);
+cap('c2b', 'with booked jobs.', [26, 27, 28], 1420, XCD - .22);
+const SX = c => 540 + (c - 2) * 180, SY = r => 830 + r * 165;
+['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].forEach((d, c) => $('#grid').insertAdjacentHTML('beforeend', `<div class="dl" id="dl${c}" style="left:${SX(c)}px">${d}</div>`));
+const G0 = f(XC12) + 4;
+for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) {
+  const id = `s${c}${r}`;
+  $('#grid').insertAdjacentHTML('beforeend', `<div class="slot" id="${id}" style="left:${SX(c)}px;top:${SY(r)}px"></div>`);
+  M.enter('#' + id, { at: G0 + c + r, frames: 9, ease: 'softLand', from: { scale: 1.45 } });
+}
+// Mo's hops (he lands, the slot fills under him) and the cascade of the rest; four slots stay open
+const HOPS = [[0, 0, T0(23)], [1, 1, T0(23) + .18], [2, 0, T0(23) + .36], [3, 1, T0(23) + .54], [4, 0, T0(23) + .74], [2, 2, T0(27) - .02]];
+const REST = [[0, 1], [1, 0], [3, 2], [4, 1], [0, 2], [2, 1], [4, 2], [1, 3], [2, 3], [3, 3]];
+const FILLS = HOPS.map(([c, r, t]) => [c, r, f(t) + 1]);
+REST.forEach(([c, r], i) => FILLS.push([c, r, f(T0(27)) + 3 + i * 2]));
+FILLS.forEach(([c, r]) => $('#grid').insertAdjacentHTML('beforeend', `<div class="fill" id="f${c}${r}" style="left:${SX(c)}px;top:${SY(r)}px"><svg viewBox="0 0 24 24" fill="none" stroke="#2A3410" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>`));
+['#dl0', '#dl1', '#dl2', '#dl3', '#dl4'].forEach((s, i) => M.enter(s, { at: G0 + i, frames: 9, ease: 'softLand', from: { y: -24 } }));
+FILLS.forEach(([c, r, fr], i) => { M.enter(`#f${c}${r}`, { at: fr, frames: 8, ease: 'softLand', from: { scale: 1.3 } }); sfx(fr / FPS, 'chip', .32, i); });
+M.enter('#cnt', { at: FILLS[0][2], frames: 10, ease: 'softLand', from: { y: 30 } });
+M.count('#cntv', { at: FILLS[0][2], from: 1, to: 16, frames: FILLS[FILLS.length - 1][2] - FILLS[0][2], round: true, format: v => v + (v === 1 ? ' job' : ' jobs') });
+const DING = T1(28) + .02;
+M.kf('#cnt', 'scale', [[f(DING), 1], [f(DING) + 4, 1.08, 'softLand'], [f(DING) + 12, 1, 'softInOut']]);
+sfx(DING, 'ding', .6);
+// the grid gathers toward Mo and goes
+const GOUT = f(XCD) - 2;
+for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++) {
+  const dx = (540 - SX(c)) * .6, dy = (900 - SY(r)) * .6, a = GOUT + ((c + r) % 4);
+  M.exit(`#s${c}${r}`, { at: a, frames: 9, ease: 'accelExit', to: { x: dx, y: dy, scale: .2 }, hide: true });
+  if ($(`#f${c}${r}`)) M.exit(`#f${c}${r}`, { at: a, frames: 9, ease: 'accelExit', to: { x: dx, y: dy, scale: .2 }, hide: true });
+}
+['#dl0', '#dl1', '#dl2', '#dl3', '#dl4'].forEach(s => M.exit(s, { at: GOUT, frames: 8, ease: 'accelExit', to: { y: -60 }, hide: true }));
+M.exit('#cnt', { at: GOUT, frames: 9, ease: 'accelExit', to: { y: 120 }, hide: true });
+sfx(XCD, 'whoosh', .35, .4);
+
+/* ---------- D1 · "Works 24/7": a ring of 24 o's lights up around Mo ---------- */
+cap('d1', 'Works', [29], 560, XD12 - .05);
+const RC = [540, 900], RR = 232;
+const ON0 = f(T0(30)), ON1 = f(T1(32));
+for (let k = 0; k < 24; k++) {
+  const a = -Math.PI / 2 + k * Math.PI / 12, x = RC[0] + RR * Math.cos(a), y = RC[1] + RR * Math.sin(a);
+  $('#ring').insertAdjacentHTML('beforeend', `<div class="tick" id="t${k}" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px"></div><div class="tick on" id="to${k}" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px"></div>`);
+  M.enter('#t' + k, { at: f(XCD) + 6 + (k % 6), frames: 8, ease: 'softLand', from: { scale: 1.6 } });
+  const on = Math.round(lerp(ON0, ON1, k / 23));
+  M.enter('#to' + k, { at: on, frames: 5, ease: 'softLand', from: { scale: 1.5 } });
+  if (k % 3 === 0) sfx(on / FPS, 'tick', .3);
+  M.exit('#t' + k, { at: f(XD12) + (k % 5), frames: 9, ease: 'accelExit', to: { scale: .2, y: 260 }, hide: true });
+  M.exit('#to' + k, { at: f(XD12) + (k % 5), frames: 9, ease: 'accelExit', to: { scale: .2, y: 260 }, hide: true });
+}
+bigIn('#n247', at(30), 1.5);
+bigOut('#n247', XD12, { y: 400 });
+
+/* ---------- D2 · "raise" rises; Mo sits on it until it sinks ---------- */
+cap('d2', 'never asks for a', [33, 34, 35, 36], 520, XD23 - .05);
+const RAISE_IN = T0(37) - .14, SIT = T0(37) + .14;
+M.enter('#raise', { at: f(RAISE_IN), frames: 12, ease: 'softLand', from: { y: 320 } });
+M.kf('#raise', 'y', [[f(SIT), 0], [f(SIT) + 8, 70, 'softLand']]);
+M.exit('#raise', { at: f(XD23), frames: 12, ease: 'accelExit', to: { y: 1100 }, hide: true });
+sfx(SIT, 'stamp', .6);
+
+/* ---------- D3 · ideas stream out of Mo without stopping ---------- */
+bigIn('#ideasW', at(42), 1.5);
+bigOut('#ideasW', XDE, { y: -200 });
+const IDEAS = ['Summer tune-up promo', '5 signs your AC is failing', 'Before & after: new furnace', 'Heat pump rebate explainer', 'Thermostat meme', 'Holiday heating check', 'Filter reminder email', 'Review reel', 'Duct cleaning myths', 'Winter prep checklist', 'Tech spotlight: Ray', 'AC vs heat pump', 'First cold snap post', 'Maintenance plan promo', 'Smart thermostat tips', 'Emergency line reminder'];
+const BULB = '<svg viewBox="0 0 24 24" fill="none" stroke="#623AEC" stroke-width="2" stroke-linecap="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/></svg>';
+const MO_D3 = [540, 1260];
+const STREAM0 = f(T0(39)), STREAM1 = f(XDE) - 6;
+for (let k = 0, a = STREAM0; a < STREAM1; k++, a += 4) {
+  const el = document.createElement('div'); el.className = 'idea'; el.id = 'id' + k; el.innerHTML = BULB + IDEAS[k % IDEAS.length]; $('#ideas').appendChild(el);
+  const side = k % 2 ? 1 : -1, e = a + 34;
+  const lane = [-128, -64, 0, 64, 128][[0, 2, 4, 1, 3][((k >> 1) + (side > 0 ? 2 : 0)) % 5]];   // one lane per pill; the pill before it, on either side, is in another lane
+  M.show('#id' + k, a, e);
+  M.kf('#id' + k, 'x', [[a, MO_D3[0]], [e, MO_D3[0] + side * 900, 'gentleIn']]);
+  M.kf('#id' + k, 'y', [[a, MO_D3[1] + lane], [e, MO_D3[1] + lane - 40, 'glide']]);
+  M.kf('#id' + k, 'xPercent', [[a, -50], [e, -50]]);
+  M.kf('#id' + k, 'scale', [[a, .35], [a + 10, 1, 'softLand']]);
+  if (k % 2 === 0) sfx(a / FPS, 'pop', .22, 1.1 + (k % 5) * .07);
+}
+
+/* ---------- E1 · a team of o's: Mo is the one ---------- */
+cap('e1', 'He’s the best team member', [43, 44, 45, 46, 47], 760, XE12 + .05);
+cap('e2', 'you’ll ever find.', [48, 49, 50], 834, XE12 + .08);
+const TX = i => 540 + (i - 3) * 140;
+[0, 1, 2, 4, 5, 6].forEach((i, k) => {
+  $('#team').insertAdjacentHTML('beforeend', `<div class="mate" id="mt${i}" style="left:${TX(i)}px;top:1000px"></div>`);
+  M.enter('#mt' + i, { at: f(XDE) + 3 + k * 2, frames: 9, ease: 'softLand', from: { scale: 1.5 } });
+  sfx((f(XDE) + 3 + k * 2) / FPS, 'pop', .2, .9 + k * .05);
+  M.kf('#mt' + i, 'opacity', [[f(T0(45)), 1], [f(T0(45)) + 8, .22, 'softInOut']]);
+  M.kf('#mt' + i, 'scale', [[f(T0(45)), 1], [f(T0(45)) + 8, .78, 'softInOut']]);
+  M.exit('#mt' + i, { at: f(XE12) + (i < 3 ? 2 - i : i - 4), frames: 10, ease: 'accelExit', to: { x: i < 3 ? -700 : 700 }, hide: true });
+});
+
+/* ---------- E2 · "hire": a lime disc behind Mo (hired = done) ---------- */
+cap('e3', 'The best', [51, 52], 560, XEF - .05);
+bigIn('#hire', at(53), 1.5);
+cap('e4', 'you’ll ever make.', [54, 55, 56], 930, XEF - .02);
+bigOut('#hire', XEF, { y: -200 });
+M.enter('#disc', { at: f(T0(53)) + 2, frames: 10, ease: 'softLand', from: { scale: 1.5 } });
+M.exit('#disc', { at: f(XEF), frames: 10, ease: 'accelExit', to: { scale: .3 }, hide: true });
+sfx(T0(53) + .07, 'check', .6, 1);
+
+/* ---------- F · "below", then "today." ---------- */
+cap('f1', 'Click the link below', [57, 58, 59, 60], 560, END + .25);
+cap('f2', 'to get started', [61, 62, 63], 634, END + .28);
+const TODAY = T0(64) - .1;
+M.enter('#today', { at: f(TODAY) + 2, frames: 9, ease: 'softLand', from: { scale: 1.4 } });
+M.exit('#today', { at: f(END + .3), frames: 12, ease: 'accelExit', to: { y: 900 }, hide: true });
+
+/* ---------- G · Mo lands on the wordmark as it crashes in, then hops away ---------- */
+const WM = 26.1;
+document.getElementById('spark').setAttribute('d', (() => { let d = ''; for (let k = 0; k < 360; k += 2) { const a = k * Math.PI / 180; d += (k ? 'L' : 'M') + (Math.cos(a) ** 3).toFixed(4) + ' ' + (Math.sin(a) ** 3).toFixed(4); } return d + 'Z'; })());
+M.enter('#wm', { at: f(WM) - 1, frames: 10, ease: 'softLand', from: { scale: 1.6 } });
+M.drift('#wm', { prop: 'scale', from: 1, to: .955, start: f(WM) + 10, end: f(DUR) });
+sfx(WM, 'bloop', .6); sfx(WM + .05, 'shimmer', .6);
+
+/* ---------- Mo: one actor, drawn every frame from a list of moves ---------- */
+// [t (arrival), x, y, diameter, how ('glide' | 'hop' | 'swell'), shadow 0..1]; positions of o's are measured once fonts are in
+let MOV = [];
+function oAt(sel, fs) { const s = $(sel), p = s.offsetParent; return [p.offsetLeft + s.offsetLeft + s.offsetWidth / 2, p.offsetTop + .591 * fs, .62 * fs]; }
+function textBox(sel) { const s = $(sel), p = s.offsetParent; return [p.offsetLeft + s.offsetLeft, p.offsetLeft + s.offsetLeft + s.offsetWidth]; }
+function layout() {
+  const [mx, my, md] = oAt('#mO', 260), [Mx, My, Md] = oAt('#MoO', 560), [gx, gy, gd] = oAt('#grO', 230), [tx, ty, td] = oAt('#tdO', 240);
+  const [l1a, l1b] = textBox('#adlS'), [l2a, l2b] = textBox('#adsS');
+  const y1 = 820 + .591 * 84, y2 = 930 + .591 * 44;
+  const slot = (c, r) => [SX(c), SY(r), 118];
+  const raiseTop = 860 + (.864 - .546) * 260;
+  const wmTop = 884 + (.864 - .546) * 128;
+  MOV = [
+    [MOIN, mx, my, md, 'glide', 0], [MOIN + .3, mx, my, md * 1.12, 'swell', 0],
+    [at(8) - .1, Mx, My, Md, 'hop', 0],                                                // into the o of "Mo"
+    [T0(9) - .2, Mx, My, Md, 'glide', 0], [at(11), gx, gy, gd, 'hop', 0],               // into the o of "growth"
+    [T0(11) + .12, gx, gy - 12, gd * 1.28, 'swell', 0], [T0(11) + .38, gx, gy, gd, 'glide', 0],
+    [XBC + .05, gx, gy, gd, 'glide', 0], [WRITE[0], l1a - 50, y1, 96, 'hop', 0],       // rolls out to write the ad
+    [WRITE[1], l1b + 46, y1, 96, 'glide', 0], [WRITE[2], l2a - 40, y2, 70, 'hop', 0],
+    [WRITE[3], l2b + 36, y2, 70, 'glide', 0],
+    ...HOPS.map(([c, r, t]) => [t, ...slot(c, r), 'hop', 1]),                         // hops through the calendar
+    [XCD + .02, SX(2), SY(2), 118, 'glide', 1], [XCD + .4, RC[0], RC[1], 280, 'glide', 1],   // centre of the 24 ring
+    [XD12 + .05, RC[0], RC[1], 280, 'glide', 1], [XD12 + .4, 540, 1430, 230, 'glide', 1],
+    [SIT, 540, raiseTop - 115 + 14, 230, 'hop', 1], [SIT + .27, 540, raiseTop - 115 + 84, 230, 'glide', 1],   // sits on "raise"
+    [XD23 + .02, 540, raiseTop - 115 + 84, 230, 'glide', 1], [XD23 + .34, MO_D3[0], MO_D3[1], 260, 'hop', 1],
+    [XDE + .2, MO_D3[0], MO_D3[1], 260, 'glide', 1], [XDE + .48, 540, 1000, 110, 'hop', 0],   // into the team
+    [T0(45), 540, 1000, 110, 'glide', 0], [T0(45) + .3, 540, 1000, 150, 'glide', 0],
+    [XE12 + .05, 540, 1000, 150, 'glide', 0], [XE12 + .4, 540, 1290, 240, 'glide', 1],
+    [XEF + .05, 540, 1290, 240, 'glide', 1], [XEF + .35, 540, 1210, 210, 'glide', 1],
+    [T0(60) + .02, 540, 1210, 210, 'glide', 1], [T0(60) + .22, 540, 1640, 190, 'hop', 1],   // "below"
+    [TODAY, 540, 1640, 190, 'glide', 1], [TODAY + .17, tx, ty, td, 'hop', 0],              // into the o of "today."
+    [END + .45, tx, ty, td, 'glide', 0], [WM, 540, wmTop - 75 + 12, 150, 'hop', 0],         // lands on the wordmark
+    [WM + .3, 540, wmTop - 75 + 12, 150, 'glide', 0], [WM + .72, 1320, 260, 150, 'hop', 0],  // and hops away
+  ];
+}
+const moEl = $('#mo'), shEl = $('#sh'), moSvg = $('#mo svg');
+function moState(t) {
+  if (!MOV.length || t < MOV[0][0] || t > MOV[MOV.length - 1][0]) return null;
+  let k = 1; while (k < MOV.length && MOV[k][0] < t) k++;
+  const A = MOV[k - 1], B = MOV[Math.min(k, MOV.length - 1)], span = Math.max(1e-6, B[0] - A[0]), p = clamp((t - A[0]) / span);
+  let x, y, d, sx = 1, sy = 1, air = 0;
+  if (B[4] === 'hop') {
+    const dist = Math.hypot(B[1] - A[1], B[2] - A[2]), H = Math.max(70, dist * .32 + .25 * B[3]);
+    x = lerp(A[1], B[1], p); air = H * 4 * p * (1 - p); y = lerp(A[2], B[2], p) - air; d = lerp(A[3], B[3], io(p));
+    sy = 1 + .07 * Math.sin(Math.PI * p); sx = 1 / sy;
+  } else if (B[4] === 'swell') {
+    const q = out3(p); x = lerp(A[1], B[1], q); y = lerp(A[2], B[2], q); d = lerp(A[3], B[3], q);
+  } else { const q = io(p); x = lerp(A[1], B[1], q); y = lerp(A[2], B[2], q); d = lerp(A[3], B[3], q); }
+  for (let j = 1; j < MOV.length; j++) if (MOV[j][4] === 'hop') { const u = (t - MOV[j][0]) / .16; if (u > 0 && u < 1) { const s = Math.sin(Math.PI * u); sy = 1 - .17 * s; sx = 1 + .13 * s; } }
+  const sh = lerp(A[5], B[5], p);
+  return { x, y, d, sx, sy, air, sh, ground: lerp(A[2] + A[3] / 2, B[2] + B[3] / 2, p) };
+}
+// eyes: the sphere model from the site's Mo render
+const GZ = [[0, 0, 0], [MOIN + .3, -.3, -.4], [at(8), 0, 0], [T0(12), 0, .55], [XBC + .1, .75, .2], [XC12 + .3, 0, .5], [XCD + .3, 0, 0], [T0(36), 0, -.6], [SIT + .1, 0, .2],
+  [XD23 + .3, 0, 0], [XDE + .5, 0, 0], [T0(57), 0, .3], [T0(60), 0, .75], [TODAY + .2, 0, 0], [END + .4, .4, .5]];
+const BLINK = [MOIN + .7, T1(15) - .2, XC12 + .55, T1(32) + .1, T0(46) + .3, T0(55), T1(64) + .05];
+const HAPPY = [[T1(15) - .25, XBC], [T1(28) - .3, XCD + .25], [T0(42) - .1, XDE + .1], [T0(49), T1(50) + .4], [T0(53) + .1, XEF], [END - .05, END + .4], [WM + .02, WM + .35]];
+const SHAKE = [SIT + .3, SIT + .95];
+const eyes = [0, 1].map(() => { const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.innerHTML = '<g class="o"><ellipse fill="#36313A"/><ellipse fill="#fff" opacity=".95"/></g><path fill="none" stroke="#2E2A2F" stroke-linecap="round"/>';
+  moSvg.appendChild(g); return { g, o: g.querySelector('.o'), b: g.querySelectorAll('ellipse')[0], h: g.querySelectorAll('ellipse')[1], arc: g.querySelector('path') }; });
+function eyeGeom(gx, gy) { const C = { x: 525.8, y: 525.7 }, RS = 500, phi = gx * 38.6, half = 14.9;
+  return [phi - half, phi + half].map((deg, i) => { const th = deg * Math.PI / 180;
+    return { x: C.x + RS * Math.sin(th), y: C.y + (i === 0 ? 38 + 8 * gx : 30 - 14 * gx) + gy * 42, w: 100 * (.25 + .75 * Math.cos(th)) - 4, h: 160 * (.88 + .12 * Math.cos(th)) - 4, r: 2 + 5 * Math.sin(th) }; }); }
+function drawEyes(t) {
+  let gx = 0, gy = 0;
+  GZ.forEach(([a, x, y]) => { const p = io(P(t, a, .2)); gx = lerp(gx, x, p); gy = lerp(gy, y, p); });
+  if (t > SHAKE[0] && t < SHAKE[1]) gx = .85 * Math.sin(2 * Math.PI * 4.2 * (t - SHAKE[0])) * (1 - P(t, SHAKE[1] - .2, .2));
+  let blink = 0, happy = 0;
+  BLINK.forEach(b => { const u = (t - b) / .15; if (u > 0 && u < 1) blink = Math.max(blink, Math.sin(Math.PI * u)); });
+  HAPPY.forEach(([a, b]) => { happy = Math.max(happy, P(t, a, .12) * (1 - P(t, b, .12))); });
+  const close = Math.max(blink, happy), hp = clamp(happy * 1.6 - .5);
+  eyeGeom(gx, gy).forEach((e, i) => { const q = eyes[i];
+    q.g.setAttribute('transform', `translate(${e.x.toFixed(1)} ${e.y.toFixed(1)}) rotate(${e.r.toFixed(2)})`);
+    q.b.setAttribute('rx', (e.w / 2).toFixed(1)); q.b.setAttribute('ry', (e.h / 2).toFixed(1));
+    const hx = (e.w * .14).toFixed(1), hy = (-e.h * .29).toFixed(1);
+    q.h.setAttribute('cx', hx); q.h.setAttribute('cy', hy); q.h.setAttribute('rx', 12); q.h.setAttribute('ry', 8); q.h.setAttribute('transform', `rotate(-50 ${hx} ${hy})`);
+    q.o.setAttribute('transform', `scale(1 ${(1 - .94 * close).toFixed(3)})`); q.o.setAttribute('opacity', (1 - clamp(happy * 1.6 - .3)).toFixed(3));
+    const W = e.w * 1.5, H = W * .36;
+    q.arc.setAttribute('d', `M${(-W / 2).toFixed(1)} ${(H * .45).toFixed(1)} C${(-W / 4).toFixed(1)} ${(-H).toFixed(1)} ${(W / 4).toFixed(1)} ${(-H).toFixed(1)} ${(W / 2).toFixed(1)} ${(H * .45).toFixed(1)}`);
+    q.arc.setAttribute('stroke-width', (22 * hp).toFixed(2)); q.arc.setAttribute('opacity', hp.toFixed(3)); });
+}
+function drawMo(t) {
+  const s = moState(t);
+  if (!s) {                                              // hidden: a canonical pose, so no frame depends on what played before
+    moEl.style.visibility = shEl.style.visibility = 'hidden'; moEl.style.transform = shEl.style.transform = 'none'; shEl.style.opacity = '0';
+    drawEyes(t); return;
+  }
+  const k = s.d / 520, bob = s.air > 1 ? 0 : Math.sin(t * 2.4) * s.d * .012;
+  moEl.style.visibility = 'visible';
+  moEl.style.transform = `translate(${(s.x - 260).toFixed(2)}px,${(s.y - 260 + bob + (s.d / 2) * (1 - s.sy)).toFixed(2)}px) scale(${(k * s.sx).toFixed(4)},${(k * s.sy).toFixed(4)})`;
+  const sw = s.d * 1.05 * (1 - Math.min(.55, s.air / 500)), so = s.sh * (1 - Math.min(.7, s.air / 400));
+  shEl.style.visibility = so > .01 ? 'visible' : 'hidden';
+  shEl.style.opacity = so.toFixed(3);
+  shEl.style.transform = `translate(${(s.x - 260).toFixed(2)}px,${(s.ground + 4 - 42).toFixed(2)}px) scale(${(sw / 520).toFixed(4)},${(sw / 520).toFixed(4)})`;
+  drawEyes(t);
+}
+function drawWrite(t) {                                    // the ad copy appears behind Mo as he rolls along the line
+  const s = moState(t), adl = $('#adl'), ads = $('#ads');
+  const r1 = t < WRITE[0] ? 0 : t >= WRITE[1] ? 1080 : (s ? s.x - s.d * .35 : 0), r2 = t < WRITE[2] ? 0 : t >= WRITE[3] ? 1080 : (s ? s.x - s.d * .35 : 0);
+  adl.style.clipPath = `inset(0 ${Math.max(0, 1080 - r1).toFixed(1)}px 0 0)`; ads.style.clipPath = `inset(0 ${Math.max(0, 1080 - r2).toFixed(1)}px 0 0)`;
+}
+const clock = {}; let curT = -1;
+Object.defineProperty(clock, 't', { get: () => curT, set: t => { curT = t; drawMo(t); drawWrite(t); } });
+M.tl.fromTo(clock, { t: 0 }, { t: DUR, duration: DUR, ease: 'none', immediateRender: false, lazy: false }, 0);
+{ const seek0 = window.__seek; window.__seek = t => { seek0(t); clock.t = Math.max(0, Math.min(DUR, t)); }; }
+// sound for Mo's hops: authored at build from the move list's times (the positions are measured later, the times are known now)
+[at(8) - .1, at(11), WRITE[0], WRITE[2], ...HOPS.map(h => h[2]), SIT, XD23 + .34, XDE + .48, T0(60) + .22, TODAY + .17, WM, WM + .72]
+  .forEach((t, i) => sfx(t, 'pop', .3, .8 + (i % 4) * .1));
+
+// the scene changes (each line's composition replaces the last), marked so the review tools see them as cuts
+[XBC, XC12, XCD, XD12, XD23, XDE, XE12, XEF, END + .3, WM].forEach((t, i) => M.mark(f(t), 'cut', 'line ' + (i + 2)));
+
+window.__ready = Motion.loaded().then(() => { layout(); window.__seek(0); if (/selftest/.test(location.search)) Motion.selfTest(M, { samples: 24 }); });
+</script>
+</body>
+</html>

@@ -96,4 +96,5 @@ python -m unittest discover -s tests -v
   rendered from HTML with Playwright and ffmpeg, with a synthesized soundtrack. The finished video
   is `reels/personaos/out/personaos-reel.mp4`. A 34-second cut synced to a voiceover, with a
   pause after each line and a logo outro, is `reels/personaos/out/personaos-reel-vo.mp4`. A second version of
-  that cut, rebuilt with the motionmaxxing method ("One hire"), is `reels/personaos/mm/final.mp4`.
+  that cut, rebuilt with the motionmaxxing method ("One hire"), is `reels/personaos/mm/final.mp4`. A third, made from
+  scratch with the same voiceover and Mo ("Mo is the o", a typographic film), is `reels/personaos/mm2/final.mp4`.
