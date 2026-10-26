@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Puzzle Piece Vertical Recording</title>
+<meta name="viewport" content="width=1080, height=1920">
+<link rel="stylesheet" href="./runtime/fonts.css">
+<style>
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-display: block; }
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: block; }
+@font-face { font-family: "DMSerif"; src: url("fonts/dm-serif-display-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: block; }
+:root {
+  --bg: #fefcf7; --home: #f7f6e9; --dark: #21433c; --ink: #22362f; --muted: #6f7c73; --yellow: #e8d37a;
+  --sans: "Inter", system-ui, sans-serif; --serif: "SSerif", Georgia, serif; --disp: "DMSerif", Georgia, serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#main { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+.scr { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--bg); box-shadow: -30px 0 60px rgba(30,40,30,.18); }
+.abs { position: absolute; }
+.serif { font-family: var(--serif); font-weight: 500; letter-spacing: -.01em; color: var(--ink); }
+.disp { font-family: var(--disp); font-weight: 400; color: #141a17; letter-spacing: -.005em; }
+.btn-dark { position: absolute; background: var(--dark); color: #fff; border-radius: 30px; display: flex; align-items: center; justify-content: center; gap: 20px; font-weight: 650; font-size: 40px; }
+.ic { display: inline-block; vertical-align: middle; }
+.ic svg { display: block; }
+img { display: block; }
+.round { border-radius: 50%; overflow: hidden; }
+.hdr { position: absolute; left: 44px; top: 112px; display: flex; align-items: center; gap: 18px; font-size: 40px; font-weight: 650; color: var(--ink); }
+.stepper { position: absolute; top: 200px; left: 0; width: 1080px; display: flex; justify-content: center; gap: 56px; font-size: 30px; color: #7d887f; }
+.stepper .st { display: flex; align-items: center; gap: 16px; }
+.stepper .n { width: 60px; height: 60px; border-radius: 50%; background: #e3e8d8; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 600; color: #6e7a70; }
+.stepper .on .n { background: var(--dark); color: #fff; }
+.stepper .on { color: var(--ink); font-weight: 700; }
+.next { left: 48px; top: 1730px; width: 984px; height: 124px; border-radius: 62px; }
+.fadebot { position: absolute; left: 0; right: 0; bottom: 0; height: 320px; background: linear-gradient(rgba(254,252,247,0), var(--bg) 55%); }
+.sb { position: absolute; left: 0; top: 0; width: 1080px; height: 70px; display: flex; align-items: center; justify-content: space-between; padding: 0 52px; font-size: 31px; font-weight: 600; color: #121512; z-index: 50; }
+.sb .t { position: relative; width: 120px; height: 36px; } .sb .tm { position: absolute; left: 0; top: 0; }
+.sb .r { display: flex; align-items: center; gap: 12px; }
+.homebar { position: absolute; left: 390px; top: 1894px; width: 300px; height: 10px; border-radius: 5px; background: rgba(20,24,20,.82); z-index: 50; }
+#touch { position: absolute; left: 0; top: 0; width: 96px; height: 96px; margin: -48px 0 0 -48px; border-radius: 50%; background: rgba(255,255,255,.55); border: 3px solid rgba(40,48,44,.38); box-shadow: 0 4px 18px rgba(0,0,0,.22); z-index: 60; opacity: 0; }
+.home { background: var(--home); }
+.search { position: absolute; background: #eceee4; border: 2px solid #dde1d5; border-radius: 26px; display: flex; align-items: center; gap: 22px; padding: 0 30px; font-size: 36px; color: #7a857c; }
+.fam { position: absolute; display: flex; gap: 24px; }
+.fam .p { width: 120px; white-space: nowrap; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 25px; font-weight: 650; color: #66726a; }
+.fam .av { width: 116px; height: 116px; border-radius: 50%; border: 5px solid #fff; overflow: hidden; background: #f0eee6; }
+.fam .av img { width: 100%; height: 100%; object-fit: cover; }
+.fam .av.sel { border-color: #ecd16c; }
+.fam .add { width: 116px; height: 116px; border-radius: 50%; border: 4px dashed #2c4a40; display: flex; align-items: center; justify-content: center; }
+.filters { position: absolute; display: flex; gap: 18px; }
+.filters div { width: 316px; height: 92px; border-radius: 22px; background: #e5e9df; display: flex; align-items: center; justify-content: center; font-size: 34px; color: #6c776f; }
+.filters .on { background: var(--dark); color: #fff; font-weight: 700; }
+.story { position: absolute; width: 984px; background: #fff; border: 2px solid #e4e4da; border-radius: 34px; overflow: hidden; }
+.story .art { position: relative; width: 984px; height: 640px; overflow: hidden; }
+.story .art img { width: 100%; height: 100%; object-fit: cover; }
+.story .art img.crt-puz { width: 200px; height: auto; }
+.story .foot { height: 136px; display: flex; align-items: center; gap: 24px; padding: 0 32px; }
+.story .foot .av { width: 74px; height: 74px; border-radius: 50%; overflow: hidden; background: #efede6; flex: none; }
+.story .foot .av img { width: 100%; height: 100%; object-fit: cover; }
+.story .t { font-size: 38px; font-weight: 750; color: #1f2b26; }
+.story .d { font-size: 27px; color: #7b857e; margin-top: 2px; }
+.newb { position: absolute; left: 22px; top: 22px; height: 72px; padding: 0 30px 0 24px; background: #fbf6dd; border-radius: 36px; font-size: 29px; font-weight: 750; color: #3e3a20; display: flex; align-items: center; gap: 10px; letter-spacing: .04em; }
+.fab { position: absolute; left: 892px; top: 1700px; width: 144px; height: 144px; border-radius: 50%; background: var(--yellow); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(80,70,20,.22); }
+.chips { display: flex; flex-wrap: wrap; gap: 18px; }
+.chips div { height: 84px; padding: 0 34px; background: #fff; border: 2px solid #e1e0d6; border-radius: 42px; display: flex; align-items: center; font-size: 32px; color: #2b3530; }
+.lbl { font-family: var(--serif); font-weight: 600; font-size: 46px; color: #1d2621; }
+.lbl small { font-family: var(--sans); font-weight: 400; font-size: 28px; color: #7b857e; }
+.slider { position: absolute; height: 14px; border-radius: 7px; background: #d5e0cf; }
+.slider .fill { position: absolute; left: 0; top: 0; height: 14px; border-radius: 7px; background: #7aa98a; }
+.slider .knob { position: absolute; top: -18px; width: 88px; height: 50px; border-radius: 25px; background: #4f8564; }
+.dash { position: absolute; border: 3px dashed #d9dfcf; border-radius: 26px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; font-size: 32px; font-weight: 600; color: #2f4a3f; }
+.dash .c { width: 96px; height: 96px; border-radius: 50%; background: #e7ece0; display: flex; align-items: center; justify-content: center; }
+.gcard { position: absolute; width: 480px; background: #fff; border: 2px solid #e3e3d9; border-radius: 32px; padding: 12px; }
+.gcard .im { width: 452px; border-radius: 22px; overflow: hidden; position: relative; }
+.gcard .im img { width: 100%; height: 100%; object-fit: cover; }
+.gcard .nm { text-align: center; font-size: 34px; font-weight: 700; color: #26322c; padding: 18px 0 8px; }
+.gcard.sel { background: #e5ead8; border: 4px solid #2e4a40; padding: 10px; }
+.chk { position: absolute; width: 84px; height: 84px; border-radius: 50%; background: #2a3f38; display: flex; align-items: center; justify-content: center; border: 3px solid rgba(255,255,255,.75); }
+.fchips { position: absolute; display: flex; gap: 16px; }
+.fchips div { height: 92px; padding: 0 44px; border: 2px solid #dcdcd2; background: #fff; border-radius: 46px; display: flex; align-items: center; font-size: 31px; font-weight: 600; color: #2d3832; }
+.fchips .on { background: #2a3f38; color: #fff; border-color: #2a3f38; }
+.row { position: absolute; background: #fff; border: 2px solid #e4e4da; border-radius: 28px; display: flex; align-items: center; padding: 0 30px; gap: 28px; }
+.plus-c { width: 60px; height: 60px; border-radius: 50%; border: 2px solid #c9cdc2; display: flex; align-items: center; justify-content: center; }
+.radio { width: 44px; height: 44px; border-radius: 50%; border: 3px solid #7d887f; display: flex; align-items: center; justify-content: center; }
+.rd-top { position: absolute; display: flex; align-items: center; gap: 22px; }
+.cbtn { width: 96px; height: 96px; border-radius: 50%; background: rgba(30,40,36,.55); display: flex; align-items: center; justify-content: center; }
+.dim { position: absolute; inset: 0; background: rgba(18,22,20,.42); }
+.sheet { position: absolute; left: 0; top: 96px; width: 1080px; height: 1830px; background: #fdfcf8; border-radius: 44px 44px 0 0; overflow: hidden; box-shadow: 0 -10px 60px rgba(0,0,0,.25); }
+.srow { position: absolute; left: 44px; width: 992px; height: 132px; background: #fff; border: 2px solid #ece9df; border-radius: 38px; box-shadow: 0 6px 18px rgba(60,60,40,.07); display: flex; align-items: center; padding: 0 32px; gap: 30px; font-size: 38px; font-weight: 650; color: #1c2420; }
+.srow .ci { width: 88px; height: 88px; border-radius: 50%; background: #e5ead8; display: flex; align-items: center; justify-content: center; flex: none; }
+.srow .sp { flex: 1; }
+.vcard { position: absolute; left: 44px; width: 992px; height: 210px; background: #eff4e7; border: 2px solid #dfe6d2; border-radius: 44px; display: flex; align-items: center; padding: 0 36px; gap: 32px; }
+.vcard .ci { width: 86px; height: 86px; border-radius: 50%; background: #e2e8d6; display: flex; align-items: center; justify-content: center; flex: none; }
+.vcard .tx { flex: 1; font-size: 33px; color: #59615b; line-height: 1.35; }
+.vcard .tx b { display: block; font-size: 38px; color: #1c2420; }
+.vcard .pl { width: 92px; height: 92px; border-radius: 50%; background: #fff; border: 2px solid #d4d8cc; display: flex; align-items: center; justify-content: center; }
+.kb { position: absolute; left: 0; top: 1090px; width: 1080px; height: 830px; background: #d4d5da; padding: 0 10px; }
+.kb .sug { height: 104px; display: flex; align-items: center; font-size: 38px; color: #222; }
+.kb .sug > div { flex: 1; text-align: center; border-right: 2px solid #b9bac0; }
+.kb .sug > div:last-child { border-right: 0; }
+.kb .kr { display: flex; gap: 14px; margin-top: 22px; }
+.kb .k { flex: 1 1 0; height: 128px; background: #fff; border-radius: 16px; box-shadow: 0 3px 0 #9fa1a7; display: flex; align-items: center; justify-content: center; font-size: 52px; color: #111; position: relative; }
+.kb .k.f { background: #b7bac2; font-size: 36px; }
+.kb .k .hl { position: absolute; inset: 0; border-radius: 16px; background: #a9acb4; opacity: 0; }
+</style>
+</head>
+<body>
+<div id="main">
+
+<section id="home1" class="scr home" data-ui="captured"></section>
+<section id="home2" class="scr home" data-ui="captured"></section>
+
+<!-- ADD FAMILY MEMBER -->
+<section id="addfam" class="scr" data-ui="captured" style="background:#f8f5ed">
+  <div class="abs" id="af_back" style="left:44px;top:104px;width:104px;height:104px;border-radius:50%;background:#e3e8db;display:flex;align-items:center;justify-content:center"><i data-i="arrowL" data-s="46"></i></div>
+  <div class="abs" style="left:176px;top:110px;font-size:66px;font-family:var(--serif);font-weight:600;color:#17201c">Add a family member</div>
+  <div class="abs lbl" style="left:48px;top:262px">Name in stories</div>
+  <div class="abs" style="left:48px;top:334px;width:984px;height:116px;background:#fff;border:2px solid #e2e2d8;border-radius:28px;display:flex;align-items:center;padding:0 36px;font-size:36px;color:#9aa29b">Mommy, Grandpa Joe...</div>
+  <div class="abs lbl" style="left:48px;top:500px">Age <small>(required)</small></div>
+  <div class="abs" style="left:832px;top:512px;width:200px;text-align:right;font-size:30px;font-weight:600;color:#8b958d">Not set</div>
+  <div class="slider" style="left:48px;top:600px;width:984px"><div class="fill" style="width:360px"></div><div class="knob" style="left:316px"></div></div>
+  <div class="abs lbl" style="left:48px;top:660px">Height <small>(required)</small></div>
+  <div class="abs" style="left:832px;top:672px;width:200px;text-align:right;font-size:30px;font-weight:600;color:#8b958d">Not set</div>
+  <div class="slider" style="left:48px;top:760px;width:984px"><div class="fill" style="width:650px"></div><div class="knob" style="left:606px"></div></div>
+  <div class="abs lbl" style="left:48px;top:830px">Relationship or role</div>
+  <div class="abs chips" style="left:48px;top:904px;width:1000px"><div>Mom</div><div>Dad</div><div>Grandma</div><div>Grandpa</div><div>Sister</div><div>Brother</div><div>Babysitter</div><div>Teacher</div><div>Doctor</div><div>Pet</div><div>Other</div></div>
+  <div class="abs lbl" style="left:48px;top:1230px">Photo</div>
+  <div class="abs" style="left:48px;top:1296px;font-size:31px;color:#6f7a72">Make sure you have their permission.</div>
+  <div class="dash" style="left:48px;top:1356px;width:480px;height:280px"><div class="c"><i data-i="camera" data-s="48"></i></div>Take a photo</div>
+  <div class="dash" style="left:552px;top:1356px;width:480px;height:280px"><div class="c"><i data-i="image" data-s="48"></i></div>Choose from library</div>
+  <div class="abs" style="left:48px;top:1670px;display:flex;gap:16px;align-items:center;font-size:34px;font-weight:600;color:#3d6a52"><i data-i="pencil" data-s="36" data-c="#3d6a52"></i>No photo? Describe them instead</div>
+  <div class="btn-dark" style="left:48px;top:1752px;width:984px;height:124px;border-radius:62px;background:#508563"><i data-i="save" data-s="44" data-c="#fff"></i>Save</div>
+</section>
+
+<!-- TOPIC PICKER (x2) -->
+<template id="tpl_topic">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Make a story</div>
+  <div class="abs serif" style="left:48px;top:200px;font-size:80px">What’s the adventure?</div>
+  <div class="abs" style="left:50px;top:310px;font-size:33px;color:#6f7a72">Choose a moment to explore with Ryan.</div>
+  <div class="search" style="left:48px;top:380px;width:984px;height:112px;background:#fff;border-color:#dedfd6"><i data-i="search" data-s="44" data-c="#5f6b63"></i>Search story ideas</div>
+  <div class="fchips" style="left:48px;top:524px"><div>All</div><div>Routines</div><div>Feelings</div><div class="on">Social</div></div>
+  <div class="abs cyo-banner" style="left:48px;top:650px;width:984px;height:166px;background:#2a3f38;border-radius:30px;display:flex;align-items:center;padding:0 44px;gap:32px;color:#fff">
+    <i data-i="spark" data-s="58" data-c="#e9b949" data-f="1"></i>
+    <div style="flex:1"><div style="font-size:40px;font-weight:700">Make your own story</div><div style="font-size:30px;opacity:.85;margin-top:6px">Tell it in your own words.</div></div>
+    <i data-i="chevR" data-s="48" data-c="#fff"></i></div>
+  <div class="gcard t-help" style="left:48px;top:850px"><div class="im" style="height:400px"><img src="img/t_help.png"></div><div class="nm">Asking for Help</div></div>
+  <div class="gcard" style="left:552px;top:850px"><div class="im" style="height:400px"><img src="img/t_nosey.png"></div><div class="nm">Being Nosey</div></div>
+  <div class="gcard" style="left:48px;top:1380px"><div class="im" style="height:400px"><img src="img/t_wrong.png"></div><div class="nm">Being Wrong</div></div>
+  <div class="gcard" style="left:552px;top:1380px"><div class="im" style="height:400px"><img src="img/t_chat.png"></div><div class="nm">Chatterbox</div></div>
+</template>
+<section id="topic" class="scr" data-ui="captured"></section>
+<section id="topic2" class="scr" data-ui="captured"></section>
+
+<!-- CAST -->
+<section id="cast" class="scr" data-ui="captured">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Create your story</div>
+  <div class="stepper"><div class="st on"><div class="n">1</div>Cast</div><div class="st"><div class="n">2</div>Style</div><div class="st"><div class="n">3</div>Theme</div></div>
+  <div class="abs serif" style="left:48px;top:296px;font-size:68px">Who’s in this story?</div>
+  <div class="abs" style="left:48px;top:400px;width:984px;height:184px;background:#e5ead8;border-radius:28px;display:flex;align-items:center;gap:30px;padding:0 22px">
+    <img src="img/t_help.png" style="width:150px;height:144px;border-radius:16px;object-fit:cover">
+    <div><div style="font-size:38px;font-weight:700;color:#1f2b26">Asking for Help</div><div style="font-size:28px;color:#68736b;margin-top:8px;line-height:1.35">Knowing when to ask for help and practicing<br>simple ways to ask.</div></div></div>
+  <div class="abs" style="left:50px;top:624px;font-size:25px;font-weight:700;letter-spacing:.08em;color:#6c776f">THE MAIN CHARACTER</div>
+  <div class="abs" style="left:48px;top:674px;width:984px;height:214px;background:#fff;border:4px solid #5f716a;border-radius:32px;display:flex;align-items:center;gap:32px;padding:0 32px">
+    <div class="round" style="width:156px;height:156px;background:#efe9df"><img src="img/ryan_big.png" style="width:100%;height:100%;object-fit:cover"></div>
+    <div style="flex:1"><div style="font-size:50px;font-weight:700;color:#1f2b26">Ryan</div><div style="font-size:30px;color:#6c776f;margin-top:4px">Our little hero</div></div>
+    <div class="round" style="width:78px;height:78px;background:#2a3f38;display:flex;align-items:center;justify-content:center"><i data-i="check" data-s="42" data-c="#fff"></i></div></div>
+  <div class="abs serif" style="left:48px;top:930px;font-size:58px">Bring someone familiar</div>
+  <div class="abs" style="left:50px;top:1012px;font-size:31px;color:#6f7a72">Family and helpers can join the adventure.</div>
+  <div class="row" style="left:48px;top:1074px;width:984px;height:170px">
+    <div class="round" style="width:118px;height:118px;background:#e3e8d6;display:flex;align-items:center;justify-content:center"><i data-i="plus" data-s="56"></i></div>
+    <div style="flex:1"><div style="font-size:37px;font-weight:700;color:#1f2b26">Add family or a helper</div><div style="font-size:28px;color:#6c776f;margin-top:6px">A familiar face makes it their world.</div></div><i data-i="chevR" data-s="48"></i></div>
+  <div class="row" id="cast_dad" style="left:48px;top:1266px;width:984px;height:134px">
+    <div class="round" style="width:90px;height:90px;background:#efede6"><img src="img/av_dad.png" style="width:100%;height:100%;object-fit:cover"></div>
+    <div style="flex:1;font-size:35px;color:#2a3530">Dad</div>
+    <div style="position:relative;width:60px;height:60px"><div class="plus-c abs" id="dad_plus" style="left:0;top:0"><i data-i="plus" data-s="34" data-c="#7d867f"></i></div>
+      <div class="abs round" id="dad_chk" style="left:-5px;top:-5px;width:70px;height:70px;background:#2a3f38;display:flex;align-items:center;justify-content:center;opacity:0"><i data-i="check" data-s="38" data-c="#fff"></i></div></div></div>
+  <div class="row" style="left:48px;top:1422px;width:984px;height:134px">
+    <div class="round" style="width:90px;height:90px;background:#efede6"><img src="img/av_mom.png" style="width:100%;height:100%;object-fit:cover"></div>
+    <div style="flex:1;font-size:35px;color:#2a3530">Mom</div><div class="plus-c"><i data-i="plus" data-s="34" data-c="#7d867f"></i></div></div>
+  <div class="row" style="left:48px;top:1578px;width:984px;height:134px">
+    <div class="round" style="width:90px;height:90px;background:#efede6"><img src="img/av_evan.png" style="width:100%;height:100%;object-fit:cover"></div>
+    <div style="flex:1;font-size:35px;color:#2a3530">Evan</div><div class="plus-c"><i data-i="plus" data-s="34" data-c="#7d867f"></i></div></div>
+  <div class="fadebot"></div>
+  <div class="btn-dark next" id="cast_next"><i data-i="arrowR" data-s="44" data-c="#fff"></i>Next</div>
+</section>
+
+<!-- STYLE -->
+<section id="style" class="scr" data-ui="captured">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Create your story</div>
+  <div class="stepper"><div class="st"><div class="n">1</div>Cast</div><div class="st on"><div class="n">2</div>Style</div><div class="st"><div class="n">3</div>Theme</div></div>
+  <div class="abs serif" style="left:48px;top:296px;font-size:68px">Pick an art style</div>
+  <div class="abs" style="left:50px;top:396px;font-size:31px;color:#6f7a72">This style will be used for every picture in your story.</div>
+  <div class="gcard sel" style="left:48px;top:470px"><div class="im" style="height:400px"><img src="img/s_3d.png"><div class="chk" style="right:16px;top:12px"><i data-i="check" data-s="42" data-c="#fff"></i></div></div><div class="nm">3D Storybook</div></div>
+  <div class="gcard" style="left:552px;top:470px"><div class="im" style="height:400px"><img src="img/s_cartoon.png"></div><div class="nm">Cartoon</div></div>
+  <div class="gcard" style="left:48px;top:1004px"><div class="im" style="height:400px"><img src="img/s_water.png"></div><div class="nm">Watercolor</div></div>
+  <div class="gcard" style="left:552px;top:1004px"><div class="im" style="height:400px"><img src="img/s_paint.png"></div><div class="nm">Painted Storybook</div></div>
+  <div class="gcard" style="left:48px;top:1538px;height:400px"><div class="im" style="height:274px"><img src="img/s_5.png" style="object-position:top"></div></div>
+  <div class="gcard" style="left:552px;top:1538px;height:400px"><div class="im" style="height:274px"><img src="img/s_6.png" style="object-position:top"></div></div>
+  <div class="fadebot" style="height:260px"></div>
+  <div class="btn-dark next" id="style_next"><i data-i="arrowR" data-s="44" data-c="#fff"></i>Next</div>
+</section>
+
+<!-- THEME (x2) -->
+<template id="tpl_theme">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Create your story</div>
+  <div class="stepper"><div class="st"><div class="n">1</div>Cast</div><div class="st"><div class="n">2</div>Style</div><div class="st on"><div class="n">3</div>Theme</div></div>
+  <div class="abs serif" style="left:48px;top:296px;font-size:68px">Pick a theme</div>
+  <div class="abs" style="left:50px;top:396px;font-size:31px;color:#6f7a72">Choose the world for your story.</div>
+  <div class="abs" style="left:48px;top:466px;width:984px;height:256px;background:#e6eddc;border:2px solid #d9e3cd;border-radius:30px;overflow:hidden">
+    <div class="abs" style="left:-60px;bottom:-80px;width:1104px;height:130px;border-radius:50%;background:#d3e3c3"></div>
+    <img class="abs" src="img/cyo_left.png" style="left:0;top:0;height:256px;-webkit-mask-image:linear-gradient(90deg,#000 75%,transparent)">
+    <img class="abs" src="img/cyo_right.png" style="right:0;top:0;height:256px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 35%)">
+    <div class="abs serif" style="left:250px;top:26px;font-size:56px;color:#1f2b26">Create your own</div>
+    <div class="abs" style="left:252px;top:98px;font-size:30px;color:#5d6a61">Describe any world you imagine.</div>
+    <div class="abs cyo-start" style="left:250px;top:152px;height:76px;padding:0 38px;border-radius:38px;background:#2a3f38;color:#fff;font-size:30px;font-weight:650;display:flex;align-items:center;gap:12px">Start with your idea →</div>
+  </div>
+  <div class="gcard sel" style="left:48px;top:752px"><div class="im" style="height:360px"><img style="object-position:center top" src="img/th_real.png"><div class="chk" style="right:16px;top:12px"><i data-i="check" data-s="42" data-c="#fff"></i></div></div><div class="nm">Real World</div></div>
+  <div class="gcard" style="left:552px;top:752px"><div class="im" style="height:360px"><img style="object-position:center top" src="img/th_castle.png"></div><div class="nm">Royal Castle</div></div>
+  <div class="gcard" style="left:48px;top:1244px"><div class="im" style="height:360px"><img style="object-position:center top" src="img/th_space.png"></div><div class="nm">Outer Space</div></div>
+  <div class="gcard" style="left:552px;top:1244px"><div class="im" style="height:360px"><img style="object-position:center top" src="img/th_sea.png"></div><div class="nm">Under the Sea</div></div>
+  <div class="fadebot" style="height:230px"></div>
+  <div class="btn-dark next theme-next"><i data-i="arrowR" data-s="44" data-c="#fff"></i>Next</div>
+</template>
+<section id="theme" class="scr" data-ui="captured"></section>
+<section id="theme2" class="scr" data-ui="captured"></section>
+
+<!-- PREPARATION -->
+<section id="prep" class="scr" data-ui="captured">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Create your story</div>
+  <div class="abs serif" style="left:0;top:230px;width:1080px;font-size:88px;line-height:1.12;text-align:center">Your story is<br>coming to life.</div>
+  <div class="abs" style="left:0;top:450px;width:1080px;text-align:center;font-size:34px;color:#6f7a72">A new adventure, made just for Ryan.</div>
+  <img id="prep_book" class="abs" src="img/book.png" style="left:130px;top:530px;width:820px">
+  <div class="abs" style="left:0;top:1160px;width:1080px;text-align:center;font-size:40px;font-weight:700;color:#22362f">Checking on your story</div>
+  <div class="abs" style="left:60px;top:1244px;width:960px;height:20px;border-radius:10px;background:#d7decb;overflow:hidden"><div id="prog_sh" class="abs" style="left:0;top:0;width:260px;height:20px;border-radius:10px;background:linear-gradient(90deg,rgba(120,150,120,0),#8fae8d,rgba(120,150,120,0))"></div></div>
+  <div class="abs" style="left:60px;top:1300px;width:960px;display:flex;justify-content:space-between;font-size:32px;color:#4d5a52">
+    <div style="display:flex;gap:16px;align-items:center;font-weight:700;color:#22362f"><div class="radio" style="border-color:#dfe5d6;background:#e5ead8"><div id="st_dot" style="width:16px;height:16px;border-radius:50%;background:#22362f"></div></div>Story</div>
+    <div style="display:flex;gap:16px;align-items:center"><div class="radio" style="border-width:2px"></div>Pictures</div>
+    <div style="display:flex;gap:16px;align-items:center"><div class="radio" style="border-width:2px"></div>Finishing</div></div>
+  <div class="abs" style="left:0;top:1390px;width:1080px;text-align:center;font-size:31px;color:#6f7a72">We’re confirming the latest status.</div>
+  <div class="btn-dark" style="left:60px;top:1490px;width:960px;height:124px;border-radius:32px;font-size:40px">Refresh progress</div>
+  <div class="abs" id="prep_home" style="left:290px;top:1650px;width:500px;height:100px;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:#22362f">Back to Home</div>
+</section>
+
+<!-- STORY DETAILS -->
+<section id="details" class="scr" data-ui="captured">
+  <img class="abs" src="img/logo_a.png" style="left:44px;top:110px;height:84px">
+  <div class="abs" style="left:870px;top:110px;display:flex;gap:30px;align-items:center"><i data-i="search" data-s="52"></i><div class="round" style="width:86px;height:86px;background:#efede6"><img src="img/av_ryan.png" style="width:100%;height:100%;object-fit:cover"></div></div>
+  <div class="hdr" style="top:226px;font-size:38px"><i data-i="chevL" data-s="44"></i>Stories</div>
+  <div class="abs" style="left:0;top:310px;width:1080px;height:700px;overflow:hidden">
+    <img src="img/train.png" style="width:100%;height:100%;object-fit:cover">
+    <div class="newb" style="left:24px;top:22px;height:82px;font-size:32px;padding:0 36px 0 28px"><i data-i="spark" data-s="28" data-c="#c99a2e" data-f="1"></i>NEW</div>
+    <div class="abs round" style="left:470px;top:280px;width:140px;height:140px;background:rgba(33,67,60,.9);display:flex;align-items:center;justify-content:center"><i data-i="play" data-s="58" data-c="#eec86b" data-f="1"></i></div></div>
+  <div class="abs" style="left:56px;top:1046px;font-size:58px;font-weight:800;color:#22362f;letter-spacing:-.01em">Ryan's Big Train Adventure</div>
+  <div class="abs" style="left:58px;top:1130px;font-size:32px;color:#59665e">Help Ryan recognize and express his excitement...</div>
+  <div class="abs" style="left:58px;top:1184px;font-size:32px;font-weight:650;color:#22362f;text-decoration:underline">Show more</div>
+  <div class="abs" style="left:56px;top:1250px;display:flex;gap:22px">
+    <div style="height:84px;padding:0 34px;border-radius:42px;background:#ebede2;display:flex;align-items:center;gap:14px;font-size:32px;font-weight:650;color:#22362f"><i data-i="heart" data-s="38"></i>Favorite</div>
+    <div style="height:84px;padding:0 34px;border-radius:42px;background:#ebede2;display:flex;align-items:center;gap:14px;font-size:32px;font-weight:650;color:#22362f"><i data-i="share" data-s="38"></i>Share</div></div>
+  <div class="abs" style="left:0;top:1370px;width:1080px;height:2px;background:#e3e3da"></div>
+  <div class="abs" style="left:56px;top:1400px;font-size:42px;font-weight:750;color:#22362f">Make it your story time</div>
+  <div class="abs" style="left:58px;top:1462px;font-size:31px;color:#59665e">Listen along or read at your own pace.</div>
+  <div class="abs" style="left:56px;top:1526px;width:968px;height:112px;border-radius:26px;background:#ecefe2;padding:9px;display:flex">
+    <div style="flex:1;border-radius:20px;background:#e6d989;display:flex;align-items:center;justify-content:center;gap:14px;font-size:35px;font-weight:750;color:#22362f"><i data-i="headph" data-s="40"></i>Listen<i data-i="ccheck" data-s="32"></i></div>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:14px;font-size:35px;color:#3a463f"><i data-i="book" data-s="40" data-c="#3a463f"></i>Read myself</div></div>
+  <div class="btn-dark" id="start_story" style="left:56px;top:1662px;width:968px;height:122px;border-radius:30px;background:#2a3f38;font-size:42px"><i data-i="play" data-s="38" data-c="#eec86b" data-f="1"></i>Start story</div>
+  <div class="abs" style="left:0;top:1804px;width:1080px;text-align:center;font-size:31px;color:#59665e">You can pause anytime.</div>
+</section>
+
+<!-- READER -->
+<section id="reader" class="scr" data-ui="captured" style="background:#1b1d1a">
+  <img class="abs" src="img/reader_blur.png" style="left:-80px;top:-80px;width:1240px;height:2080px;object-fit:cover;filter:brightness(.4) saturate(1.1)">
+  <div class="abs" style="left:0;top:0;width:1080px;height:1390px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 78%,transparent)">
+    <img id="rd_art" class="abs" src="img/reader.png" style="left:0;top:80px;width:1080px;height:1189px;object-fit:cover"></div>
+  <div class="abs" style="left:0;top:0;width:1080px;height:330px;background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,0))"></div>
+  <div class="abs" style="left:0;top:1100px;width:1080px;height:820px;background:linear-gradient(rgba(0,0,0,0),rgba(10,12,10,.55) 30%,rgba(10,12,10,.7))"></div>
+  <div class="abs" style="left:48px;top:96px;width:984px;display:flex;gap:10px" id="rd_segs"></div>
+  <div class="rd-top" style="left:44px;top:128px"><div class="cbtn" id="rd_x"><i data-i="x" data-s="44" data-c="#fff"></i></div>
+    <div style="color:#fff"><div style="font-size:33px;font-weight:750">Ryan's Big Train Advent...</div><div style="font-size:26px;opacity:.82;margin-top:4px">Ryan’s story · Page 1 of 11</div></div></div>
+  <div class="rd-top" style="left:804px;top:128px"><div class="cbtn"><i data-i="heart" data-s="44" data-c="#fff"></i></div><div class="cbtn"><i data-i="eyeoff" data-s="44" data-c="#fff"></i></div></div>
+  <div id="rd_text" class="abs" style="left:56px;top:1250px;width:968px;font-size:60px;line-height:1.4;color:#fff;font-weight:500;text-shadow:0 2px 12px rgba(0,0,0,.4)"></div>
+  <div class="abs" style="left:0;top:1560px;width:1080px;display:flex;justify-content:center;align-items:center;gap:76px">
+    <div class="round" style="width:116px;height:116px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center"><i data-i="chevL" data-s="50" data-c="#fff"></i></div>
+    <div class="round" style="width:160px;height:160px;background:#eec86b;display:flex;align-items:center;justify-content:center"><i data-i="pause" data-s="62" data-c="#22362f" data-f="1"></i></div>
+    <div class="round" style="width:116px;height:116px;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center"><i data-i="chevR" data-s="50" data-c="#fff"></i></div></div>
+  <div class="abs" style="left:0;top:1774px;width:1080px;display:flex;justify-content:space-around;align-items:center;color:#fff;font-size:29px">
+    <div style="display:flex;gap:14px;align-items:center"><i data-i="vol" data-s="44" data-c="#fff"></i>Sound on</div>
+    <div style="display:flex;gap:14px;align-items:center"><div style="border:2.5px solid #fff;border-radius:7px;padding:0 8px;font-size:20px;font-weight:700;line-height:30px">CC</div>On</div>
+    <div>1×</div></div>
+</section>
+
+<!-- STORY BUDDY + CONVERSATION -->
+<section id="buddy" class="scr" data-ui="captured">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Make your own story</div>
+  <div class="abs serif" style="left:48px;top:210px;font-size:80px;line-height:1.12">Let's make a story<br>for Ryan.</div>
+  <div class="abs" style="left:50px;top:410px;font-size:32px;color:#6f7a72">A little moment. A story just for them.</div>
+  <div class="abs" style="left:250px;top:480px;width:580px;height:620px"><img class="abs bud" src="img/buddy_a.png" style="left:15px;top:0;width:550px"></div>
+  <div class="abs" style="left:0;top:1100px;width:1080px;text-align:center;font-size:30px;color:#6f7a72">Your Puzzle Piece story buddy</div>
+  <div class="btn-dark" id="tap_tell" style="left:90px;top:1170px;width:900px;height:140px;border-radius:32px;background:#2a3f38;font-size:42px"><i data-i="mic" data-s="52" data-c="#fff"></i>Tap to tell me</div>
+  <div class="abs" style="left:0;top:1330px;width:1080px;text-align:center;font-size:29px;color:#6f7a72">Tell me what story you'd like to make.</div>
+  <div class="abs" style="left:90px;top:1394px;width:900px;height:112px;border:2px solid #dcdcd2;border-radius:30px;background:#fff;display:flex;align-items:center;justify-content:center;gap:18px;font-size:35px;font-weight:650;color:#59665e"><i data-i="kbd" data-s="48" data-c="#59665e"></i>Type instead</div>
+  <div class="abs serif" style="left:48px;top:1550px;font-size:50px">Need a little inspiration?</div>
+  <div class="abs" style="left:48px;top:1630px;width:984px;display:flex;flex-direction:column;gap:14px">
+    <div style="height:80px;border-radius:18px;background:#e3e8d6;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font-size:31px;font-weight:700;color:#59665e">“We’re going somewhere new...”<i data-i="chevR" data-s="38" data-c="#59665e"></i></div>
+    <div style="height:80px;border-radius:18px;background:#e3e8d6;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font-size:31px;font-weight:700;color:#59665e">“Ryan is feeling...”<i data-i="chevR" data-s="38" data-c="#59665e"></i></div>
+    <div style="height:80px;border-radius:18px;background:#e3e8d6;display:flex;align-items:center;justify-content:space-between;padding:0 30px;font-size:31px;font-weight:700;color:#59665e">“Ryan is learning to...”<i data-i="chevR" data-s="38" data-c="#59665e"></i></div></div>
+</section>
+<section id="conv" class="scr" data-ui="captured" style="box-shadow:none">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Make your story</div>
+  <div class="abs serif" style="left:48px;top:210px;font-size:80px">I’m talking...</div>
+  <div class="abs" style="left:50px;top:320px;font-size:30px;color:#6f7a72">I’m thinking about Ryan's story.</div>
+  <div class="abs" style="left:340px;top:380px;width:400px;height:460px"><img class="abs bud" src="img/buddy_a.png" style="left:10px;top:0;width:380px"></div>
+  <div class="abs" style="left:0;top:820px;width:1080px;text-align:center;font-size:32px;color:#6f7a72">Talking</div>
+  <div class="abs" style="left:48px;top:886px;width:984px;height:186px;background:#fff;border:2px solid #dedfd6;border-radius:32px;padding:30px 36px">
+    <div style="font-size:23px;font-weight:700;letter-spacing:.08em;color:#6c776f">CURRENT QUESTION</div>
+    <div style="font-size:36px;color:#1f2b26;margin-top:12px;line-height:1.3">What little moment would you like this story to help with?</div></div>
+  <div class="abs" style="left:48px;top:1100px;width:984px;height:900px;background:#fff;border:2px solid #dedfd6;border-radius:32px;padding:0 32px">
+    <div style="height:110px;display:flex;align-items:center;gap:22px;font-size:40px;font-weight:750;color:#22362f;border-bottom:2px solid #e8e8e0"><i data-i="msg" data-s="46"></i><div style="flex:1">Conversation</div><i data-i="chevU" data-s="40" data-c="#6f7a72"></i></div>
+    <div id="cv1"><div style="font-size:27px;color:#6f7a72;margin:26px 0 12px">Story guide</div>
+      <div style="display:inline-block;max-width:700px;background:#f0f0ec;border-radius:26px;padding:22px 30px;font-size:34px;line-height:1.35;color:#26302b">Hey there! What little moment would you like this story to help with?</div></div>
+    <div id="cv2" style="text-align:right"><div style="font-size:27px;color:#6f7a72;margin:18px 0 12px">You</div>
+      <div style="display:inline-block;background:#e3e8d6;border-radius:26px;padding:20px 30px;font-size:35px;color:#26302b">Doctor's visits for Ryan</div></div>
+    <div id="cv3"><div style="font-size:27px;color:#6f7a72;margin:14px 0 12px">Story guide</div>
+      <div style="display:inline-flex;gap:12px;background:#f0f0ec;border-radius:26px;padding:26px 30px"><div class="dot3" style="width:16px;height:16px;border-radius:50%;background:#8a948c"></div><div class="dot3" style="width:16px;height:16px;border-radius:50%;background:#8a948c"></div><div class="dot3" style="width:16px;height:16px;border-radius:50%;background:#8a948c"></div></div></div>
+  </div>
+</section>
+
+<!-- STORY FOCUS -->
+<section id="focus" class="scr" data-ui="captured">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Make your own story</div>
+  <img class="abs" src="img/focus_banner.png" style="left:0;top:190px;width:1080px;height:233px">
+  <div class="abs serif" style="left:44px;top:420px;font-size:70px">Here’s the story focus.</div>
+  <div class="abs" style="left:46px;top:516px;font-size:30px;color:#6f7a72">This is what we heard from your conversation.</div>
+  <div class="abs fi" style="left:36px;top:576px;width:1008px;height:380px;background:#e8f4ee;border-radius:32px;display:flex;gap:30px;padding:36px 34px">
+    <div class="round" style="flex:none;width:100px;height:100px;background:#cfe6da;display:flex;align-items:center;justify-content:center"><i data-i="target" data-s="50"></i></div>
+    <div><div style="font-size:46px;font-weight:750;color:#1f2b26">The big picture</div>
+      <div style="font-size:31px;line-height:1.42;color:#33423b;margin-top:12px">Ryan gets very scared during doctor's visits and has a hard time controlling his feelings when he's there. This story will help him feel confident, calm his worries, and know what to expect at the doctor's office.</div></div></div>
+  <div id="focus_list" class="abs" style="left:36px;top:980px;width:1008px">
+    <div class="row fi" style="position:relative;height:132px;margin-bottom:14px"><div class="round" style="flex:none;width:90px;height:90px;background:#dce7f6;display:flex;align-items:center;justify-content:center"><i data-i="home" data-s="44"></i></div><div><div style="font-size:30px;font-weight:750;color:#1f2b26">Setting</div><div style="font-size:30px;color:#3d4a43;margin-top:4px">At the doctor's office during a check-up</div></div></div>
+    <div class="row fi" style="position:relative;height:132px;margin-bottom:14px"><div class="round" style="flex:none;width:90px;height:90px;background:#c8e9d8;display:flex;align-items:center;justify-content:center"><i data-i="users" data-s="44"></i></div><div><div style="font-size:30px;font-weight:750;color:#1f2b26">People involved</div><div style="font-size:30px;color:#3d4a43;margin-top:4px">Ryan, a parent, and the doctor</div></div></div>
+    <div class="row fi" style="position:relative;height:132px;margin-bottom:14px"><div class="round" style="flex:none;width:90px;height:90px;background:#fee8b2;display:flex;align-items:center;justify-content:center"><i data-i="bulb" data-s="44"></i></div><div><div style="font-size:30px;font-weight:750;color:#1f2b26">Goal</div><div style="font-size:30px;color:#3d4a43;margin-top:4px">Feel confident and not scared of the doctor</div></div></div>
+    <div class="row fi" style="position:relative;height:132px;margin-bottom:14px"><div class="round" style="flex:none;width:90px;height:90px;background:#f7d0dd;display:flex;align-items:center;justify-content:center"><i data-i="star" data-s="44"></i></div><div><div style="font-size:30px;font-weight:750;color:#1f2b26">New skill</div><div style="font-size:30px;color:#3d4a43;margin-top:4px">Use calming strategies to stay brave and in control</div></div></div>
+    <div class="row fi" style="position:relative;height:132px;margin-bottom:14px"><div class="round" style="flex:none;width:90px;height:90px;background:#d4cbeb;display:flex;align-items:center;justify-content:center"><i data-i="chat" data-s="44"></i></div><div><div style="font-size:30px;font-weight:750;color:#1f2b26">Current challenge</div><div style="font-size:30px;color:#3d4a43;margin-top:4px">Gets very scared and struggles to control himself</div></div></div>
+    <div class="row fi" style="position:relative;height:132px"><div class="round" style="flex:none;width:90px;height:90px;background:#cde9e3"></div><div><div style="font-size:30px;font-weight:750;color:#1f2b26">Strategies</div></div></div>
+  </div>
+  <div class="fadebot" style="height:330px"></div>
+  <div class="btn-dark next" id="focus_next"><i data-i="arrowR" data-s="44" data-c="#fff"></i>Next</div>
+</section>
+
+<!-- CUSTOM WORLD -->
+<section id="custom" class="scr" data-ui="captured">
+  <div class="hdr"><i data-i="chevL" data-s="48"></i>Create your story</div>
+  <div class="abs serif" style="left:48px;top:200px;font-size:66px">What's your idea?</div>
+  <div class="abs" id="cw_box" style="left:48px;top:300px;width:984px;height:330px;background:#fff;border:2px solid #dcdcd2;border-radius:32px"></div>
+  <div id="cw_text" class="abs" style="left:90px;top:340px;font-size:40px;line-height:52px;color:#22362f;white-space:pre">Magical sports world</div>
+  <div id="cw_caret" class="abs" style="left:90px;top:343px;width:3px;height:48px;background:#3b7bf6"></div>
+  <div class="abs" style="left:48px;top:656px;width:984px;height:150px;background:#e6eddc;border-radius:28px;display:flex;align-items:center;gap:26px;padding:0 28px">
+    <div class="round" style="flex:none;width:104px;height:104px;background:#d4dfc7;display:flex;align-items:center;justify-content:center"><i data-i="mic" data-s="48" data-c="#4b6a58"></i></div>
+    <div style="flex:1"><div style="font-size:35px;font-weight:750;color:#22362f">Or tell us your idea</div><div style="font-size:29px;color:#5d6a61;margin-top:4px">Tap the mic to speak</div></div><i data-i="chevR" data-s="44"></i></div>
+  <div class="btn-dark" style="left:48px;top:832px;width:984px;height:124px;border-radius:62px;background:#2a3f38"><i data-i="arrowR" data-s="44" data-c="#fff"></i>Next</div>
+  <div class="kb" id="kb"><div class="sug"></div></div>
+</section>
+
+<!-- PARENT SPACE + SHEET -->
+<section id="parent" class="scr" data-ui="captured">
+  <div class="abs" style="left:44px;top:116px;display:flex;align-items:center;gap:16px;font-size:36px;font-weight:700;color:#22362f"><i data-i="arrowL" data-s="42"></i>Back to Home</div>
+  <div class="abs serif" style="left:48px;top:190px;font-size:88px">Parent space</div>
+  <div class="abs" style="left:50px;top:304px;font-size:33px;color:#8a948c">Small steps, together.</div>
+  <div class="abs" style="left:48px;top:380px;width:984px;height:300px;background:#e5ead8;border-radius:32px">
+    <div class="abs round" style="left:48px;top:38px;width:140px;height:140px;background:#efe9df"><img src="img/ps_ryan.png" style="width:100%;height:100%;object-fit:cover"></div>
+    <div class="abs" style="left:226px;top:52px;font-size:54px;font-weight:750;color:#2d4339">Ryan</div>
+    <div class="abs" style="left:228px;top:122px;font-size:31px;color:#8a948c">Age 5 · View profile</div>
+    <div class="abs" style="left:48px;top:222px;width:900px;display:flex;font-size:31px;font-weight:700;color:#2d3832"><div style="flex:1">5 stories</div><div style="flex:1">1 favorites</div><div style="flex:1">1 character</div></div></div>
+  <div class="abs" style="left:48px;top:712px;width:984px;height:200px;background:#fff;border:2px solid #dedfd6;border-radius:32px">
+    <div class="abs" style="left:44px;top:58px;font-size:37px;font-weight:750;color:#2d4339">Monthly check-in</div>
+    <div class="abs" style="left:44px;top:110px;font-size:27px;color:#8a948c">What's new in Ryan's world?</div>
+    <div class="abs" style="left:770px;top:66px;height:68px;padding:0 30px;border-radius:34px;background:#e3e8d6;display:flex;align-items:center;font-size:27px;font-weight:700;color:#2d4339">Check in</div></div>
+  <div class="abs serif" style="left:48px;top:966px;font-size:56px">Made for your family</div>
+  <div class="row" style="left:48px;top:1060px;width:984px;height:126px"><i data-i="plus" data-s="46"></i><div style="flex:1;font-size:35px;font-weight:650;color:#2d3832">Family &amp; helpers</div><i data-i="chevR" data-s="42" data-c="#7d867f"></i></div>
+  <div class="row" id="ps_acct" style="left:48px;top:1206px;width:984px;height:126px"><i data-i="lock" data-s="46"></i><div style="flex:1;font-size:35px;font-weight:650;color:#2d3832">Account &amp; settings</div><i data-i="chevR" data-s="42" data-c="#7d867f"></i></div>
+  <div id="dim" class="dim" style="opacity:0"></div>
+  <div id="sheet" class="sheet">
+    <div id="sh_a" class="abs" style="left:0;top:0;width:1080px;height:1830px;overflow:hidden">
+      <div class="abs disp" style="left:48px;top:50px;font-size:68px">Account &amp; settings</div>
+      <div class="abs" style="left:960px;top:66px"><i data-i="x" data-s="56"></i></div>
+      <div class="abs" style="left:0;top:170px;width:1080px;height:1660px;overflow:hidden"><div id="sh_scroll" class="abs" style="left:0;top:0;width:1080px;height:2500px">
+        <div class="srow" style="top:0"><div class="ci"><i data-i="user" data-s="44" data-c="#5c6a60"></i></div><div class="sp">Switch to Ryan</div><i data-i="chevR" data-s="40" data-c="#3d4741"></i></div>
+        <div class="srow" style="top:152px"><div class="ci"><i data-i="user" data-s="44" data-c="#5c6a60"></i></div><div class="sp">Switch to Benny</div><i data-i="chevR" data-s="40" data-c="#3d4741"></i></div>
+        <div class="srow" style="top:304px"><div class="ci"><i data-i="plus" data-s="44" data-c="#5c6a60"></i></div><div class="sp">Add Child</div><i data-i="chevR" data-s="40" data-c="#3d4741"></i></div>
+        <div class="srow" style="top:456px"><div class="ci"><i data-i="pencil" data-s="42" data-c="#5c6a60"></i></div><div class="sp">Edit Profile</div><i data-i="chevR" data-s="40" data-c="#3d4741"></i></div>
+        <div class="srow" style="top:608px"><div class="ci"><i data-i="users" data-s="44" data-c="#5c6a60"></i></div><div class="sp">Family &amp; Helpers</div><i data-i="chevR" data-s="40" data-c="#3d4741"></i></div>
+        <div class="abs" style="left:44px;top:772px;width:992px;height:360px;background:#eff4e7;border:2px solid #dfe6d2;border-radius:44px">
+          <div class="abs round" style="left:40px;top:44px;width:100px;height:100px;background:#2a3f38;display:flex;align-items:center;justify-content:center"><i data-i="clip" data-s="44" data-c="#fff"></i></div>
+          <div class="abs disp" style="left:172px;top:38px;width:780px;font-size:48px;line-height:1.15">Time for Ryan's monthly check-in</div>
+          <div class="abs" style="left:174px;top:156px;width:780px;font-size:32px;line-height:1.4;color:#59615b">A quick minute keeps story suggestions in tune with this month.</div>
+          <div class="abs" style="left:44px;top:256px;height:80px;padding:0 38px;border-radius:40px;background:#2a3f38;color:#fff;display:flex;align-items:center;gap:12px;font-size:33px;font-weight:650"><i data-i="pencil" data-s="30" data-c="#fff"></i>Start Check-In</div></div>
+        <div class="abs disp" style="left:48px;top:1190px;font-size:58px">Story reading voice</div>
+        <div class="srow" id="sh_manage" style="top:1290px"><div class="ci"><i data-i="mic" data-s="44" data-c="#5c6a60"></i></div><div class="sp">Manage my voice</div><i data-i="chevR" data-s="40" data-c="#3d4741"></i></div>
+        <div class="abs" style="left:48px;top:1446px;font-size:30px;color:#59615b">Choose who reads Ryan's stories aloud.</div>
+        <div class="vcard" style="top:1506px"><div class="ci"><i data-i="book" data-s="42" data-c="#5c6a60"></i></div><div class="tx"><b>Male</b>Friendly storybook voice</div><div class="pl"><i data-i="play" data-s="36" data-c="#22362f"></i></div><div class="round" style="width:70px;height:70px;background:#2a3f38;display:flex;align-items:center;justify-content:center"><i data-i="check" data-s="36" data-c="#fff"></i></div></div>
+        <div class="vcard" style="top:1738px"><div class="ci"><i data-i="book" data-s="42" data-c="#5c6a60"></i></div><div class="tx"><b>Female</b>Friendly storybook voice</div><div class="pl"><i data-i="play" data-s="36" data-c="#22362f"></i></div><div class="radio" style="width:58px;height:58px;margin:0 6px"></div></div>
+        <div class="vcard" style="top:1970px"><div class="ci"><i data-i="user" data-s="42" data-c="#5c6a60"></i></div><div class="tx"><b>My voice</b>Your recorded voice</div><div class="pl"><i data-i="play" data-s="36" data-c="#22362f"></i></div><div class="radio" style="width:58px;height:58px;margin:0 6px"></div></div>
+        <div class="abs disp" style="left:48px;top:2220px;font-size:58px">Support &amp; Legal</div>
+      </div></div>
+    </div>
+    <div id="sh_b" class="abs" style="left:0;top:0;width:1080px;height:1830px;background:#fdfcf8;overflow:hidden">
+      <div class="abs disp" style="left:44px;top:50px;font-size:68px;display:flex;align-items:center;gap:22px"><i data-i="chevL" data-s="52" data-c="#141a17"></i>Your voice</div>
+      <div class="abs" style="left:44px;top:170px;width:992px;height:600px;background:#eff4e7;border:2px solid #dfe6d2;border-radius:44px">
+        <div class="abs round" style="left:40px;top:40px;width:100px;height:100px;background:#2a3f38;display:flex;align-items:center;justify-content:center"><i data-i="user" data-s="44" data-c="#fff"></i></div>
+        <div class="abs disp" style="left:166px;top:50px;font-size:46px">My voice</div>
+        <div class="abs" style="left:40px;top:170px;width:910px;font-size:35px;line-height:1.4;color:#59615b">A private AI narration voice made from your recording.</div>
+        <div class="abs" id="yv_sample" style="left:40px;top:290px;width:910px;height:98px;border-radius:49px;background:#e2e8d6;display:flex;align-items:center;justify-content:center;gap:16px;font-size:36px;font-weight:700;color:#2d4339"><i data-i="play" data-s="36" data-c="#2d4339"></i>Hear a sample</div>
+        <div class="abs" style="left:40px;top:408px;width:910px;font-size:29px;line-height:1.4;color:#59615b">Creating or previewing doesn't change who reads Ryan's stories. Choose it only when you're happy with it.</div>
+        <div class="abs" style="left:40px;top:500px;height:84px;padding:0 38px;border-radius:42px;background:#2a3f38;color:#fff;display:flex;align-items:center;gap:14px;font-size:35px;font-weight:650"><i data-i="ucheck" data-s="36" data-c="#fff"></i>Use this voice for Ryan</div></div>
+      <div class="abs disp" style="left:48px;top:820px;font-size:54px">Replace</div>
+      <div class="abs" style="left:48px;top:900px;width:980px;font-size:31px;line-height:1.4;color:#59615b">Record again to make a new voice. Your current voice keeps working until the new one is saved.</div>
+      <div class="abs" style="left:44px;top:1010px;width:992px;height:98px;border-radius:49px;background:#e2e8d6;display:flex;align-items:center;justify-content:center;gap:16px;font-size:36px;font-weight:700;color:#2d4339"><i data-i="refresh" data-s="38" data-c="#2d4339"></i>Replace my voice</div>
+      <div class="abs disp" style="left:48px;top:1150px;font-size:54px">Delete</div>
+      <div class="abs" style="left:48px;top:1230px;width:980px;font-size:31px;line-height:1.4;color:#59615b">Stories linked to this voice switch to the default narrator. Existing audio keeps playing until replacement audio is ready. Story audio already made or shared follows our normal media retention, so it isn't erased everywhere immediately.</div>
+    </div>
+  </div>
+</section>
+
+<div id="sb" class="sb"><div class="t"><span class="tm" id="tm1">3:32</span><span class="tm" id="tm2">3:33</span><span class="tm" id="tm3">3:34</span><span class="tm" id="tm4">3:35</span></div>
+  <div class="r"><i data-i="wifi" data-s="34" data-c="currentColor"></i><span>33%</span><span class="ic"><svg width="50" height="25" viewBox="0 0 44 22"><rect x="1" y="1" width="38" height="20" rx="6" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-width="2"/><rect x="4" y="4" width="11" height="14" rx="3" fill="currentColor"/><rect x="41" y="7" width="2.5" height="8" rx="1.2" fill="currentColor" fill-opacity=".45"/></svg></span></div></div>
+<div id="hb" class="homebar"></div>
+<div id="touch"></div>
+</div>
+
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script>
+const P = {
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  gear:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+  plus:'<path d="M5 12h14"/><path d="M12 5v14"/>',
+  heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  chevL:'<path d="m15 18-6-6 6-6"/>', chevR:'<path d="m9 18 6-6-6-6"/>', chevU:'<path d="m18 15-6-6-6 6"/>',
+  arrowL:'<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>', arrowR:'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  image:'<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+  pencil:'<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>',
+  save:'<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  spark:'<path d="M12 1.5C12.7 8 16 11.3 22.5 12 16 12.7 12.7 16 12 22.5 11.3 16 8 12.7 1.5 12 8 11.3 11.3 8 12 1.5Z"/>',
+  wand:'<path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/>',
+  headph:'<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>',
+  ccheck:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+  book:'<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  play:'<path d="M6 3.5 20 12 6 20.5z"/>', pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+  share:'<path d="M12 2v13"/><path d="m16 6-4-4-4 4"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>',
+  x:'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  eyeoff:'<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>',
+  vol:'<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>',
+  mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
+  kbd:'<path d="M10 8h.01"/><path d="M12 12h.01"/><path d="M14 8h.01"/><path d="M16 12h.01"/><path d="M18 8h.01"/><path d="M6 8h.01"/><path d="M7 16h10"/><path d="M8 12h.01"/><rect width="20" height="16" x="2" y="4" rx="2"/>',
+  msg:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  home:'<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  bulb:'<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+  star:'<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"/>',
+  chat:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+  lock:'<rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  ucheck:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/>',
+  clip:'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>',
+  refresh:'<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+  del:'<path d="M10 5a2 2 0 0 0-1.344.519l-6.328 5.74a1 1 0 0 0 0 1.481l6.328 5.741A2 2 0 0 0 10 19h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><path d="m12 9 6 6"/><path d="m18 9-6 6"/>',
+  ret:'<path d="M9 10l-5 5 5 5"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/>',
+  shift:'<path d="M9 18v-6H5l7-7 7 7h-4v6H9z"/>',
+  smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>',
+  kbdown:'<rect width="20" height="13" x="2" y="2" rx="2"/><path d="M7 11h10"/><path d="M7 7h.01"/><path d="M12 7h.01"/><path d="M17 7h.01"/><path d="m9 19 3 3 3-3"/>',
+  wifi:'<path d="M12 20h.01"/><path d="M2 8.82a15 15 0 0 1 20 0"/><path d="M5 12.859a10 10 0 0 1 14 0"/><path d="M8.5 16.429a5 5 0 0 1 7 0"/>',
+};
+const svg = (n, s, c, f) => `<span class="ic"><svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${f ? c : 'none'}" stroke="${c}" stroke-width="${f ? 0 : 2}" stroke-linecap="round" stroke-linejoin="round">${P[n]}</svg></span>`;
+
+function homeHTML(creating) {
+  const fam = [['ryan','Ryan',1],['dad','Dad'],['mom','Mom'],['evan','Evan'],['sam','Sam'],['bo','Bo']]
+    .map(([k, n, s]) => `<div class="p"><div class="av${s ? ' sel' : ''}"><img src="img/av_${k}.png"></div>${n}</div>`).join('') +
+    `<div class="p"><div class="add home-add"><i data-i="plus" data-s="50"></i></div>Add family</div>`;
+  const badge = `<div class="newb"><i data-i="spark" data-s="26" data-c="#c99a2e" data-f="1"></i>NEW</div>`;
+  const train = (y) => `<div class="story home-train" style="left:48px;top:${y}px"><div class="art"><img src="img/train.png">${badge}</div>
+      <div class="foot"><div class="av"><img src="img/av_ryan.png"></div><div style="flex:1"><div class="t">Ryan's Big Train Adventure</div><div class="d">Created Oct 22</div></div><i data-i="heart" data-s="50" data-c="#4a5550"></i></div></div>`;
+  const space = (y) => `<div class="story" style="left:48px;top:${y}px"><div class="art"><img src="img/space.png">${badge}</div>
+      <div class="foot"><div class="av"><img src="img/av_ryan.png"></div><div style="flex:1"><div class="t">Ryan's Space Cinema Adventure</div></div><i data-i="heart" data-s="50" data-c="#e0453a" data-f="1"></i></div></div>`;
+  const creatingCard = (y) => `<div class="story" style="left:48px;top:${y}px"><div class="art" style="background:#e4eae3">
+      <div class="abs" style="left:-120px;top:-130px;width:340px;height:340px;border-radius:50%;background:#d9e1d8"></div>
+      <div class="abs" style="right:-120px;top:-130px;width:340px;height:340px;border-radius:50%;background:#d9e1d8"></div>
+      <div class="abs" style="left:-110px;top:340px;width:1204px;height:230px;border-radius:50%;background:#c9d4c8"></div>
+      <div class="abs" style="left:-70px;top:366px;width:1124px;height:230px;border-radius:50%;background:#aebdac"></div>
+      <img class="abs crt-puz" src="img/creating_puzzle.png" style="left:392px;top:34px">
+      <div class="abs" style="left:0;top:420px;width:984px;height:220px;background:#1e443a"></div>
+      <div class="abs" style="left:44px;top:444px;font-size:60px;line-height:1.1;font-weight:800;color:#fff;letter-spacing:-.005em">CREATING YOUR<br>STORY<span class="cd">.</span><span class="cd">.</span><span class="cd">.</span></div></div>
+      <div class="foot"><div class="av"><img src="img/av_ryan.png"></div><div style="flex:1;font-size:29px;color:#5f6a63;line-height:1.35">We're finishing all the pictures, sounds,<br>and animations for your story.</div><i data-i="heart" data-s="50" data-c="#4a5550"></i></div></div>`;
+  return `<div class="abs hs" style="left:0;top:0;width:1080px;height:3000px">
+    <img class="abs" src="img/logo_a.png" style="left:44px;top:112px;height:90px">
+    <div class="abs home-gear" style="left:916px;top:100px;width:120px;height:120px;border-radius:30px;background:#e8ebe0;display:flex;align-items:center;justify-content:center"><i data-i="gear" data-s="56"></i></div>
+    <div class="search" style="left:48px;top:252px;width:984px;height:104px"><i data-i="search" data-s="44" data-c="#69756d"></i>Search stories</div>
+    <div class="fam" style="left:48px;top:388px">${fam}</div>
+    <div class="filters" style="left:48px;top:580px"><div class="on">All</div><div>New</div><div>Favorites</div></div>
+    ${creating ? creatingCard(706) + train(1520) : train(706) + space(1520)}</div>
+    <div class="abs" style="left:0;top:0;width:1080px;height:80px;background:var(--home)"></div>
+    <div class="fab home-fab"><i data-i="wand" data-s="64" data-c="#2a3a33"></i></div>`;
+}
+document.getElementById('home1').innerHTML = homeHTML(false);
+document.getElementById('home2').innerHTML = homeHTML(true);
+for (const id of ['topic', 'topic2']) document.getElementById(id).innerHTML = document.getElementById('tpl_topic').innerHTML;
+for (const id of ['theme', 'theme2']) document.getElementById(id).innerHTML = document.getElementById('tpl_theme').innerHTML;
+const RD = "I'm so excited! Today is the day—Dad and I are going on a real train adventure!".split(' ');
+document.getElementById('rd_text').innerHTML = RD.map((w, i) => `<span class="rw" id="rw${i}">${w}</span>`).join(' ');
+document.getElementById('rd_segs').innerHTML = '<div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.35);overflow:hidden"><div id="rd_prog" style="width:100%;height:6px;background:#fff;transform-origin:0 0"></div></div>' +
+  '<div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.35)"></div>'.repeat(10);
+// iPhone-style portrait keyboard
+(function () {
+  const rows = [
+    ['q','w','e','r','t','y','u','i','o','p'],
+    [['', 'sp', .5],'a','s','d','f','g','h','j','k','l',['', 'sp', .5]],
+    [['shift','f',1.35],['','sp',.12],'z','x','c','v','b','n','m',['','sp',.12],['del','f',1.35]],
+    [['123','f',2.5],['space','',5.2],['ret','f',2.5]]];
+  let h = '';
+  for (const r of rows) {
+    h += '<div class="kr">';
+    for (const k of r) {
+      if (typeof k === 'string') { h += `<div class="k" id="key_${k}"><div class="hl"></div>${k}</div>`; continue; }
+      const [n, f, g] = k;
+      if (f === 'sp') { h += `<div style="flex:${g} 1 0"></div>`; continue; }
+      const inner = P[n] ? svg(n, 48, '#111') : (n === 'space' ? 'space' : n);
+      h += `<div class="k ${f}" ${n === 'space' ? 'id="key_space" ' : ''}style="flex:${g} 1 0${n === 'space' ? ';font-size:36px;color:#333' : ''}"><div class="hl"></div>${inner}</div>`;
+    }
+    h += '</div>';
+  }
+  h += `<div style="display:flex;justify-content:space-between;padding:34px 40px 0">${svg('smile', 60, '#555')}${svg('mic', 60, '#555')}</div>`;
+  document.getElementById('kb').insertAdjacentHTML('beforeend', h);
+  document.querySelector('#kb .sug').innerHTML = '<div class="sg0"></div><div class="sg0"></div><div class="sg0"></div>';
+})();
+document.querySelectorAll('i[data-i]').forEach(e => { e.outerHTML = svg(e.dataset.i, +e.dataset.s || 32, e.dataset.c || '#22362f', e.dataset.f); });
+
+const SHOW_TOUCH = !/notouch/.test(location.href);
+if (!SHOW_TOUCH) document.getElementById('touch').style.display = 'none';
+const W = 1080, H = 1920;
+const M = Motion.film({ fps: 30, duration: 60, width: W, height: H, clock: 'smooth' });
+window.__ready = Motion.loaded().then(build);
+
+function build() {
+  const $ = s => document.querySelector(s);
+  const KF = new Map();
+  const key = (el, prop, f, v, ease) => {
+    el = typeof el === 'string' ? $(el) : el;
+    if (!KF.has(el)) KF.set(el, {});
+    const m = KF.get(el); (m[prop] = m[prop] || []).push([f, v, ease]);
+  };
+  const flush = () => { for (const [el, m] of KF) for (const p in m) { const ks = m[p].map((k, i) => [k, i]).sort((a, b) => a[0][0] - b[0][0] || a[1] - b[1]).map(x => x[0]); if (ks.length === 1) ks.push([ks[0][0] + 1, ks[0][1]]); M.kf(el, p, ks); } };
+  const center = el => { el = typeof el === 'string' ? $(el) : el; const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+  const on = (id, a, b) => M.show('#' + id, a, b);
+  const PUSH = 18, PAR = -320;
+  function push(a, b, f) {
+    key('#' + b, 'x', f, W); key('#' + b, 'x', f + PUSH, 0, 'softLand');
+    key('#' + a, 'x', f, 0); key('#' + a, 'x', f + PUSH, PAR, 'softLand'); key('#' + a, 'x', f + PUSH + 1, 0);
+    M.mark(f, 'cut', a + ' > ' + b);
+  }
+  function pop(a, b, f) {
+    key('#' + a, 'x', f, 0); key('#' + a, 'x', f + PUSH, W, 'softLand'); key('#' + a, 'x', f + PUSH + 1, 0);
+    key('#' + b, 'x', f, PAR); key('#' + b, 'x', f + PUSH, 0, 'softLand');
+    M.mark(f, 'cut', a + ' < ' + b);
+  }
+  const T = '#touch';
+  key(T, 'opacity', 0, 0);
+  function tap(target, f, opt = {}) {
+    let [x, y] = Array.isArray(target) ? target : center(target);
+    x += opt.dx || 0; y += opt.dy || 0;
+    key(T, 'left', f - 1, x); key(T, 'left', f, x); key(T, 'top', f - 1, y); key(T, 'top', f, y);
+    key(T, 'opacity', f, 0); key(T, 'opacity', f + 2, 1, 'softLand'); key(T, 'opacity', f + 8, 1); key(T, 'opacity', f + 14, 0, 'gentleIn');
+    key(T, 'scale', f, .7); key(T, 'scale', f + 3, 1, 'softLand'); key(T, 'scale', f + 8, 1); key(T, 'scale', f + 14, 1.18, 'glide');
+    if (!Array.isArray(target) && !opt.noPress) {
+      const el = typeof target === 'string' ? $(target) : target;
+      key(el, 'scale', f, 1); key(el, 'scale', f + 3, opt.depth || .965, 'softLand'); key(el, 'scale', f + 9, opt.depth || .965); key(el, 'scale', f + 15, 1, 'softLand');
+      key(el, 'filter', f, 'brightness(1)'); key(el, 'filter', f + 3, 'brightness(.9)'); key(el, 'filter', f + 9, 'brightness(.9)'); key(el, 'filter', f + 15, 'brightness(1)');
+    }
+    M.mark(f, 'press', opt.label || '');
+  }
+  function drag(x, y0, y1, f0, f1) {
+    key(T, 'left', f0 - 1, x); key(T, 'left', f0, x); key(T, 'top', f0 - 1, y0); key(T, 'top', f0, y0); key(T, 'top', f1, y1, 'softInOut');
+    key(T, 'opacity', f0, 0); key(T, 'opacity', f0 + 2, 1); key(T, 'opacity', f1, 1); key(T, 'opacity', f1 + 6, 0);
+    key(T, 'scale', f0, .8); key(T, 'scale', f0 + 3, 1); key(T, 'scale', f1, 1);
+  }
+
+  // ---- CH1 Discover & personalize (3:32)
+  on('home1', 0, 96); on('home1', 156, 230);
+  key('#home1', 'x', 0, 0);
+  tap($('#home1 .home-add'), 66, { label: 'Add family' });
+  push('home1', 'addfam', 76); on('addfam', 76, 176);
+  tap('#af_back', 148, { label: 'Back' });
+  pop('addfam', 'home1', 156);
+  tap($('#home1 .home-fab'), 196, { label: 'Create story', depth: .92 });
+  push('home1', 'topic', 206); on('topic', 206, 314);
+  tap($('#topic .t-help'), 284, { label: 'Asking for Help' });
+  push('topic', 'cast', 294); on('cast', 294, 404);
+  tap($('#dad_plus'), 344, { label: 'Add Dad', noPress: true });
+  key('#dad_chk', 'opacity', 347, 0); key('#dad_chk', 'opacity', 348, 1);
+  key('#dad_chk', 'scale', 347, .5); key('#dad_chk', 'scale', 355, 1, 'softLand');
+  key('#cast_dad', 'borderColor', 347, '#e4e4da'); key('#cast_dad', 'borderColor', 348, '#2a3f38');
+  tap('#cast_next', 376, { label: 'Next' });
+  push('cast', 'style', 384); on('style', 384, 480);
+  tap('#style_next', 452, { label: 'Next' });
+  push('style', 'theme', 460); on('theme', 460, 564);
+  tap($('#theme .theme-next'), 534, { label: 'Next' });
+  push('theme', 'prep', 544); on('prep', 544, 650);
+
+  // ---- CH2 Prepare & read (3:33)
+  const C2 = 544;
+  for (let k = 0; k < 4; k++) { key('#prog_sh', 'x', C2 + k * 30, -260); key('#prog_sh', 'x', C2 + k * 30 + 29, 960, 'softInOut'); key('#prog_sh', 'x', C2 + k * 30 + 30, -260); }
+  for (let k = 0; k < 4; k++) { key('#st_dot', 'scale', C2 + k * 30, 1); key('#st_dot', 'scale', C2 + 15 + k * 30, 1.45, 'softInOut'); key('#st_dot', 'scale', C2 + 30 + k * 30, 1, 'softInOut'); }
+  key('#prep_book', 'y', C2, 0); key('#prep_book', 'y', C2 + 42, -14, 'softInOut'); key('#prep_book', 'y', C2 + 84, 0, 'softInOut'); key('#prep_book', 'y', C2 + 110, -7, 'softInOut');
+  tap('#prep_home', 618, { label: 'Back to Home' });
+  pop('prep', 'home2', 628); on('home2', 628, 742);
+  const puz = $('#home2 .crt-puz'), dots = [...document.querySelectorAll('#home2 .cd')];
+  const creatingLoop = (b0, n) => { for (let k = 0; k < n; k++) { const b = b0 + k * 30;
+    key(puz, 'rotation', b, -4); key(puz, 'rotation', b + 15, 4, 'softInOut'); key(puz, 'rotation', b + 30, -4, 'softInOut');
+    dots.forEach((d, i) => { key(d, 'opacity', b + i * 6, .25); key(d, 'opacity', b + i * 6 + 1, 1); key(d, 'opacity', b + i * 6 + 14, 1); key(d, 'opacity', b + i * 6 + 15, .25); }); } };
+  creatingLoop(628, 4);
+  // scroll Home down to the train story, then open it
+  const HS = $('#home2 .hs'), SCR = -560;
+  drag(560, 1500, 960, 662, 676);
+  key(HS, 'y', 662, 0); key(HS, 'y', 676, SCR * .62, 'gentleIn'); key(HS, 'y', 696, SCR, 'softLand');
+  tap($('#home2 .home-train'), 712, { label: 'Open story', depth: .985, dy: SCR });
+  push('home2', 'details', 720);
+  tap('#start_story', 792, { label: 'Start story' });
+  key('#reader', 'y', 802, H); key('#reader', 'y', 822, 0, 'softLand');
+  M.mark(802, 'cut', 'reader');
+  key('#rd_art', 'scale', 802, 1); key('#rd_art', 'scale', 1010, 1.06);
+  const W0 = 832, WG = 9;
+  RD.forEach((w, i) => { const a = W0 + i * WG; key('#rw' + i, 'color', a - 1, '#ffffff'); key('#rw' + i, 'color', a, '#eec86b'); key('#rw' + i, 'color', a + WG - 1, '#eec86b'); key('#rw' + i, 'color', a + WG, i === RD.length - 1 ? '#eec86b' : '#ffffff'); });
+  key('#rd_prog', 'scaleX', 822, 0); key('#rd_prog', 'scaleX', W0 + RD.length * WG + 6, 1);
+  const RX = W0 + RD.length * WG + 14;
+  tap('#rd_x', RX, { label: 'Close reader' });
+  key('#reader', 'y', RX + 8, 0); key('#reader', 'y', RX + 24, H, 'accelExit');
+  on('details', 720, RX + 30); on('reader', 802, RX + 25);
+  const L0 = 816, L1 = RX + 18;
+  key('#sb', 'color', L0 - 1, '#121512'); key('#sb', 'color', L0, '#ffffff'); key('#sb', 'color', L1 - 1, '#ffffff'); key('#sb', 'color', L1, '#121512');
+  key('#hb', 'backgroundColor', L0 - 1, 'rgba(20,24,20,.82)'); key('#hb', 'backgroundColor', L0, 'rgba(255,255,255,.85)'); key('#hb', 'backgroundColor', L1 - 1, 'rgba(255,255,255,.85)'); key('#hb', 'backgroundColor', L1, 'rgba(20,24,20,.82)');
+
+  // ---- CH3 Make your own story (3:33 -> 3:34)
+  const C3 = RX + 30;
+  M.mark(C3, 'cut', 'chapter: make your own story');
+  on('topic2', C3, C3 + 52); key('#topic2', 'x', C3, 0);
+  tap($('#topic2 .cyo-banner'), C3 + 22, { label: 'Make your own story', depth: .985 });
+  push('topic2', 'buddy', C3 + 32); on('buddy', C3 + 32, C3 + 120);
+  document.querySelectorAll('.bud').forEach(b => {
+    for (let k = 0; k < 7; k++) { const s = C3 + 32 + k * 36; key(b, 'y', s, 0); key(b, 'y', s + 18, -14, 'softInOut'); key(b, 'y', s + 36, 0, 'softInOut');
+      key(b, 'rotation', s, -2); key(b, 'rotation', s + 18, 2, 'softInOut'); key(b, 'rotation', s + 36, -2, 'softInOut'); }
+  });
+  tap('#tap_tell', C3 + 100, { label: 'Tap to tell me' });
+  const CV = C3 + 110;
+  on('conv', CV, C3 + 258);
+  key('#conv', 'opacity', CV, 0); key('#conv', 'opacity', CV + 8, 1, 'softInOut');
+  M.mark(CV, 'cut', 'conversation');
+  [['#cv1', CV + 18], ['#cv2', CV + 66], ['#cv3', CV + 100]].forEach(([s, a]) => { key(s, 'opacity', 0, 0); key(s, 'opacity', a, 0); key(s, 'opacity', a + 6, 1, 'softLand'); key(s, 'y', a, 26); key(s, 'y', a + 10, 0, 'softLand'); });
+  document.querySelectorAll('#cv3 .dot3').forEach((d, i) => { for (let k = 0; k < 3; k++) { const b = CV + 100 + k * 16 + i * 5; key(d, 'y', b, 0); key(d, 'y', b + 5, -8, 'softLand'); key(d, 'y', b + 10, 0, 'softInOut'); } });
+  push('conv', 'focus', C3 + 240); on('focus', C3 + 240, C3 + 352);
+  document.querySelectorAll('#focus .fi').forEach((e, i) => { const a = C3 + 254 + i * 4; key(e, 'opacity', 0, 0); key(e, 'opacity', a, 0); key(e, 'opacity', a + 8, 1, 'softLand'); key(e, 'y', a, 30); key(e, 'y', a + 12, 0, 'softLand'); });
+  tap('#focus_next', C3 + 324, { label: 'Next' });
+  push('focus', 'theme2', C3 + 334); on('theme2', C3 + 334, C3 + 400);
+  tap($('#theme2 .cyo-start'), C3 + 370, { label: 'Start with your idea' });
+  push('theme2', 'custom', C3 + 380);
+  const KB0 = C3 + 406;
+  key('#cw_caret', 'opacity', 0, 0); key('#cw_caret', 'opacity', KB0, 0); key('#cw_caret', 'opacity', KB0 + 1, 1);
+  tap('#cw_box', KB0, { label: 'Focus field', noPress: true });
+  key('#kb', 'y', KB0, 840); key('#kb', 'y', KB0 + 16, 0, 'softLand');
+  const text = 'Magical sports world';
+  const gaps = [0, 5, 4, 6, 4, 5, 4, 9, 5, 4, 6, 5, 4, 5, 8, 5, 4, 6, 4, 5];
+  const ev = []; let fr = 0;
+  for (let i = 0; i < text.length; i++) { fr += gaps[i]; ev.push([fr, i + 1]); }
+  const TY = KB0 + 22;
+  M.type('#cw_text', { at: TY, events: ev, caret: '#cw_caret', caretGap: 2 });
+  ev.forEach(([r, n]) => { const ch = text[n - 1].toLowerCase(); const kel = ch === ' ' ? $('#key_space') : $('#key_' + ch); if (!kel) return;
+    const hl = kel.querySelector('.hl'); key(hl, 'opacity', TY + r - 1, 0); key(hl, 'opacity', TY + r, 1); key(hl, 'opacity', TY + r + 3, 1); key(hl, 'opacity', TY + r + 6, 0); M.mark(TY + r, 'type', ch); });
+  const words = [['Magical', 'Magic', 'Magically'], ['sports', 'sport', 'sporty'], ['“world”', 'worlds', 'worldwide']];
+  const wordStart = [0, 8, 15].map(i => TY + ev[i][0]);
+  document.querySelectorAll('#kb .sg0').forEach((d, j) => { d.style.position = 'relative'; d.style.height = '46px';
+    d.innerHTML = words.map((w, k) => `<span id="sg${j}_${k}" style="position:absolute;left:0;right:0">${w[j]}</span>`).join(''); });
+  for (let k = 0; k < 3; k++) for (let j = 0; j < 3; j++) M.show('#sg' + j + '_' + k, wordStart[k], k === 2 ? Infinity : wordStart[k + 1]);
+  const typedEnd = TY + ev[ev.length - 1][0];
+
+  // ---- CH4 Parent Space & voices (3:35)
+  const C4 = typedEnd + 30;
+  on('custom', C3 + 380, C4);
+  M.mark(C4, 'cut', 'chapter: parent space');
+  on('home2', C4, C4 + 40); key('#home2', 'x', C4 - 1, 0);
+  key(HS, 'y', C4 - 1, SCR); key(HS, 'y', C4, 0);          // a fresh visit to Home starts at the top
+  creatingLoop(C4 - 10, 2);
+  tap($('#home2 .home-gear'), C4 + 12, { label: 'Settings' });
+  push('home2', 'parent', C4 + 22); on('parent', C4 + 22, 99999);
+  tap('#ps_acct', C4 + 56, { label: 'Account & settings' });
+  key('#dim', 'opacity', C4 + 64, 0); key('#dim', 'opacity', C4 + 80, 1, 'softLand');
+  key('#sheet', 'y', 0, H); key('#sheet', 'y', C4 + 64, H); key('#sheet', 'y', C4 + 84, 0, 'softLand');
+  M.mark(C4 + 64, 'cut', 'sheet');
+  const SS = -1030;
+  drag(560, 1600, 900, C4 + 104, C4 + 118);
+  key('#sh_scroll', 'y', C4 + 104, 0); key('#sh_scroll', 'y', C4 + 118, SS / 2, 'gentleIn'); key('#sh_scroll', 'y', C4 + 142, SS, 'softLand');
+  tap('#sh_manage', C4 + 160, { label: 'Manage my voice', dy: SS });
+  key('#sh_b', 'x', 0, W); key('#sh_b', 'x', C4 + 170, W); key('#sh_b', 'x', C4 + 188, 0, 'softLand');
+  key('#sh_a', 'x', C4 + 170, 0); key('#sh_a', 'x', C4 + 188, PAR, 'softLand');
+  M.mark(C4 + 170, 'cut', 'your voice');
+  window.__END = C4 + 188 + 34;
+  M.show('#tm1', 0, C2); M.show('#tm2', C2, CV); M.show('#tm3', CV, C4); M.show('#tm4', C4);
+  flush();
+}
+</script>
+</body>
+</html>

@@ -44,3 +44,16 @@ This is a recording of one person going through the whole guide in order. The ph
 - Sound: the film is silent (no ElevenLabs key in this session). Soft tap clicks and keyboard ticks would sell the recording, and every press and type event is listed in `final.mp4.events.json`.
 - The Cast list's third row (Evan) and the keyboard suggestions are inferred. Swap them if the real app differs.
 - If the plate's tablet is 4:3 rather than 16:9, the layouts would need re-flowing rather than cropping.
+
+---
+
+## 9:16 version (added after the 16:9 version)
+- `final_9x16.mp4` / `final_9x16_notouch.mp4`: 1080x1920, 30 fps, 60.0 s, silent, with and without touch dots. Source: `index_9x16.html` (`index_9x16_notouch.html` is an identical copy whose file name turns the dots off).
+- It is the same journey with the same timing as the 16:9 film, beat for beat, so `STORYBOARD.md` applies. The only change is that Home now scrolls down to the train story before tapping it (about 22.1-23.2 s).
+- The layouts follow the original portrait phone screens closely, at about 2.5x the phone sizes. The reader uses the art full-width at the top with the narration text and controls below, the way the phone reader does. The Account & settings sheet rises from the bottom, phone style.
+- "Delete story" on the story details screen is cut by the bottom edge (it sat below "You can pause anytime.").
+- **G0:** PASS. 60.00 s.
+- **G2:** PASS.
+- **G3:** PASS. End hold 1.17 s; the final shot is 3% of the film.
+- **G5:** FAIL on the same leads as the 16:9 version (the status bar and the app's real "Hey there!" line), kept for the same reason.
+- **Motion:** mean luma change 3.4/255.

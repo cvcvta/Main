@@ -1,0 +1,566 @@
+[
+ {
+  "t": 0,
+  "frame": 0,
+  "type": "show",
+  "label": "#home1"
+ },
+ {
+  "t": 0,
+  "frame": 0,
+  "type": "show",
+  "label": "#tm1"
+ },
+ {
+  "t": 2.2,
+  "frame": 66,
+  "type": "press",
+  "label": "Add family"
+ },
+ {
+  "t": 2.5333,
+  "frame": 76,
+  "type": "cut",
+  "label": "home1 > addfam"
+ },
+ {
+  "t": 2.5333,
+  "frame": 76,
+  "type": "show",
+  "label": "#addfam"
+ },
+ {
+  "t": 4.9333,
+  "frame": 148,
+  "type": "press",
+  "label": "Back"
+ },
+ {
+  "t": 5.2,
+  "frame": 156,
+  "type": "show",
+  "label": "#home1"
+ },
+ {
+  "t": 5.2,
+  "frame": 156,
+  "type": "cut",
+  "label": "addfam < home1"
+ },
+ {
+  "t": 6.5333,
+  "frame": 196,
+  "type": "press",
+  "label": "Create story"
+ },
+ {
+  "t": 6.8667,
+  "frame": 206,
+  "type": "cut",
+  "label": "home1 > topic"
+ },
+ {
+  "t": 6.8667,
+  "frame": 206,
+  "type": "show",
+  "label": "#topic"
+ },
+ {
+  "t": 9.4667,
+  "frame": 284,
+  "type": "press",
+  "label": "Asking for Help"
+ },
+ {
+  "t": 9.8,
+  "frame": 294,
+  "type": "cut",
+  "label": "topic > cast"
+ },
+ {
+  "t": 9.8,
+  "frame": 294,
+  "type": "show",
+  "label": "#cast"
+ },
+ {
+  "t": 11.4667,
+  "frame": 344,
+  "type": "press",
+  "label": "Add Dad"
+ },
+ {
+  "t": 12.5333,
+  "frame": 376,
+  "type": "press",
+  "label": "Next"
+ },
+ {
+  "t": 12.8,
+  "frame": 384,
+  "type": "cut",
+  "label": "cast > style"
+ },
+ {
+  "t": 12.8,
+  "frame": 384,
+  "type": "show",
+  "label": "#style"
+ },
+ {
+  "t": 15.0667,
+  "frame": 452,
+  "type": "press",
+  "label": "Next"
+ },
+ {
+  "t": 15.3333,
+  "frame": 460,
+  "type": "cut",
+  "label": "style > theme"
+ },
+ {
+  "t": 15.3333,
+  "frame": 460,
+  "type": "show",
+  "label": "#theme"
+ },
+ {
+  "t": 17.8,
+  "frame": 534,
+  "type": "press",
+  "label": "Next"
+ },
+ {
+  "t": 18.1333,
+  "frame": 544,
+  "type": "cut",
+  "label": "theme > prep"
+ },
+ {
+  "t": 18.1333,
+  "frame": 544,
+  "type": "show",
+  "label": "#prep"
+ },
+ {
+  "t": 18.1333,
+  "frame": 544,
+  "type": "show",
+  "label": "#tm2"
+ },
+ {
+  "t": 20.6,
+  "frame": 618,
+  "type": "press",
+  "label": "Back to Home"
+ },
+ {
+  "t": 20.9333,
+  "frame": 628,
+  "type": "cut",
+  "label": "prep < home2"
+ },
+ {
+  "t": 20.9333,
+  "frame": 628,
+  "type": "show",
+  "label": "#home2"
+ },
+ {
+  "t": 23.7333,
+  "frame": 712,
+  "type": "press",
+  "label": "Open story"
+ },
+ {
+  "t": 24,
+  "frame": 720,
+  "type": "cut",
+  "label": "home2 > details"
+ },
+ {
+  "t": 24,
+  "frame": 720,
+  "type": "show",
+  "label": "#details"
+ },
+ {
+  "t": 26.4,
+  "frame": 792,
+  "type": "press",
+  "label": "Start story"
+ },
+ {
+  "t": 26.7333,
+  "frame": 802,
+  "type": "cut",
+  "label": "reader"
+ },
+ {
+  "t": 26.7333,
+  "frame": 802,
+  "type": "show",
+  "label": "#reader"
+ },
+ {
+  "t": 33,
+  "frame": 990,
+  "type": "press",
+  "label": "Close reader"
+ },
+ {
+  "t": 34,
+  "frame": 1020,
+  "type": "cut",
+  "label": "chapter: make your own story"
+ },
+ {
+  "t": 34,
+  "frame": 1020,
+  "type": "show",
+  "label": "#topic2"
+ },
+ {
+  "t": 34.7333,
+  "frame": 1042,
+  "type": "press",
+  "label": "Make your own story"
+ },
+ {
+  "t": 35.0667,
+  "frame": 1052,
+  "type": "cut",
+  "label": "topic2 > buddy"
+ },
+ {
+  "t": 35.0667,
+  "frame": 1052,
+  "type": "show",
+  "label": "#buddy"
+ },
+ {
+  "t": 37.3333,
+  "frame": 1120,
+  "type": "press",
+  "label": "Tap to tell me"
+ },
+ {
+  "t": 37.6667,
+  "frame": 1130,
+  "type": "show",
+  "label": "#conv"
+ },
+ {
+  "t": 37.6667,
+  "frame": 1130,
+  "type": "cut",
+  "label": "conversation"
+ },
+ {
+  "t": 37.6667,
+  "frame": 1130,
+  "type": "show",
+  "label": "#tm3"
+ },
+ {
+  "t": 42,
+  "frame": 1260,
+  "type": "cut",
+  "label": "conv > focus"
+ },
+ {
+  "t": 42,
+  "frame": 1260,
+  "type": "show",
+  "label": "#focus"
+ },
+ {
+  "t": 44.8,
+  "frame": 1344,
+  "type": "press",
+  "label": "Next"
+ },
+ {
+  "t": 45.1333,
+  "frame": 1354,
+  "type": "cut",
+  "label": "focus > theme2"
+ },
+ {
+  "t": 45.1333,
+  "frame": 1354,
+  "type": "show",
+  "label": "#theme2"
+ },
+ {
+  "t": 46.3333,
+  "frame": 1390,
+  "type": "press",
+  "label": "Start with your idea"
+ },
+ {
+  "t": 46.6667,
+  "frame": 1400,
+  "type": "cut",
+  "label": "theme2 > custom"
+ },
+ {
+  "t": 46.6667,
+  "frame": 1400,
+  "type": "show",
+  "label": "#custom"
+ },
+ {
+  "t": 47.5333,
+  "frame": 1426,
+  "type": "press",
+  "label": "Focus field"
+ },
+ {
+  "t": 48.2667,
+  "frame": 1448,
+  "type": "type",
+  "label": "start"
+ },
+ {
+  "t": 48.2667,
+  "frame": 1448,
+  "type": "type",
+  "label": "m"
+ },
+ {
+  "t": 48.2667,
+  "frame": 1448,
+  "type": "show",
+  "label": "#sg0_0"
+ },
+ {
+  "t": 48.2667,
+  "frame": 1448,
+  "type": "show",
+  "label": "#sg1_0"
+ },
+ {
+  "t": 48.2667,
+  "frame": 1448,
+  "type": "show",
+  "label": "#sg2_0"
+ },
+ {
+  "t": 48.4333,
+  "frame": 1453,
+  "type": "type",
+  "label": "a"
+ },
+ {
+  "t": 48.5667,
+  "frame": 1457,
+  "type": "type",
+  "label": "g"
+ },
+ {
+  "t": 48.7667,
+  "frame": 1463,
+  "type": "type",
+  "label": "i"
+ },
+ {
+  "t": 48.9,
+  "frame": 1467,
+  "type": "type",
+  "label": "c"
+ },
+ {
+  "t": 49.0667,
+  "frame": 1472,
+  "type": "type",
+  "label": "a"
+ },
+ {
+  "t": 49.2,
+  "frame": 1476,
+  "type": "type",
+  "label": "l"
+ },
+ {
+  "t": 49.5,
+  "frame": 1485,
+  "type": "type",
+  "label": " "
+ },
+ {
+  "t": 49.6667,
+  "frame": 1490,
+  "type": "type",
+  "label": "s"
+ },
+ {
+  "t": 49.6667,
+  "frame": 1490,
+  "type": "show",
+  "label": "#sg0_1"
+ },
+ {
+  "t": 49.6667,
+  "frame": 1490,
+  "type": "show",
+  "label": "#sg1_1"
+ },
+ {
+  "t": 49.6667,
+  "frame": 1490,
+  "type": "show",
+  "label": "#sg2_1"
+ },
+ {
+  "t": 49.8,
+  "frame": 1494,
+  "type": "type",
+  "label": "p"
+ },
+ {
+  "t": 50,
+  "frame": 1500,
+  "type": "type",
+  "label": "o"
+ },
+ {
+  "t": 50.1667,
+  "frame": 1505,
+  "type": "type",
+  "label": "r"
+ },
+ {
+  "t": 50.3,
+  "frame": 1509,
+  "type": "type",
+  "label": "t"
+ },
+ {
+  "t": 50.4667,
+  "frame": 1514,
+  "type": "type",
+  "label": "s"
+ },
+ {
+  "t": 50.7333,
+  "frame": 1522,
+  "type": "type",
+  "label": " "
+ },
+ {
+  "t": 50.9,
+  "frame": 1527,
+  "type": "type",
+  "label": "w"
+ },
+ {
+  "t": 50.9,
+  "frame": 1527,
+  "type": "show",
+  "label": "#sg0_2"
+ },
+ {
+  "t": 50.9,
+  "frame": 1527,
+  "type": "show",
+  "label": "#sg1_2"
+ },
+ {
+  "t": 50.9,
+  "frame": 1527,
+  "type": "show",
+  "label": "#sg2_2"
+ },
+ {
+  "t": 51.0333,
+  "frame": 1531,
+  "type": "type",
+  "label": "o"
+ },
+ {
+  "t": 51.2333,
+  "frame": 1537,
+  "type": "type",
+  "label": "r"
+ },
+ {
+  "t": 51.3667,
+  "frame": 1541,
+  "type": "type",
+  "label": "l"
+ },
+ {
+  "t": 51.5333,
+  "frame": 1546,
+  "type": "type",
+  "label": "end"
+ },
+ {
+  "t": 51.5333,
+  "frame": 1546,
+  "type": "type",
+  "label": "d"
+ },
+ {
+  "t": 52.5333,
+  "frame": 1576,
+  "type": "cut",
+  "label": "chapter: parent space"
+ },
+ {
+  "t": 52.5333,
+  "frame": 1576,
+  "type": "show",
+  "label": "#home2"
+ },
+ {
+  "t": 52.5333,
+  "frame": 1576,
+  "type": "show",
+  "label": "#tm4"
+ },
+ {
+  "t": 52.9333,
+  "frame": 1588,
+  "type": "press",
+  "label": "Settings"
+ },
+ {
+  "t": 53.2667,
+  "frame": 1598,
+  "type": "cut",
+  "label": "home2 > parent"
+ },
+ {
+  "t": 53.2667,
+  "frame": 1598,
+  "type": "show",
+  "label": "#parent"
+ },
+ {
+  "t": 54.4,
+  "frame": 1632,
+  "type": "press",
+  "label": "Account & settings"
+ },
+ {
+  "t": 54.6667,
+  "frame": 1640,
+  "type": "cut",
+  "label": "sheet"
+ },
+ {
+  "t": 57.8667,
+  "frame": 1736,
+  "type": "press",
+  "label": "Manage my voice"
+ },
+ {
+  "t": 58.2,
+  "frame": 1746,
+  "type": "cut",
+  "label": "your voice"
+ }
+]
