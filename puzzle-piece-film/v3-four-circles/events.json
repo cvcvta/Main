@@ -1,0 +1,2264 @@
+[
+ {
+  "t": 0,
+  "frame": 0,
+  "type": "show",
+  "label": "#s1"
+ },
+ {
+  "t": 0.2667,
+  "frame": 8,
+  "type": "sfx",
+  "label": "bounce"
+ },
+ {
+  "t": 0.5667,
+  "frame": 17,
+  "type": "enter",
+  "label": "My"
+ },
+ {
+  "t": 0.5667,
+  "frame": 17,
+  "type": "word",
+  "label": "My"
+ },
+ {
+  "t": 0.7667,
+  "frame": 23,
+  "type": "enter",
+  "label": "son"
+ },
+ {
+  "t": 0.7667,
+  "frame": 23,
+  "type": "word",
+  "label": "son"
+ },
+ {
+  "t": 0.8,
+  "frame": 24,
+  "type": "sfx",
+  "label": "bounce"
+ },
+ {
+  "t": 1.0667,
+  "frame": 32,
+  "type": "enter",
+  "label": "is"
+ },
+ {
+  "t": 1.0667,
+  "frame": 32,
+  "type": "word",
+  "label": "is"
+ },
+ {
+  "t": 1.2333,
+  "frame": 37,
+  "type": "enter",
+  "label": "autistic."
+ },
+ {
+  "t": 1.2333,
+  "frame": 37,
+  "type": "word",
+  "label": "autistic."
+ },
+ {
+  "t": 1.3333,
+  "frame": 40,
+  "type": "sfx",
+  "label": "bounce"
+ },
+ {
+  "t": 2.0667,
+  "frame": 62,
+  "type": "exit",
+  "label": "#c1a"
+ },
+ {
+  "t": 2.4333,
+  "frame": 73,
+  "type": "enter",
+  "label": "Leaving"
+ },
+ {
+  "t": 2.4333,
+  "frame": 73,
+  "type": "word",
+  "label": "Leaving"
+ },
+ {
+  "t": 2.7667,
+  "frame": 83,
+  "type": "enter",
+  "label": "the"
+ },
+ {
+  "t": 2.7667,
+  "frame": 83,
+  "type": "word",
+  "label": "the"
+ },
+ {
+  "t": 3.0333,
+  "frame": 91,
+  "type": "enter",
+  "label": "park"
+ },
+ {
+  "t": 3.0333,
+  "frame": 91,
+  "type": "word",
+  "label": "park"
+ },
+ {
+  "t": 3.3,
+  "frame": 99,
+  "type": "enter",
+  "label": "can"
+ },
+ {
+  "t": 3.3,
+  "frame": 99,
+  "type": "word",
+  "label": "can"
+ },
+ {
+  "t": 3.6,
+  "frame": 108,
+  "type": "enter",
+  "label": "mean"
+ },
+ {
+  "t": 3.6,
+  "frame": 108,
+  "type": "word",
+  "label": "mean"
+ },
+ {
+  "t": 3.9667,
+  "frame": 119,
+  "type": "enter",
+  "label": "a"
+ },
+ {
+  "t": 3.9667,
+  "frame": 119,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 4.0333,
+  "frame": 121,
+  "type": "enter",
+  "label": "meltdown."
+ },
+ {
+  "t": 4.0333,
+  "frame": 121,
+  "type": "word",
+  "label": "meltdown."
+ },
+ {
+  "t": 4.0667,
+  "frame": 122,
+  "type": "enter",
+  "label": "#dR1"
+ },
+ {
+  "t": 4.0667,
+  "frame": 122,
+  "type": "sfx",
+  "label": "meltdown"
+ },
+ {
+  "t": 4.1,
+  "frame": 123,
+  "type": "snap",
+  "label": "#cam1"
+ },
+ {
+  "t": 4.9333,
+  "frame": 148,
+  "type": "show",
+  "label": "#door0"
+ },
+ {
+  "t": 5.4,
+  "frame": 162,
+  "type": "exit",
+  "label": "#c1b"
+ },
+ {
+  "t": 5.6667,
+  "frame": 170,
+  "type": "sfx",
+  "label": "door"
+ },
+ {
+  "t": 5.6667,
+  "frame": 170,
+  "type": "show",
+  "label": "#door1"
+ },
+ {
+  "t": 5.8667,
+  "frame": 176,
+  "type": "hide",
+  "label": "#dR1"
+ },
+ {
+  "t": 6.4,
+  "frame": 192,
+  "type": "sfx",
+  "label": "door"
+ },
+ {
+  "t": 6.4,
+  "frame": 192,
+  "type": "show",
+  "label": "#door2"
+ },
+ {
+  "t": 7.1333,
+  "frame": 214,
+  "type": "sfx",
+  "label": "door"
+ },
+ {
+  "t": 7.8667,
+  "frame": 236,
+  "type": "cut",
+  "label": "close on David: the warnings"
+ },
+ {
+  "t": 7.8667,
+  "frame": 236,
+  "type": "snap",
+  "label": "#cam2"
+ },
+ {
+  "t": 7.8667,
+  "frame": 236,
+  "type": "enter",
+  "label": "I"
+ },
+ {
+  "t": 7.8667,
+  "frame": 236,
+  "type": "word",
+  "label": "I"
+ },
+ {
+  "t": 7.9333,
+  "frame": 238,
+  "type": "enter",
+  "label": "gave"
+ },
+ {
+  "t": 7.9333,
+  "frame": 238,
+  "type": "word",
+  "label": "gave"
+ },
+ {
+  "t": 7.9333,
+  "frame": 238,
+  "type": "sfx",
+  "label": "ring"
+ },
+ {
+  "t": 8.4333,
+  "frame": 253,
+  "type": "enter",
+  "label": "warnings."
+ },
+ {
+  "t": 8.4333,
+  "frame": 253,
+  "type": "word",
+  "label": "warnings."
+ },
+ {
+  "t": 8.4333,
+  "frame": 253,
+  "type": "sfx",
+  "label": "ring"
+ },
+ {
+  "t": 8.7,
+  "frame": 261,
+  "type": "enter",
+  "label": "#cd"
+ },
+ {
+  "t": 8.8333,
+  "frame": 265,
+  "type": "sfx",
+  "label": "ring"
+ },
+ {
+  "t": 8.9,
+  "frame": 267,
+  "type": "enter",
+  "label": "I"
+ },
+ {
+  "t": 8.9,
+  "frame": 267,
+  "type": "word",
+  "label": "I"
+ },
+ {
+  "t": 9,
+  "frame": 270,
+  "type": "enter",
+  "label": "counted"
+ },
+ {
+  "t": 9,
+  "frame": 270,
+  "type": "word",
+  "label": "counted"
+ },
+ {
+  "t": 9.0667,
+  "frame": 272,
+  "type": "sfx",
+  "label": "tick"
+ },
+ {
+  "t": 9.3,
+  "frame": 279,
+  "type": "sfx",
+  "label": "tick"
+ },
+ {
+  "t": 9.5,
+  "frame": 285,
+  "type": "sfx",
+  "label": "tick"
+ },
+ {
+  "t": 9.7,
+  "frame": 291,
+  "type": "enter",
+  "label": "down."
+ },
+ {
+  "t": 9.7,
+  "frame": 291,
+  "type": "word",
+  "label": "down."
+ },
+ {
+  "t": 9.7,
+  "frame": 291,
+  "type": "sfx",
+  "label": "tick"
+ },
+ {
+  "t": 9.8667,
+  "frame": 296,
+  "type": "sfx",
+  "label": "tick"
+ },
+ {
+  "t": 10,
+  "frame": 300,
+  "type": "exit",
+  "label": "#c2a"
+ },
+ {
+  "t": 10.0667,
+  "frame": 302,
+  "type": "exit",
+  "label": "#c2b"
+ },
+ {
+  "t": 10.2,
+  "frame": 306,
+  "type": "enter",
+  "label": "But"
+ },
+ {
+  "t": 10.2,
+  "frame": 306,
+  "type": "word",
+  "label": "But"
+ },
+ {
+  "t": 10.3,
+  "frame": 309,
+  "type": "enter",
+  "label": "a"
+ },
+ {
+  "t": 10.3,
+  "frame": 309,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 10.4333,
+  "frame": 313,
+  "type": "enter",
+  "label": "warning"
+ },
+ {
+  "t": 10.4333,
+  "frame": 313,
+  "type": "word",
+  "label": "warning"
+ },
+ {
+  "t": 10.8333,
+  "frame": 325,
+  "type": "enter",
+  "label": "only"
+ },
+ {
+  "t": 10.8333,
+  "frame": 325,
+  "type": "word",
+  "label": "only"
+ },
+ {
+  "t": 11.1667,
+  "frame": 335,
+  "type": "enter",
+  "label": "tells"
+ },
+ {
+  "t": 11.1667,
+  "frame": 335,
+  "type": "word",
+  "label": "tells"
+ },
+ {
+  "t": 11.4333,
+  "frame": 343,
+  "type": "enter",
+  "label": "him"
+ },
+ {
+  "t": 11.4333,
+  "frame": 343,
+  "type": "word",
+  "label": "him"
+ },
+ {
+  "t": 11.6333,
+  "frame": 349,
+  "type": "enter",
+  "label": "when."
+ },
+ {
+  "t": 11.6333,
+  "frame": 349,
+  "type": "word",
+  "label": "when."
+ },
+ {
+  "t": 11.7333,
+  "frame": 352,
+  "type": "exit",
+  "label": "#c2c"
+ },
+ {
+  "t": 12.0333,
+  "frame": 361,
+  "type": "dive",
+  "label": "#cam2"
+ },
+ {
+  "t": 12.2333,
+  "frame": 367,
+  "type": "enter",
+  "label": "It"
+ },
+ {
+  "t": 12.2333,
+  "frame": 367,
+  "type": "word",
+  "label": "It"
+ },
+ {
+  "t": 12.3,
+  "frame": 369,
+  "type": "cut",
+  "label": "inside David -> the path"
+ },
+ {
+  "t": 12.3,
+  "frame": 369,
+  "type": "snap",
+  "label": "#dG3"
+ },
+ {
+  "t": 12.3667,
+  "frame": 371,
+  "type": "enter",
+  "label": "doesn’t"
+ },
+ {
+  "t": 12.3667,
+  "frame": 371,
+  "type": "word",
+  "label": "doesn’t"
+ },
+ {
+  "t": 12.7667,
+  "frame": 383,
+  "type": "enter",
+  "label": "show"
+ },
+ {
+  "t": 12.7667,
+  "frame": 383,
+  "type": "word",
+  "label": "show"
+ },
+ {
+  "t": 12.9,
+  "frame": 387,
+  "type": "enter",
+  "label": "him"
+ },
+ {
+  "t": 12.9,
+  "frame": 387,
+  "type": "word",
+  "label": "him"
+ },
+ {
+  "t": 13.0667,
+  "frame": 392,
+  "type": "enter",
+  "label": "what"
+ },
+ {
+  "t": 13.0667,
+  "frame": 392,
+  "type": "word",
+  "label": "what"
+ },
+ {
+  "t": 13.2333,
+  "frame": 397,
+  "type": "enter",
+  "label": "happens"
+ },
+ {
+  "t": 13.2333,
+  "frame": 397,
+  "type": "word",
+  "label": "happens"
+ },
+ {
+  "t": 13.6333,
+  "frame": 409,
+  "type": "enter",
+  "label": "next:"
+ },
+ {
+  "t": 13.6333,
+  "frame": 409,
+  "type": "word",
+  "label": "next:"
+ },
+ {
+  "t": 14.1333,
+  "frame": 424,
+  "type": "exit",
+  "label": "#c3a"
+ },
+ {
+  "t": 14.3667,
+  "frame": 431,
+  "type": "enter",
+  "label": "#stGate"
+ },
+ {
+  "t": 14.3667,
+  "frame": 431,
+  "type": "sfx",
+  "label": "station"
+ },
+ {
+  "t": 14.5,
+  "frame": 435,
+  "type": "enter",
+  "label": "#lbGate"
+ },
+ {
+  "t": 15.3333,
+  "frame": 460,
+  "type": "enter",
+  "label": "#stCar"
+ },
+ {
+  "t": 15.3333,
+  "frame": 460,
+  "type": "sfx",
+  "label": "station"
+ },
+ {
+  "t": 15.4667,
+  "frame": 464,
+  "type": "enter",
+  "label": "#lbCar"
+ },
+ {
+  "t": 15.9667,
+  "frame": 479,
+  "type": "enter",
+  "label": "#stHome"
+ },
+ {
+  "t": 15.9667,
+  "frame": 479,
+  "type": "sfx",
+  "label": "station"
+ },
+ {
+  "t": 16.1,
+  "frame": 483,
+  "type": "enter",
+  "label": "#lbHome"
+ },
+ {
+  "t": 16.1667,
+  "frame": 485,
+  "type": "show",
+  "label": "#dO3"
+ },
+ {
+  "t": 17.3,
+  "frame": 519,
+  "type": "enter",
+  "label": "That’s"
+ },
+ {
+  "t": 17.3,
+  "frame": 519,
+  "type": "word",
+  "label": "That’s"
+ },
+ {
+  "t": 17.3667,
+  "frame": 521,
+  "type": "cut",
+  "label": "home -> the four circles gather"
+ },
+ {
+  "t": 17.5667,
+  "frame": 527,
+  "type": "enter",
+  "label": "why"
+ },
+ {
+  "t": 17.5667,
+  "frame": 527,
+  "type": "word",
+  "label": "why"
+ },
+ {
+  "t": 17.7,
+  "frame": 531,
+  "type": "enter",
+  "label": "we"
+ },
+ {
+  "t": 17.7,
+  "frame": 531,
+  "type": "word",
+  "label": "we"
+ },
+ {
+  "t": 17.8667,
+  "frame": 536,
+  "type": "enter",
+  "label": "use"
+ },
+ {
+  "t": 17.8667,
+  "frame": 536,
+  "type": "word",
+  "label": "use"
+ },
+ {
+  "t": 18.4333,
+  "frame": 553,
+  "type": "enter",
+  "label": "#wm4"
+ },
+ {
+  "t": 18.5667,
+  "frame": 557,
+  "type": "sfx",
+  "label": "hit"
+ },
+ {
+  "t": 19.0667,
+  "frame": 572,
+  "type": "exit",
+  "label": "#c4a"
+ },
+ {
+  "t": 19.1333,
+  "frame": 574,
+  "type": "exit",
+  "label": "#wm4"
+ },
+ {
+  "t": 19.3333,
+  "frame": 580,
+  "type": "dive",
+  "label": "#cam4"
+ },
+ {
+  "t": 19.6667,
+  "frame": 590,
+  "type": "cut",
+  "label": "into David -> storybook David"
+ },
+ {
+  "t": 19.7,
+  "frame": 591,
+  "type": "enter",
+  "label": "Social"
+ },
+ {
+  "t": 19.7,
+  "frame": 591,
+  "type": "word",
+  "label": "Social"
+ },
+ {
+  "t": 19.9667,
+  "frame": 599,
+  "type": "enter",
+  "label": "stories."
+ },
+ {
+  "t": 19.9667,
+  "frame": 599,
+  "type": "word",
+  "label": "stories."
+ },
+ {
+  "t": 21.3333,
+  "frame": 640,
+  "type": "exit",
+  "label": "#c5a"
+ },
+ {
+  "t": 21.6667,
+  "frame": 650,
+  "type": "sfx",
+  "label": "open"
+ },
+ {
+  "t": 21.8333,
+  "frame": 655,
+  "type": "enter",
+  "label": "walk"
+ },
+ {
+  "t": 21.8333,
+  "frame": 655,
+  "type": "word",
+  "label": "walk"
+ },
+ {
+  "t": 22.0333,
+  "frame": 661,
+  "type": "enter",
+  "label": "your"
+ },
+ {
+  "t": 22.0333,
+  "frame": 661,
+  "type": "word",
+  "label": "your"
+ },
+ {
+  "t": 22.2,
+  "frame": 666,
+  "type": "enter",
+  "label": "child"
+ },
+ {
+  "t": 22.2,
+  "frame": 666,
+  "type": "word",
+  "label": "child"
+ },
+ {
+  "t": 22.5,
+  "frame": 675,
+  "type": "enter",
+  "label": "through"
+ },
+ {
+  "t": 22.5,
+  "frame": 675,
+  "type": "word",
+  "label": "through"
+ },
+ {
+  "t": 22.7,
+  "frame": 681,
+  "type": "enter",
+  "label": "a"
+ },
+ {
+  "t": 22.7,
+  "frame": 681,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 22.8333,
+  "frame": 685,
+  "type": "enter",
+  "label": "moment"
+ },
+ {
+  "t": 22.8333,
+  "frame": 685,
+  "type": "word",
+  "label": "moment"
+ },
+ {
+  "t": 23.3667,
+  "frame": 701,
+  "type": "enter",
+  "label": "before"
+ },
+ {
+  "t": 23.3667,
+  "frame": 701,
+  "type": "word",
+  "label": "before"
+ },
+ {
+  "t": 23.6333,
+  "frame": 709,
+  "type": "enter",
+  "label": "it"
+ },
+ {
+  "t": 23.6333,
+  "frame": 709,
+  "type": "word",
+  "label": "it"
+ },
+ {
+  "t": 23.7,
+  "frame": 711,
+  "type": "enter",
+  "label": "happens."
+ },
+ {
+  "t": 23.7,
+  "frame": 711,
+  "type": "word",
+  "label": "happens."
+ },
+ {
+  "t": 24.5333,
+  "frame": 736,
+  "type": "exit",
+  "label": "#c5b"
+ },
+ {
+  "t": 24.8,
+  "frame": 744,
+  "type": "enter",
+  "label": "on"
+ },
+ {
+  "t": 24.8,
+  "frame": 744,
+  "type": "word",
+  "label": "on"
+ },
+ {
+  "t": 24.9,
+  "frame": 747,
+  "type": "enter",
+  "label": "a"
+ },
+ {
+  "t": 24.9,
+  "frame": 747,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 25,
+  "frame": 750,
+  "type": "enter",
+  "label": "university"
+ },
+ {
+  "t": 25,
+  "frame": 750,
+  "type": "word",
+  "label": "university"
+ },
+ {
+  "t": 25.6333,
+  "frame": 769,
+  "type": "enter",
+  "label": "list"
+ },
+ {
+  "t": 25.6333,
+  "frame": 769,
+  "type": "word",
+  "label": "list"
+ },
+ {
+  "t": 25.8667,
+  "frame": 776,
+  "type": "enter",
+  "label": "of"
+ },
+ {
+  "t": 25.8667,
+  "frame": 776,
+  "type": "word",
+  "label": "of"
+ },
+ {
+  "t": 26.0667,
+  "frame": 782,
+  "type": "enter",
+  "label": "evidence-based"
+ },
+ {
+  "t": 26.0667,
+  "frame": 782,
+  "type": "word",
+  "label": "evidence-based"
+ },
+ {
+  "t": 26.8333,
+  "frame": 805,
+  "type": "enter",
+  "label": "practices"
+ },
+ {
+  "t": 26.8333,
+  "frame": 805,
+  "type": "word",
+  "label": "practices"
+ },
+ {
+  "t": 27.3667,
+  "frame": 821,
+  "type": "enter",
+  "label": "for"
+ },
+ {
+  "t": 27.3667,
+  "frame": 821,
+  "type": "word",
+  "label": "for"
+ },
+ {
+  "t": 27.4667,
+  "frame": 824,
+  "type": "enter",
+  "label": "autistic"
+ },
+ {
+  "t": 27.4667,
+  "frame": 824,
+  "type": "word",
+  "label": "autistic"
+ },
+ {
+  "t": 28.1667,
+  "frame": 845,
+  "type": "enter",
+  "label": "kids."
+ },
+ {
+  "t": 28.1667,
+  "frame": 845,
+  "type": "word",
+  "label": "kids."
+ },
+ {
+  "t": 28.5333,
+  "frame": 856,
+  "type": "exit",
+  "label": "#c5c"
+ },
+ {
+  "t": 28.8333,
+  "frame": 865,
+  "type": "enter",
+  "label": "I"
+ },
+ {
+  "t": 28.8333,
+  "frame": 865,
+  "type": "word",
+  "label": "I"
+ },
+ {
+  "t": 28.8667,
+  "frame": 866,
+  "type": "cut",
+  "label": "story -> the conversation"
+ },
+ {
+  "t": 28.8667,
+  "frame": 866,
+  "type": "enter",
+  "label": "#ui6"
+ },
+ {
+  "t": 28.8667,
+  "frame": 866,
+  "type": "sfx",
+  "label": "swish"
+ },
+ {
+  "t": 29,
+  "frame": 870,
+  "type": "enter",
+  "label": "just"
+ },
+ {
+  "t": 29,
+  "frame": 870,
+  "type": "word",
+  "label": "just"
+ },
+ {
+  "t": 29.1667,
+  "frame": 875,
+  "type": "enter",
+  "label": "tell"
+ },
+ {
+  "t": 29.1667,
+  "frame": 875,
+  "type": "word",
+  "label": "tell"
+ },
+ {
+  "t": 29.2667,
+  "frame": 878,
+  "type": "enter",
+  "label": "it"
+ },
+ {
+  "t": 29.2667,
+  "frame": 878,
+  "type": "word",
+  "label": "it"
+ },
+ {
+  "t": 29.4,
+  "frame": 882,
+  "type": "enter",
+  "label": "the"
+ },
+ {
+  "t": 29.4,
+  "frame": 882,
+  "type": "word",
+  "label": "the"
+ },
+ {
+  "t": 29.6,
+  "frame": 888,
+  "type": "enter",
+  "label": "hard"
+ },
+ {
+  "t": 29.6,
+  "frame": 888,
+  "type": "word",
+  "label": "hard"
+ },
+ {
+  "t": 29.8333,
+  "frame": 895,
+  "type": "enter",
+  "label": "part,"
+ },
+ {
+  "t": 29.8333,
+  "frame": 895,
+  "type": "word",
+  "label": "part,"
+ },
+ {
+  "t": 30.1,
+  "frame": 903,
+  "type": "type",
+  "label": "start"
+ },
+ {
+  "t": 30.1,
+  "frame": 903,
+  "type": "sfx",
+  "label": "typing"
+ },
+ {
+  "t": 31.4667,
+  "frame": 944,
+  "type": "exit",
+  "label": "#c6a"
+ },
+ {
+  "t": 31.6667,
+  "frame": 950,
+  "type": "sfx",
+  "label": "click"
+ },
+ {
+  "t": 31.9,
+  "frame": 957,
+  "type": "enter",
+  "label": "#reply6"
+ },
+ {
+  "t": 31.9,
+  "frame": 957,
+  "type": "sfx",
+  "label": "reply"
+ },
+ {
+  "t": 32.6333,
+  "frame": 979,
+  "type": "type",
+  "label": "end"
+ },
+ {
+  "t": 33.9,
+  "frame": 1017,
+  "type": "cut",
+  "label": "the reply -> David becomes his storybook self"
+ },
+ {
+  "t": 34.4,
+  "frame": 1032,
+  "type": "sfx",
+  "label": "magic"
+ },
+ {
+  "t": 34.4667,
+  "frame": 1034,
+  "type": "enter",
+  "label": "right"
+ },
+ {
+  "t": 34.4667,
+  "frame": 1034,
+  "type": "word",
+  "label": "right"
+ },
+ {
+  "t": 34.7,
+  "frame": 1041,
+  "type": "enter",
+  "label": "into"
+ },
+ {
+  "t": 34.7,
+  "frame": 1041,
+  "type": "word",
+  "label": "into"
+ },
+ {
+  "t": 34.9,
+  "frame": 1047,
+  "type": "enter",
+  "label": "the"
+ },
+ {
+  "t": 34.9,
+  "frame": 1047,
+  "type": "word",
+  "label": "the"
+ },
+ {
+  "t": 35.2,
+  "frame": 1056,
+  "type": "enter",
+  "label": "story,"
+ },
+ {
+  "t": 35.2,
+  "frame": 1056,
+  "type": "word",
+  "label": "story,"
+ },
+ {
+  "t": 35.5,
+  "frame": 1065,
+  "type": "show",
+  "label": "#wM"
+ },
+ {
+  "t": 35.5,
+  "frame": 1065,
+  "type": "show",
+  "label": "#rM"
+ },
+ {
+  "t": 35.5333,
+  "frame": 1066,
+  "type": "exit",
+  "label": "#c7a"
+ },
+ {
+  "t": 35.8,
+  "frame": 1074,
+  "type": "sfx",
+  "label": "magic2"
+ },
+ {
+  "t": 36.5,
+  "frame": 1095,
+  "type": "enter",
+  "label": "beside"
+ },
+ {
+  "t": 36.5,
+  "frame": 1095,
+  "type": "word",
+  "label": "beside"
+ },
+ {
+  "t": 36.9,
+  "frame": 1107,
+  "type": "enter",
+  "label": "them."
+ },
+ {
+  "t": 36.9,
+  "frame": 1107,
+  "type": "word",
+  "label": "them."
+ },
+ {
+  "t": 37.2667,
+  "frame": 1118,
+  "type": "exit",
+  "label": "#c7b"
+ },
+ {
+  "t": 37.4,
+  "frame": 1122,
+  "type": "enter",
+  "label": "Pick"
+ },
+ {
+  "t": 37.4,
+  "frame": 1122,
+  "type": "word",
+  "label": "Pick"
+ },
+ {
+  "t": 37.4333,
+  "frame": 1123,
+  "type": "cut",
+  "label": "the scene -> four styles in the mark layout"
+ },
+ {
+  "t": 37.4333,
+  "frame": 1123,
+  "type": "snap",
+  "label": "#scG"
+ },
+ {
+  "t": 37.5667,
+  "frame": 1127,
+  "type": "enter",
+  "label": "#scT"
+ },
+ {
+  "t": 37.5667,
+  "frame": 1127,
+  "type": "sfx",
+  "label": "pop"
+ },
+ {
+  "t": 37.6,
+  "frame": 1128,
+  "type": "enter",
+  "label": "their"
+ },
+ {
+  "t": 37.6,
+  "frame": 1128,
+  "type": "word",
+  "label": "their"
+ },
+ {
+  "t": 37.6667,
+  "frame": 1130,
+  "type": "enter",
+  "label": "#scO"
+ },
+ {
+  "t": 37.6667,
+  "frame": 1130,
+  "type": "sfx",
+  "label": "pop"
+ },
+ {
+  "t": 37.7667,
+  "frame": 1133,
+  "type": "enter",
+  "label": "#scR"
+ },
+ {
+  "t": 37.7667,
+  "frame": 1133,
+  "type": "sfx",
+  "label": "pop"
+ },
+ {
+  "t": 37.8667,
+  "frame": 1136,
+  "type": "enter",
+  "label": "favorite"
+ },
+ {
+  "t": 37.8667,
+  "frame": 1136,
+  "type": "word",
+  "label": "favorite"
+ },
+ {
+  "t": 38.1667,
+  "frame": 1145,
+  "type": "enter",
+  "label": "art"
+ },
+ {
+  "t": 38.1667,
+  "frame": 1145,
+  "type": "word",
+  "label": "art"
+ },
+ {
+  "t": 38.3667,
+  "frame": 1151,
+  "type": "enter",
+  "label": "style,"
+ },
+ {
+  "t": 38.3667,
+  "frame": 1151,
+  "type": "word",
+  "label": "style,"
+ },
+ {
+  "t": 38.6667,
+  "frame": 1160,
+  "type": "sfx",
+  "label": "whoosh"
+ },
+ {
+  "t": 39.2,
+  "frame": 1176,
+  "type": "exit",
+  "label": "#c8a"
+ },
+ {
+  "t": 39.3333,
+  "frame": 1180,
+  "type": "enter",
+  "label": "#lbG"
+ },
+ {
+  "t": 39.3333,
+  "frame": 1180,
+  "type": "cascade",
+  "label": "#lbG"
+ },
+ {
+  "t": 39.4333,
+  "frame": 1183,
+  "type": "enter",
+  "label": "#lbT"
+ },
+ {
+  "t": 39.4333,
+  "frame": 1183,
+  "type": "cascade",
+  "label": "#lbT"
+ },
+ {
+  "t": 39.5333,
+  "frame": 1186,
+  "type": "enter",
+  "label": "#lbO"
+ },
+ {
+  "t": 39.5333,
+  "frame": 1186,
+  "type": "cascade",
+  "label": "#lbO"
+ },
+ {
+  "t": 39.6,
+  "frame": 1188,
+  "type": "enter",
+  "label": "#tap8"
+ },
+ {
+  "t": 39.6333,
+  "frame": 1189,
+  "type": "enter",
+  "label": "#lbR"
+ },
+ {
+  "t": 39.6333,
+  "frame": 1189,
+  "type": "cascade",
+  "label": "#lbR"
+ },
+ {
+  "t": 39.9333,
+  "frame": 1198,
+  "type": "enter",
+  "label": "#selG"
+ },
+ {
+  "t": 39.9333,
+  "frame": 1198,
+  "type": "sfx",
+  "label": "select"
+ },
+ {
+  "t": 40.0333,
+  "frame": 1201,
+  "type": "exit",
+  "label": "#tap8"
+ },
+ {
+  "t": 40.5,
+  "frame": 1215,
+  "type": "cut",
+  "label": "Pixar -> the story list"
+ },
+ {
+  "t": 40.5,
+  "frame": 1215,
+  "type": "enter",
+  "label": "#row0"
+ },
+ {
+  "t": 40.5,
+  "frame": 1215,
+  "type": "cascade",
+  "label": "#row0"
+ },
+ {
+  "t": 40.5,
+  "frame": 1215,
+  "type": "sfx",
+  "label": "swish"
+ },
+ {
+  "t": 40.6,
+  "frame": 1218,
+  "type": "enter",
+  "label": "#row1"
+ },
+ {
+  "t": 40.6,
+  "frame": 1218,
+  "type": "cascade",
+  "label": "#row1"
+ },
+ {
+  "t": 40.6333,
+  "frame": 1219,
+  "type": "enter",
+  "label": "#rr1"
+ },
+ {
+  "t": 40.6333,
+  "frame": 1219,
+  "type": "sfx",
+  "label": "select"
+ },
+ {
+  "t": 40.7,
+  "frame": 1221,
+  "type": "enter",
+  "label": "#row2"
+ },
+ {
+  "t": 40.7,
+  "frame": 1221,
+  "type": "cascade",
+  "label": "#row2"
+ },
+ {
+  "t": 40.8,
+  "frame": 1224,
+  "type": "enter",
+  "label": "#row3"
+ },
+ {
+  "t": 40.8,
+  "frame": 1224,
+  "type": "cascade",
+  "label": "#row3"
+ },
+ {
+  "t": 40.9,
+  "frame": 1227,
+  "type": "enter",
+  "label": "#row4"
+ },
+ {
+  "t": 40.9,
+  "frame": 1227,
+  "type": "cascade",
+  "label": "#row4"
+ },
+ {
+  "t": 41,
+  "frame": 1230,
+  "type": "enter",
+  "label": "#row5"
+ },
+ {
+  "t": 41,
+  "frame": 1230,
+  "type": "cascade",
+  "label": "#row5"
+ },
+ {
+  "t": 41.6667,
+  "frame": 1250,
+  "type": "enter",
+  "label": "#rr4"
+ },
+ {
+  "t": 41.6667,
+  "frame": 1250,
+  "type": "sfx",
+  "label": "select"
+ },
+ {
+  "t": 42.9667,
+  "frame": 1289,
+  "type": "enter",
+  "label": "before"
+ },
+ {
+  "t": 42.9667,
+  "frame": 1289,
+  "type": "word",
+  "label": "before"
+ },
+ {
+  "t": 43.2333,
+  "frame": 1297,
+  "type": "enter",
+  "label": "they"
+ },
+ {
+  "t": 43.2333,
+  "frame": 1297,
+  "type": "word",
+  "label": "they"
+ },
+ {
+  "t": 43.5,
+  "frame": 1305,
+  "type": "enter",
+  "label": "even"
+ },
+ {
+  "t": 43.5,
+  "frame": 1305,
+  "type": "word",
+  "label": "even"
+ },
+ {
+  "t": 43.8,
+  "frame": 1314,
+  "type": "enter",
+  "label": "happen."
+ },
+ {
+  "t": 43.8,
+  "frame": 1314,
+  "type": "word",
+  "label": "happen."
+ },
+ {
+  "t": 44.5,
+  "frame": 1335,
+  "type": "show",
+  "label": "#dO10"
+ },
+ {
+  "t": 44.5,
+  "frame": 1335,
+  "type": "enter",
+  "label": "I"
+ },
+ {
+  "t": 44.5,
+  "frame": 1335,
+  "type": "word",
+  "label": "I"
+ },
+ {
+  "t": 44.5333,
+  "frame": 1336,
+  "type": "cut",
+  "label": "the list -> a page"
+ },
+ {
+  "t": 44.5333,
+  "frame": 1336,
+  "type": "sfx",
+  "label": "swish"
+ },
+ {
+  "t": 44.6667,
+  "frame": 1340,
+  "type": "enter",
+  "label": "read"
+ },
+ {
+  "t": 44.6667,
+  "frame": 1340,
+  "type": "word",
+  "label": "read"
+ },
+ {
+  "t": 44.8333,
+  "frame": 1345,
+  "type": "enter",
+  "label": "it"
+ },
+ {
+  "t": 44.8333,
+  "frame": 1345,
+  "type": "word",
+  "label": "it"
+ },
+ {
+  "t": 45.1,
+  "frame": 1353,
+  "type": "enter",
+  "label": "first."
+ },
+ {
+  "t": 45.1,
+  "frame": 1353,
+  "type": "word",
+  "label": "first."
+ },
+ {
+  "t": 45.6,
+  "frame": 1368,
+  "type": "exit",
+  "label": "#c10a"
+ },
+ {
+  "t": 45.6333,
+  "frame": 1369,
+  "type": "show",
+  "label": "#dG10"
+ },
+ {
+  "t": 45.8667,
+  "frame": 1376,
+  "type": "enter",
+  "label": "we"
+ },
+ {
+  "t": 45.8667,
+  "frame": 1376,
+  "type": "word",
+  "label": "we"
+ },
+ {
+  "t": 46.0333,
+  "frame": 1381,
+  "type": "enter",
+  "label": "read"
+ },
+ {
+  "t": 46.0333,
+  "frame": 1381,
+  "type": "word",
+  "label": "read"
+ },
+ {
+  "t": 46.2,
+  "frame": 1386,
+  "type": "enter",
+  "label": "it"
+ },
+ {
+  "t": 46.2,
+  "frame": 1386,
+  "type": "word",
+  "label": "it"
+ },
+ {
+  "t": 46.3667,
+  "frame": 1391,
+  "type": "enter",
+  "label": "together,"
+ },
+ {
+  "t": 46.3667,
+  "frame": 1391,
+  "type": "word",
+  "label": "together,"
+ },
+ {
+  "t": 46.9333,
+  "frame": 1408,
+  "type": "exit",
+  "label": "#c10b"
+ },
+ {
+  "t": 47.0667,
+  "frame": 1412,
+  "type": "enter",
+  "label": "again"
+ },
+ {
+  "t": 47.0667,
+  "frame": 1412,
+  "type": "word",
+  "label": "again"
+ },
+ {
+  "t": 47.5667,
+  "frame": 1427,
+  "type": "enter",
+  "label": "at"
+ },
+ {
+  "t": 47.5667,
+  "frame": 1427,
+  "type": "word",
+  "label": "at"
+ },
+ {
+  "t": 47.6667,
+  "frame": 1430,
+  "type": "sfx",
+  "label": "pageSlow"
+ },
+ {
+  "t": 47.7,
+  "frame": 1431,
+  "type": "enter",
+  "label": "his"
+ },
+ {
+  "t": 47.7,
+  "frame": 1431,
+  "type": "word",
+  "label": "his"
+ },
+ {
+  "t": 47.9667,
+  "frame": 1439,
+  "type": "enter",
+  "label": "pace."
+ },
+ {
+  "t": 47.9667,
+  "frame": 1439,
+  "type": "word",
+  "label": "pace."
+ },
+ {
+  "t": 48.5333,
+  "frame": 1456,
+  "type": "exit",
+  "label": "#c10c"
+ },
+ {
+  "t": 48.7667,
+  "frame": 1463,
+  "type": "enter",
+  "label": "It"
+ },
+ {
+  "t": 48.7667,
+  "frame": 1463,
+  "type": "word",
+  "label": "It"
+ },
+ {
+  "t": 48.8,
+  "frame": 1464,
+  "type": "cut",
+  "label": "the page -> together"
+ },
+ {
+  "t": 48.9,
+  "frame": 1467,
+  "type": "enter",
+  "label": "doesn’t"
+ },
+ {
+  "t": 48.9,
+  "frame": 1467,
+  "type": "word",
+  "label": "doesn’t"
+ },
+ {
+  "t": 49.1667,
+  "frame": 1475,
+  "type": "enter",
+  "label": "replace"
+ },
+ {
+  "t": 49.1667,
+  "frame": 1475,
+  "type": "word",
+  "label": "replace"
+ },
+ {
+  "t": 49.6333,
+  "frame": 1489,
+  "type": "enter",
+  "label": "his"
+ },
+ {
+  "t": 49.6333,
+  "frame": 1489,
+  "type": "word",
+  "label": "his"
+ },
+ {
+  "t": 49.8,
+  "frame": 1494,
+  "type": "enter",
+  "label": "therapist."
+ },
+ {
+  "t": 49.8,
+  "frame": 1494,
+  "type": "word",
+  "label": "therapist."
+ },
+ {
+  "t": 50.9333,
+  "frame": 1528,
+  "type": "exit",
+  "label": "#c11a"
+ },
+ {
+  "t": 51.8,
+  "frame": 1554,
+  "type": "enter",
+  "label": "a"
+ },
+ {
+  "t": 51.8,
+  "frame": 1554,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 51.9667,
+  "frame": 1559,
+  "type": "enter",
+  "label": "way"
+ },
+ {
+  "t": 51.9667,
+  "frame": 1559,
+  "type": "word",
+  "label": "way"
+ },
+ {
+  "t": 52.1,
+  "frame": 1563,
+  "type": "enter",
+  "label": "to"
+ },
+ {
+  "t": 52.1,
+  "frame": 1563,
+  "type": "word",
+  "label": "to"
+ },
+ {
+  "t": 52.3333,
+  "frame": 1570,
+  "type": "show",
+  "label": "#dT11"
+ },
+ {
+  "t": 52.4667,
+  "frame": 1574,
+  "type": "enter",
+  "label": "prepare"
+ },
+ {
+  "t": 52.4667,
+  "frame": 1574,
+  "type": "word",
+  "label": "prepare"
+ },
+ {
+  "t": 52.8,
+  "frame": 1584,
+  "type": "show",
+  "label": "#dR11"
+ },
+ {
+  "t": 52.8667,
+  "frame": 1586,
+  "type": "enter",
+  "label": "together."
+ },
+ {
+  "t": 52.8667,
+  "frame": 1586,
+  "type": "word",
+  "label": "together."
+ },
+ {
+  "t": 52.9333,
+  "frame": 1588,
+  "type": "sfx",
+  "label": "warm"
+ },
+ {
+  "t": 53.8,
+  "frame": 1614,
+  "type": "cut",
+  "label": "together -> the free account"
+ },
+ {
+  "t": 53.8,
+  "frame": 1614,
+  "type": "enter",
+  "label": "#meet12"
+ },
+ {
+  "t": 53.8,
+  "frame": 1614,
+  "type": "cascade",
+  "label": "#meet12"
+ },
+ {
+  "t": 53.8,
+  "frame": 1614,
+  "type": "sfx",
+  "label": "swish"
+ },
+ {
+  "t": 53.8,
+  "frame": 1614,
+  "type": "enter",
+  "label": "Make"
+ },
+ {
+  "t": 53.8,
+  "frame": 1614,
+  "type": "word",
+  "label": "Make"
+ },
+ {
+  "t": 53.9333,
+  "frame": 1618,
+  "type": "enter",
+  "label": "#ready12"
+ },
+ {
+  "t": 53.9333,
+  "frame": 1618,
+  "type": "cascade",
+  "label": "#ready12"
+ },
+ {
+  "t": 53.9667,
+  "frame": 1619,
+  "type": "enter",
+  "label": "a"
+ },
+ {
+  "t": 53.9667,
+  "frame": 1619,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 54.0667,
+  "frame": 1622,
+  "type": "enter",
+  "label": "#price12"
+ },
+ {
+  "t": 54.0667,
+  "frame": 1622,
+  "type": "cascade",
+  "label": "#price12"
+ },
+ {
+  "t": 54.1,
+  "frame": 1623,
+  "type": "enter",
+  "label": "free"
+ },
+ {
+  "t": 54.1,
+  "frame": 1623,
+  "type": "word",
+  "label": "free"
+ },
+ {
+  "t": 54.2667,
+  "frame": 1628,
+  "type": "enter",
+  "label": "account,"
+ },
+ {
+  "t": 54.2667,
+  "frame": 1628,
+  "type": "word",
+  "label": "account,"
+ },
+ {
+  "t": 55.0667,
+  "frame": 1652,
+  "type": "exit",
+  "label": "#c12a"
+ },
+ {
+  "t": 55.4,
+  "frame": 1662,
+  "type": "count",
+  "label": "start 0"
+ },
+ {
+  "t": 56.2,
+  "frame": 1686,
+  "type": "count",
+  "label": "land 10"
+ },
+ {
+  "t": 56.2,
+  "frame": 1686,
+  "type": "sfx",
+  "label": "ready"
+ },
+ {
+  "t": 57.1667,
+  "frame": 1715,
+  "type": "enter",
+  "label": "before"
+ },
+ {
+  "t": 57.1667,
+  "frame": 1715,
+  "type": "word",
+  "label": "before"
+ },
+ {
+  "t": 57.4,
+  "frame": 1722,
+  "type": "enter",
+  "label": "you"
+ },
+ {
+  "t": 57.4,
+  "frame": 1722,
+  "type": "word",
+  "label": "you"
+ },
+ {
+  "t": 57.6,
+  "frame": 1728,
+  "type": "enter",
+  "label": "pay"
+ },
+ {
+  "t": 57.6,
+  "frame": 1728,
+  "type": "word",
+  "label": "pay"
+ },
+ {
+  "t": 57.8,
+  "frame": 1734,
+  "type": "enter",
+  "label": "#tap12"
+ },
+ {
+  "t": 57.9667,
+  "frame": 1739,
+  "type": "enter",
+  "label": "anything."
+ },
+ {
+  "t": 57.9667,
+  "frame": 1739,
+  "type": "word",
+  "label": "anything."
+ },
+ {
+  "t": 58.1667,
+  "frame": 1745,
+  "type": "sfx",
+  "label": "click"
+ },
+ {
+  "t": 58.2667,
+  "frame": 1748,
+  "type": "show",
+  "label": "#bg"
+ },
+ {
+  "t": 58.2667,
+  "frame": 1748,
+  "type": "show",
+  "label": "#bt"
+ },
+ {
+  "t": 58.2667,
+  "frame": 1748,
+  "type": "show",
+  "label": "#bo"
+ },
+ {
+  "t": 58.2667,
+  "frame": 1748,
+  "type": "show",
+  "label": "#br"
+ },
+ {
+  "t": 58.2667,
+  "frame": 1748,
+  "type": "sfx",
+  "label": "converge"
+ },
+ {
+  "t": 58.3333,
+  "frame": 1750,
+  "type": "hide",
+  "label": "#tap12"
+ },
+ {
+  "t": 58.4,
+  "frame": 1752,
+  "type": "exit",
+  "label": "#c12b"
+ },
+ {
+  "t": 58.6667,
+  "frame": 1760,
+  "type": "cut",
+  "label": "the four come back as the mark"
+ },
+ {
+  "t": 58.9,
+  "frame": 1767,
+  "type": "enter",
+  "label": "#wm13"
+ },
+ {
+  "t": 59.0333,
+  "frame": 1771,
+  "type": "sfx",
+  "label": "final"
+ },
+ {
+  "t": 59.6333,
+  "frame": 1789,
+  "type": "enter",
+  "label": "Try"
+ },
+ {
+  "t": 59.6333,
+  "frame": 1789,
+  "type": "word",
+  "label": "Try"
+ },
+ {
+  "t": 59.8667,
+  "frame": 1796,
+  "type": "enter",
+  "label": "it"
+ },
+ {
+  "t": 59.8667,
+  "frame": 1796,
+  "type": "word",
+  "label": "it"
+ },
+ {
+  "t": 60.0333,
+  "frame": 1801,
+  "type": "enter",
+  "label": "free"
+ },
+ {
+  "t": 60.0333,
+  "frame": 1801,
+  "type": "word",
+  "label": "free"
+ },
+ {
+  "t": 60.3667,
+  "frame": 1811,
+  "type": "enter",
+  "label": "for"
+ },
+ {
+  "t": 60.3667,
+  "frame": 1811,
+  "type": "word",
+  "label": "for"
+ },
+ {
+  "t": 60.6333,
+  "frame": 1819,
+  "type": "enter",
+  "label": "seven"
+ },
+ {
+  "t": 60.6333,
+  "frame": 1819,
+  "type": "word",
+  "label": "seven"
+ },
+ {
+  "t": 60.8333,
+  "frame": 1825,
+  "type": "enter",
+  "label": "days."
+ },
+ {
+  "t": 60.8333,
+  "frame": 1825,
+  "type": "word",
+  "label": "days."
+ }
+]
