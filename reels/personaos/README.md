@@ -59,6 +59,22 @@ moves. The page and the soundtrack both follow. To use a new voiceover, replace 
 regenerate `assets/vo-words.json` and `assets/vo-edit.json`, and adjust the word indices in
 `reel-vo.html`.
 
+## "One hire" (motionmaxxing version)
+
+`mm/` rebuilds the voiceover cut with the motionmaxxing method, as a second version to compare: same voiceover,
+same paper-white ground, no music, same search-bar outro. It follows one object through the film instead of
+cutting between seven separate scenes:
+1. The agency invoice is struck out, and Mo lands where it was as the face of a thermostat.
+2. The thermostat becomes the picture in the ad Mo writes.
+3. "Book now" becomes the first booked job on the calendar.
+4. The calendar dives into a 2:14 AM booking.
+5. Mo shrinks into his own staff badge.
+6. The badge's "Hire Mo" button is clicked and stretches into the address bar.
+
+Captions run at speech rhythm in one fixed place. `mm/STORYBOARD.md` has the plan and `mm/NOTE.md` the review
+numbers. Build with `mm/build.sh` (`DRAFT=1` for a quick half-size pass). It uses the vendored renderer in `mm/tools/`
+and the runtime in `mm/runtime/` (Apache-2.0, see `mm/runtime/NOTICE`).
+
 ## Assets
 
 All assets come from personaos.com screenshots. The stone & oak remodeler content is the

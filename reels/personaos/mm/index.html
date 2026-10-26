@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>personaos: One hire</title>
+<meta name="viewport" content="width=1080, height=1920">
+<!--
+  personaos, "One hire": the voiceover cut rebuilt with the motionmaxxing method (see STORYBOARD.md, NOTE.md).
+  1080x1920, 30 fps, built on runtime/motion.js. Every frame is a pure function of t: Motion.* calls plus one
+  setter-driven draw() for Mo's eyes and the address-bar morph. Render with the skill's scripts/render.mjs.
+  ACCENT meanings: purple #623AEC = Mo / the brand; lime #EBFDA0 = booked, live, done.
+-->
+<link rel="stylesheet" href="./runtime/fonts.css">
+<style>
+:root {
+  --paper: #FAFAF7; --ink: #111115; --soft: #656569; --faint: #9A98A2;
+  --purple: #623AEC; --lime: #EBFDA0; --lime-ink: #2A3410; --lav: #EEEBF7;
+  --font: "Inter", system-ui, sans-serif;
+  /* one key light, top left: every object's shadow falls down and to the right */
+  --shadow: 0 1px 2px rgba(40,30,70,.08), 6px 16px 32px rgba(40,30,70,.10), 18px 44px 90px rgba(40,30,70,.08);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#main { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: var(--font); font-weight: 500; }
+/* the ground: paper white with a fine tooth and one soft key from the top left, the same colour all film */
+#ground { position: absolute; inset: 0; background:
+  radial-gradient(120% 70% at 10% -5%, rgba(255,255,255,.75), rgba(255,255,255,0) 60%),
+  radial-gradient(90% 60% at 100% 105%, rgba(70,60,40,.035), rgba(70,60,40,0) 70%),
+  url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .33  0 0 0 0 .3  0 0 0 .07 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"),
+  var(--paper); }
+.abs { position: absolute; left: 0; top: 0; }
+.card { position: absolute; background: #fff; border-radius: 36px; box-shadow: var(--shadow); }
+.fw { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }   /* a full-frame wrapper so moves have room */
+
+/* captions: the voiceover's words, one fixed place, centred, at speech rhythm */
+.cap { position: absolute; left: 0; width: 1080px; text-align: center; white-space: pre; font-size: 70px; line-height: 84px; font-weight: 650; letter-spacing: -0.03em; }
+.c1 { top: 196px; } .c2 { top: 282px; }
+#capMo { top: 120px; font-size: 250px; line-height: 270px; font-weight: 750; letter-spacing: -0.055em; }
+
+/* A · invoice */
+#inv { left: 110px; top: 560px; width: 860px; height: 820px; padding: 56px 60px; }
+#inv .hd { display: flex; align-items: center; gap: 24px; }
+#inv .gl { width: 88px; height: 88px; border-radius: 50%; background: var(--lav); display: grid; place-items: center; }
+#inv .nm { font-size: 44px; font-weight: 700; letter-spacing: -0.02em; }
+#inv .no { font-size: 26px; color: var(--faint); margin-top: 6px; font-weight: 550; }
+#inv .row { position: relative; display: flex; justify-content: space-between; font-size: 38px; padding: 26px 0; border-bottom: 2px solid #EFEDE8; }
+#inv .row b { font-weight: 650; }
+#inv .tl { font-size: 32px; color: var(--soft); margin-top: 46px; font-weight: 600; }
+#tot { position: absolute; left: 60px; top: 560px; font-size: 168px; line-height: 180px; font-weight: 750; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+#tot small { font-size: 48px; letter-spacing: -0.01em; color: var(--soft); font-weight: 600; }
+#strike { position: absolute; left: 50px; top: 646px; width: 760px; height: 14px; border-radius: 7px; background: var(--ink); transform-origin: 0 50%; }
+.bill { position: absolute; left: 0; top: 0; width: 150px; height: 84px; border-radius: 10px; background: #F4F1E8; border: 2px solid #DED8C8; box-shadow: 4px 10px 20px rgba(40,30,20,.12); display: grid; place-items: center; font-size: 46px; font-weight: 800; color: #6A6350; }
+
+/* B · Mo and the thermostat dial */
+#dial { position: absolute; left: 160px; top: 680px; width: 760px; height: 760px; overflow: visible; }
+#mo { position: absolute; left: 0; top: 0; width: 520px; height: 520px; z-index: 20; }
+#moBob, #moBody { position: absolute; inset: 0; }
+#moBody img, #moBody svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+#moSh { position: absolute; left: -26px; top: 520px; width: 572px; height: 92px; border-radius: 50%; background: radial-gradient(ellipse 50% 50% at 55% 50%, rgba(120,90,230,.30), rgba(120,90,230,.10) 50%, rgba(120,90,230,0) 72%); filter: blur(6px); }
+
+/* C · the ad Mo writes, and the calendar it fills */
+#ad { left: 110px; top: 560px; width: 860px; height: 740px; overflow: hidden; }
+#ad .hd { position: absolute; left: 40px; top: 30px; display: flex; align-items: center; gap: 18px; }
+#ad .av { width: 64px; height: 64px; border-radius: 50%; background: #1D2B45; display: grid; place-items: center; }
+#ad .an { font-size: 34px; font-weight: 700; letter-spacing: -0.015em; }
+#ad .as { font-size: 24px; color: var(--faint); margin-top: 2px; }
+#ad .med { position: absolute; left: 0; top: 120px; width: 860px; height: 320px; background: linear-gradient(160deg, #DCEAFF, #F3F7FF 70%); overflow: hidden; }
+#adh { position: absolute; left: 44px; top: 470px; font-size: 56px; line-height: 64px; font-weight: 750; letter-spacing: -0.03em; white-space: pre; }
+#ads { position: absolute; left: 46px; top: 546px; font-size: 32px; line-height: 40px; color: var(--soft); white-space: pre; }
+.caret { position: absolute; width: 5px; border-radius: 2px; background: var(--purple); }
+#book { position: absolute; left: 616px; top: 630px; width: 210px; height: 80px; border-radius: 40px; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 30px; font-weight: 700; }
+.plat { position: absolute; top: 640px; height: 60px; display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 700; }
+.plat svg { width: 44px; height: 44px; }
+.plat .off { filter: grayscale(1); opacity: .35; }
+.plat .live { position: absolute; left: 50px; top: 12px; padding: 6px 12px; border-radius: 18px; background: var(--lime); color: var(--lime-ink); font-size: 22px; font-weight: 750; white-space: nowrap; }
+#fly { position: absolute; left: 0; top: 0; border-radius: 40px; background: var(--ink); z-index: 15; }
+#cal { left: 40px; top: 520px; width: 1000px; height: 1000px; }
+#cal .ct { position: absolute; left: 50px; top: 46px; font-size: 52px; font-weight: 750; letter-spacing: -0.03em; }
+#cnt { position: absolute; right: 44px; top: 34px; height: 84px; padding: 0 30px; border-radius: 42px; background: var(--lime); color: var(--lime-ink); display: flex; align-items: center; gap: 12px; font-size: 44px; font-weight: 750; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+#cal .dh { position: absolute; top: 160px; width: 160px; text-align: center; font-size: 24px; font-weight: 700; letter-spacing: .14em; color: var(--faint); }
+#cal .tm { position: absolute; left: 30px; width: 80px; font-size: 24px; font-weight: 650; color: var(--faint); }
+.slot { position: absolute; width: 160px; height: 176px; border-radius: 20px; background: #F5F4F0; }
+.job { position: absolute; width: 160px; height: 176px; border-radius: 20px; padding: 16px; background: var(--lime); color: var(--lime-ink); line-height: 1.12; }
+.job b { display: block; font-size: 25px; font-weight: 750; letter-spacing: -0.01em; }
+.job span { position: absolute; left: 16px; bottom: 14px; font-size: 18px; font-weight: 800; letter-spacing: .1em; }
+
+/* D · 24/7, the joke, the ideas */
+#night { left: 120px; top: 520px; width: 840px; height: 1020px; overflow: hidden; }
+#night .ct { position: absolute; left: 54px; top: 44px; font-size: 52px; font-weight: 750; letter-spacing: -0.03em; }
+#night .cs { position: absolute; right: 54px; top: 58px; font-size: 32px; color: var(--faint); font-weight: 600; }
+#nview { position: absolute; left: 0; top: 150px; width: 840px; height: 870px; overflow: hidden; }
+#strip { position: absolute; left: 0; top: 0; width: 840px; }
+.hr { position: absolute; left: 0; width: 840px; height: 200px; border-top: 2px solid #EFEDE8; }
+.hr i { position: absolute; left: 54px; top: 20px; font-style: normal; font-size: 40px; font-weight: 650; color: var(--faint); }
+#late { position: absolute; left: 230px; width: 560px; height: 176px; border-radius: 24px; background: var(--lime); color: var(--lime-ink); padding: 22px 30px; }
+#late b { display: block; font-size: 66px; line-height: 70px; font-weight: 800; letter-spacing: -0.035em; }
+#late em { display: block; font-style: normal; font-size: 32px; font-weight: 650; margin-top: 8px; }
+#late span { position: absolute; right: 28px; top: 26px; font-size: 22px; font-weight: 800; letter-spacing: .12em; }
+#bub { position: absolute; left: 600px; top: 1050px; padding: 24px 34px; border-radius: 36px; background: #fff; box-shadow: var(--shadow); font-size: 44px; font-weight: 750; letter-spacing: -0.02em; white-space: nowrap; transform-origin: 10% 100%; }
+#bub:after { content: ''; position: absolute; left: 46px; bottom: -20px; border: 20px solid transparent; border-top-color: #fff; border-bottom: 0; }
+.idea { position: absolute; top: 0; padding: 14px 24px; border-radius: 999px; background: #fff; box-shadow: 0 1px 2px rgba(40,30,70,.08), 4px 12px 26px rgba(40,30,70,.12); display: flex; align-items: center; gap: 10px; font-size: 26px; font-weight: 650; white-space: nowrap; }
+.idea svg { width: 30px; height: 30px; }
+
+/* E · the staff badge, F · the button */
+#badge { left: 190px; top: 500px; width: 700px; height: 1000px; border-radius: 44px; }
+#strap { position: absolute; left: 512px; top: -600px; width: 56px; height: 1130px; -webkit-mask-image: linear-gradient(transparent 980px, #000 1060px); mask-image: linear-gradient(transparent 980px, #000 1060px); background: linear-gradient(90deg, #5130D6, #6A45F0 45%, #5130D6); border-radius: 6px; }
+#clip { position: absolute; left: 490px; top: 470px; width: 100px; height: 66px; border-radius: 16px; background: linear-gradient(#E6E4EC, #B9B6C4); box-shadow: 2px 6px 12px rgba(30,20,60,.25); }
+#badge .hole { position: absolute; left: 290px; top: 34px; width: 120px; height: 22px; border-radius: 11px; background: #ECEAF2; }
+#badge .win { position: absolute; left: 200px; top: 96px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #F6F3FF, #E6E0F8); box-shadow: inset 0 4px 14px rgba(60,40,140,.12); }
+#badge .bn { position: absolute; left: 0; top: 430px; width: 700px; text-align: center; font-size: 150px; line-height: 160px; font-weight: 800; letter-spacing: -0.055em; }
+#badge .br { position: absolute; left: 0; top: 600px; width: 700px; text-align: center; font-size: 44px; font-weight: 600; color: var(--soft); letter-spacing: -0.015em; }
+#badge .bl { position: absolute; left: 0; top: 880px; width: 700px; display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 44px; font-weight: 700; letter-spacing: -0.035em; }
+#badge .bl svg { width: 40px; height: 40px; }
+#hire { position: absolute; left: 280px; top: 1210px; width: 520px; height: 124px; border-radius: 62px; background: #111115; color: #fff; display: flex; align-items: center; justify-content: center; gap: 18px; font-size: 52px; font-weight: 750; letter-spacing: -0.025em; box-shadow: 4px 16px 36px rgba(17,17,21,.22); overflow: hidden; }
+#hire .ar { width: 72px; height: 72px; border-radius: 50%; background: var(--lime); display: grid; place-items: center; }
+.cur { position: absolute; left: 0; top: 0; width: 64px; height: 90px; overflow: visible; filter: drop-shadow(4px 8px 10px rgba(17,17,21,.28)); z-index: 40; }
+
+/* G · the address bar and the logo */
+#gbar { position: absolute; left: 160px; top: 898px; width: 760px; height: 124px; border-radius: 38px; background: #fff; box-shadow: var(--shadow); }
+#gicon { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+.gt { position: absolute; left: 0; top: 0; font-size: 50px; font-weight: 700; letter-spacing: -0.01em; line-height: 1; white-space: nowrap; color: var(--ink); }
+#gcaret { position: absolute; left: 0; top: 0; width: 4px; height: 58px; border-radius: 2px; background: var(--purple); }
+</style>
+</head>
+<body>
+<div id="main">
+  <div id="ground"></div>
+
+  <!-- A · "Stop wasting your money on overseas agencies." -->
+  <div id="camA" class="fw">
+    <div id="inv" class="card" data-ui>
+      <div class="hd"><div class="gl"><svg viewBox="0 0 24 24" width="50" height="50" fill="none" stroke="#623AEC" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg></div>
+        <div><div class="nm">Overseas agency</div><div class="no">Invoice #2047 · monthly</div></div></div>
+      <div style="margin-top:30px">
+        <div class="row" id="r0"><span>Monthly retainer</span><b>$3,500</b></div>
+        <div class="row" id="r1"><span>Ad management</span><b>$1,000</b></div>
+        <div class="row" id="r2"><span>Rush revisions</span><b>$350</b></div>
+      </div>
+      <div class="tl">Total due</div>
+      <div id="tot"><span id="totv">$0</span><small>/mo</small></div>
+      <div id="strike"></div>
+    </div>
+  </div>
+  <div id="bills"></div>
+
+  <!-- B · thermostat dial around Mo (drawn in build) -->
+  <div id="dialW" class="fw"><svg id="dial" viewBox="-380 -380 760 760"></svg></div>
+
+  <!-- C1 · the ad -->
+  <div id="adW" class="fw">
+    <div id="ad" class="card" data-ui>
+      <div class="hd"><div class="av"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="#9CC9FF" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M3.3 7l17.4 10M20.7 7L3.3 17"/></svg></div><div><div class="an">Your HVAC Co.</div><div class="as">Sponsored</div></div></div>
+      <div class="med"><svg id="adDial" viewBox="-380 -380 760 760" style="position:absolute;left:291px;top:24px;width:274px;height:274px;overflow:visible"></svg></div>
+      <div id="adh">AC not keeping up?</div><i class="caret" id="adc1" style="top:474px;height:58px"></i>
+      <div id="ads">Same-day repair from local pros.</div><i class="caret" id="adc2" style="top:548px;height:36px"></i>
+      <div id="plats"></div>
+      <div id="book">Book now</div>
+    </div>
+  </div>
+  <div id="fly"></div>
+
+  <!-- C2 · the calendar -->
+  <div id="calW" class="fw"><div id="calCam" class="fw">
+    <div id="cal" class="card" data-ui>
+      <div class="ct">This week</div>
+      <div id="cnt"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#2A3410" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span id="cntv">0 jobs</span>&nbsp;booked</div>
+      <div id="grid"></div>
+    </div>
+  </div></div>
+
+  <!-- D1 · Saturday night -->
+  <div id="nightW" class="fw">
+    <div id="night" class="card" data-ui>
+      <div class="ct">Saturday</div><div class="cs">Night shift</div>
+      <div id="nview"><div id="strip"></div></div>
+    </div>
+  </div>
+
+  <!-- D2, D3 · the joke and the ideas -->
+  <div id="bub">Raise? Nah.</div>
+  <div id="ideas"></div>
+
+  <!-- E · the badge, swinging on its lanyard -->
+  <div id="badgeW" class="fw"><div id="badgeSwing" class="fw">
+    <div id="strap"></div>
+    <div id="badge" class="card" data-ui>
+      <div class="hole"></div><div class="win"></div>
+      <div class="bn">Mo</div>
+      <div class="br">AI growth agent</div>
+      <div class="bl"><svg viewBox="-1 -1 2 2"><path class="spark" fill="#623AEC"/></svg>personaos</div>
+    </div>
+    <div id="clip"></div>
+  </div></div>
+
+  <!-- Mo, the one actor -->
+  <div id="mo"><div id="moSh"></div><div id="moBob"><div id="moBody"><img src="assets/mo-body.png" alt=""><svg viewBox="0 0 1050 1050"></svg></div></div></div>
+
+  <!-- F · the button that becomes the address bar -->
+  <div id="hireW" class="fw"><div id="hire" data-ui><span id="hireL">Hire Mo</span><span class="ar" id="hireA"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="#111115" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></div>
+
+  <!-- G · the address bar → the logo -->
+  <div id="camG" class="fw"><div id="gDrift" class="fw">
+    <div id="gbarW" class="fw"><div id="gbar" data-ui></div></div>
+    <svg id="gicon" viewBox="0 0 1080 1920"><path id="gHandle" fill="none" stroke-linecap="round"/><path id="gLens"/></svg>
+    <div class="gt" id="gW">www.</div><div class="gt" id="gP">personaos</div><div class="gt" id="gC">.com</div>
+    <div id="gcaret"></div>
+  </div></div>
+
+  <!-- captions -->
+  <div id="caps"></div>
+
+  <!-- cursors: tip at the element origin -->
+  <svg class="cur" id="curC" viewBox="0 0 64 90"><path d="M3 3 L3 67 L19 52 L31 79 L45 73 L33 46 L56 46 Z" fill="#fff" stroke="#111115" stroke-width="4" stroke-linejoin="round"/></svg>
+  <svg class="cur" id="curF" viewBox="0 0 64 90"><path d="M3 3 L3 67 L19 52 L31 79 L45 73 L33 46 L56 46 Z" fill="#fff" stroke="#111115" stroke-width="4" stroke-linejoin="round"/></svg>
+  <svg class="cur" id="curG" viewBox="0 0 64 90"><path d="M3 3 L3 67 L19 52 L31 79 L45 73 L33 46 L56 46 Z" fill="#fff" stroke="#111115" stroke-width="4" stroke-linejoin="round"/></svg>
+</div>
+
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script src="./vo-words.js"></script>
+<script>
+'use strict';
+const DUR = 32.3, FPS = 30;
+const M = window.__M = Motion.film({ fps: FPS, duration: DUR, width: 1080, height: 1920, clock: 'smooth' });
+const f = s => Math.round(s * FPS);                       // seconds -> frame
+const $ = s => document.querySelector(s);
+const T0 = i => VO[i][0 + 1], T1 = i => VO[i][2];         // a word's start / end in the paced voiceover
+const at = i => T0(i) - 2 / FPS;                          // words land 2 f before they are heard
+const sfx = (t, kind, g = 1, p) => M.mark(f(t), 'sfx', [kind, g, p == null ? '' : p].join(':'));
+const lerp = (a, b, k) => a + (b - a) * k, clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const P = (t, a, d) => clamp((t - a) / d);
+const ease = { io: p => (p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2), out: p => 1 - Math.pow(1 - p, 3), out4: p => 1 - Math.pow(1 - p, 4), in3: p => p * p * p };
+
+/* scene changes: just before the first word of the next line (the voiceover's pauses give each scene its hold) */
+const XAB = T0(7) - .3, XBC = T0(16) - .3, XC12 = T0(22) - .3, XCD = T0(29) - .3, XDE = T0(43) - .3, XEF = T0(57) - .3;
+const END = T1(64);
+
+/* ---------- captions: voiceover words at speech rhythm, one fixed place ---------- */
+const capsEl = $('#caps');
+function cap(id, cls, text, idx, exitT) {
+  const el = document.createElement('div'); el.id = id; el.className = 'cap ' + cls; el.textContent = text; capsEl.appendChild(el);
+  const on = idx.map(i => f(at(i)));
+  M.words('#' + id, { at: on[0], mech: 'rise', dist: 46, frames: 11, ease: 'softLand', gaps: on.slice(1).map((v, k) => Math.max(1, v - on[k])) });
+  M.exit('#' + id, { at: f(exitT), frames: 8, ease: 'accelExit', to: { y: -34 }, hide: true });
+}
+cap('a1', 'c1', 'Stop wasting your money', [0, 1, 2, 3], XAB - .1);
+cap('a2', 'c2', 'on overseas agencies.', [4, 5, 6], XAB - .07);
+cap('capMo', '', 'Mo.', [8], T0(9) - .14);
+cap('b1', 'c1', 'The AI growth agent', [9, 10, 11, 12], XBC - .05);
+cap('b2', 'c2', 'for HVAC companies.', [13, 14, 15], XBC - .02);
+cap('c1a', 'c1', 'He writes your ads,', [16, 17, 18, 19], XC12 + .02);
+cap('c1b', 'c2', 'runs them,', [20, 21], XC12 + .05);
+cap('c2a', 'c1', 'and fills your calendar', [22, 23, 24, 25], XCD - .3);
+cap('c2b', 'c2', 'with booked jobs.', [26, 27, 28], XCD - .27);
+cap('d1', 'c1', 'Works 24/7,', [29, 30], T0(33) - .2);
+cap('d2', 'c1', 'never asks for a raise,', [33, 34, 35, 36, 37], T0(38) - .2);
+cap('d3', 'c1', 'never runs out of ideas.', [38, 39, 40, 41, 42], XDE - .22);
+cap('e1', 'c1', 'He’s the best team member', [43, 44, 45, 46, 47], T0(51) - .2);
+cap('e2', 'c2', 'you’ll ever find.', [48, 49, 50], T0(51) - .17);
+cap('e3', 'c1', 'The best hire', [51, 52, 53], XEF - .05);
+cap('e4', 'c2', 'you’ll ever make.', [54, 55, 56], XEF - .02);
+cap('f1', 'c1', 'Click the link below', [57, 58, 59, 60], END + .25);
+cap('f2', 'c2', 'to get started today.', [61, 62, 63, 64], END + .28);
+
+/* ---------- A · the invoice: already rising on frame 0, money slipping out, struck on "agencies" ---------- */
+M.kf('#camA', 'y', [[0, 380], [16, 0, 'softLand']]);
+M.drift('#inv', { prop: 'scale', from: 1, to: 1.025, start: 16, end: f(XAB) });
+['#r0', '#r1', '#r2'].forEach((r, i) => { M.enter(r, { at: f(.55 + i * .14), frames: 10, ease: 'softLand', from: { x: -36 } }); sfx(.55 + i * .14, 'tick', .4); });
+M.count('#totv', { at: f(.95), from: 0, to: 4850, frames: 33, round: true, format: v => '$' + v.toLocaleString('en-US'), skip: .1, seed: 3 });
+sfx(1.0, 'cash', .5);
+for (let k = 0; k < 6; k++) {                              // bills slip out of the invoice's right edge and drift off
+  const b = document.createElement('div'); b.className = 'bill'; b.id = 'bill' + k; b.textContent = '$'; $('#bills').appendChild(b);
+  const a = f(1.0 + k * .24), e = a + 30;
+  M.show('#bill' + k, a, e);
+  M.kf('#bill' + k, 'x', [[a, 880 - k * 6], [e, 1180 + k * 30, 'gentleIn']]);
+  M.kf('#bill' + k, 'y', [[a, 1120 - k * 34], [e, 520 - k * 90, 'gentleIn']]);
+  M.kf('#bill' + k, 'rotation', [[a, -18], [e, 70 + k * 25]]);
+}
+const STRIKE = T1(6) + .02;
+M.kf('#strike', 'scaleX', [[f(STRIKE), 0], [f(STRIKE) + 6, 1, 'whip']]);
+M.show('#strike', f(STRIKE));
+sfx(STRIKE, 'stamp', .7);
+M.exit('#camA', { at: f(XAB), frames: 13, ease: 'accelExit', to: { y: 1500, rotation: 7 }, hide: true });
+sfx(XAB, 'whoosh', .45, .35);
+
+/* ---------- B · Mo crashes in where the invoice was; a thermostat dial draws around him ---------- */
+const dial = $('#dial');
+{
+  const pol = (r, deg) => [r * Math.cos(deg * Math.PI / 180), r * Math.sin(deg * Math.PI / 180)];
+  let ticks = '';
+  for (let k = 0; k <= 54; k++) { const d = 135 + k * 5, [x1, y1] = pol(318, d), [x2, y2] = pol(k % 5 ? 334 : 344, d); ticks += `M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}`; }
+  const [ax, ay] = pol(362, 135), [bx, by] = pol(362, 405);
+  const arc = `M${ax.toFixed(1)} ${ay.toFixed(1)}A362 362 0 1 1 ${bx.toFixed(1)} ${by.toFixed(1)}`;
+  const svg = `<defs><mask id="MSK"><path id="tkMask" d="${arc.replace(/362/g, '331')}" fill="none" stroke="#fff" stroke-width="60" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="100"/></mask></defs>
+    <circle r="300" fill="none" stroke="#ECE8F6" stroke-width="3"/>
+    <path d="${ticks}" stroke="#111115" stroke-opacity=".22" stroke-width="3" stroke-linecap="round" mask="url(#MSK)"/>
+    <path d="${arc}" fill="none" stroke="#ECE8F6" stroke-width="12" stroke-linecap="round"/>
+    <path id="dialArc" d="${arc}" fill="none" stroke="#623AEC" stroke-width="12" stroke-linecap="round" pathLength="100" stroke-dasharray="100 100" stroke-dashoffset="100"/>
+    <text id="dialT" x="0" y="350" text-anchor="middle" font-family="Inter" font-size="64" font-weight="750" letter-spacing="-2" fill="#111115">72°</text>`;
+  dial.innerHTML = svg;
+  $('#adDial').innerHTML = svg.replace(/id="(\w+)"/g, 'id="ad$1"').replace('url(#MSK)', 'url(#adMSK)').replace(/stroke-dashoffset="100"/g, 'stroke-dashoffset="0"');
+  $('#addialArc').setAttribute('stroke-dashoffset', '28');
+}
+const MO_IN = XAB + .12;
+M.show('#dialW', f(MO_IN + .3), f(XBC) + 15);
+M.kf('#tkMask', 'strokeDashoffset', [[f(MO_IN + .3), 100], [f(MO_IN + .3) + 16, 0, 'softLand']]);
+M.kf('#dialArc', 'strokeDashoffset', [[f(MO_IN + .45), 100], [f(MO_IN + .45) + 14, 38, 'softLand'], [f(at(14)), 38], [f(at(14)) + 12, 28, 'softLand']]);
+M.count('#dialT', { at: f(at(14)), from: 62, to: 72, frames: 12, round: true, format: v => v + '°' });
+sfx(MO_IN + .3, 'tick', .35); sfx(at(14), 'toggle', .45, 1);
+M.kf('#dialW', 'scale', [[f(XBC), 1], [f(XBC) + 15, .36, 'softLand']]);
+M.kf('#dialW', 'y', [[f(XBC), 0], [f(XBC) + 15, (560 + 120 + 24 + 137) - 1060, 'softLand']]);
+M.kf('#dialW', 'x', [[f(XBC), 0], [f(XBC) + 15, (110 + 291 + 137) - 540, 'softLand']]);
+document.querySelector('#dialW').style.transformOrigin = '540px 1060px';
+sfx(MO_IN + .02, 'bloop', .8);
+
+/* ---------- Mo: one actor, never parked in the same place for more than two shots ---------- */
+// [t, centre x, centre y, diameter, ease of the move arriving here]
+const MOK = [
+  [MO_IN, 540, 1060, 520 * 3.2], [MO_IN + .42, 540, 1060, 520, 'crashIn'],
+  [XBC, 540, 1060, 520], [XBC + .4, 905, 1045, 150, 'softInOut'],
+  [XC12 + .2, 905, 1045, 150], [XC12 + .62, 955, 468, 118, 'softInOut'],
+  [XCD + .2, 955, 468, 118], [XCD + .55, 900, 1585, 150, 'softInOut'],
+  [T0(33) - .25, 900, 1585, 150], [T0(33) + .15, 540, 1330, 330, 'softLand'],
+  [XDE + .45, 540, 1330, 330], [XDE + .95, 540, 746, 268, 'softInOut'],
+  [XEF + .55, 540, 746, 268], [XEF + .55 + 14 / 30, 540, 746 + 1500, 268, 'accelExit'],
+];
+const D0 = 520;
+M.kf('#mo', 'x', MOK.map(k => [f(k[0]), k[1] - D0 / 2, k[4]]));
+M.kf('#mo', 'y', MOK.map(k => [f(k[0]), k[2] - D0 / 2, k[4]]));
+M.kf('#mo', 'scale', MOK.map(k => [f(k[0]), k[3] / D0, k[4]]));
+M.show('#mo', f(MO_IN), f(XEF + .55) + 15);
+M.kf('#moSh', 'opacity', [[f(MO_IN), 0], [f(MO_IN) + 10, 1], [f(XDE + .35), 1], [f(XDE + .6), 0]]);
+
+/* ---------- C1 · the ad: Mo writes it, it goes live ---------- */
+M.enter('#adW', { at: f(XBC) + 2, frames: 13, ease: 'softLand', from: { y: 60, scale: .94 } });
+M.show('#adDial', f(XBC) + 15);
+sfx(XBC, 'swish', .5);
+{ // typed in the ad's own fields, at Mo's cadence
+  const ev1 = Motion.cadence('AC not keeping up?', { style: 'prompt', seed: 3 }), ev2 = Motion.cadence('Same-day repair from local pros.', { style: 'prompt', seed: 7 });
+  const s1 = f(at(17)), s2 = s1 + ev1[ev1.length - 1][0] + 6;
+  M.type('#adh', { at: s1, events: ev1, caret: '#adc1', caretOff: s2 });
+  M.type('#ads', { at: s2, events: ev2, caret: '#adc2', caretOff: f(XC12) });
+  ev1.concat(ev2.map(e => [e[0] + s2 - s1, e[1]])).forEach((e, k) => { if (k % 2 === 0) sfx((s1 + e[0]) / FPS, 'key', .22, k); });
+}
+const LOGOS = {
+  google: '<svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>',
+  facebook: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#1877F2"/><path fill="#fff" d="M26.6 44V29.6h5l.8-5.9h-5.8v-3.8c0-1.7.5-2.9 2.9-2.9h3.1v-5.2c-.5-.1-2.4-.2-4.5-.2-4.5 0-7.5 2.7-7.5 7.7v4.4H15.6v5.9h5V44z"/></svg>',
+  instagram: '<svg viewBox="0 0 48 48"><defs><radialGradient id="igg" cx=".3" cy="1.05" r="1.2"><stop offset="0" stop-color="#FEDA75"/><stop offset=".3" stop-color="#FA7E1E"/><stop offset=".55" stop-color="#D62976"/><stop offset=".8" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></radialGradient></defs><rect x="4" y="4" width="40" height="40" rx="11" fill="url(#igg)"/><rect x="12" y="12" width="24" height="24" rx="7" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="24" cy="24" r="5.6" fill="none" stroke="#fff" stroke-width="3.2"/><circle cx="31.4" cy="16.6" r="1.9" fill="#fff"/></svg>' };
+['google', 'facebook', 'instagram'].forEach((n, i) => {
+  const el = document.createElement('div'); el.className = 'plat'; el.style.left = (44 + i * 150) + 'px';
+  el.innerHTML = `<span class="off" id="po${i}">${LOGOS[n]}</span><span id="pl${i}" style="position:absolute;left:0;top:8px">${LOGOS[n].replace('id="igg"', 'id="igg2"').replace('url(#igg)', 'url(#igg2)')}</span><span class="live" id="lv${i}">Live</span>`;
+  $('#plats').appendChild(el);
+  const a = f(at(20)) + i * 4;
+  M.show('#pl' + i, a); M.enter('#lv' + i, { at: a + 1, frames: 9, ease: 'softLand', from: { scale: 1.5, y: -10 } });
+  sfx(a / FPS, 'toggle', .45, i);
+});
+M.drift('#ad', { prop: 'scale', from: 1, to: 1.02, start: f(XBC) + 15, end: f(XC12) + 8 });
+
+/* ---------- C1 → C2 · a customer taps "Book now"; the button becomes the first booked job ---------- */
+const PRESS1 = XC12 + .12;
+M.cursor('#curC', { keys: [[f(XC12 - .5), 1260, 2010, 3.2, -22], [f(XC12 - .5) + 9, 960, 1460, 1.6, -8], [f(XC12 - .5) + 15, 840, 1240, 1, 0], [f(PRESS1) + 6, 840, 1240, 1, 0], [f(PRESS1) + 20, 1000, 1500, 1, 0, 'accelExit']], ease: 'glide' });
+M.show('#curC', f(XC12 - .5), f(PRESS1) + 20);
+M.press('#curC', '#book', { at: f(PRESS1), cursorDepth: .82, targetDepth: .9, lag: 1, frames: 3, release: false });
+sfx(PRESS1, 'click', .6);
+M.hide('#book', f(PRESS1) + 4);
+// the flying tile: starts as the pressed button, turns lime, lands in Monday 8 am as the calendar settles
+const ADY = 560, SLOT = (c, r) => [40 + 130 + c * 172, 520 + 210 + r * 190];          // calendar slot top-left in frame px
+const LAND = f(PRESS1) + 16, [sx0, sy0] = SLOT(0, 0);
+M.show('#fly', f(PRESS1) + 4, LAND);
+M.kf('#fly', 'left', [[f(PRESS1) + 4, 110 + 616], [LAND, sx0, 'softInOut']]);
+M.kf('#fly', 'top', [[f(PRESS1) + 4, ADY + 630], [LAND, sy0, 'softInOut']]);
+M.kf('#fly', 'width', [[f(PRESS1) + 4, 210], [LAND, 160, 'softInOut']]);
+M.kf('#fly', 'height', [[f(PRESS1) + 4, 80], [LAND, 176, 'softInOut']]);
+M.kf('#fly', 'borderRadius', [[f(PRESS1) + 4, 40], [LAND, 20, 'softInOut']]);
+M.kf('#fly', 'backgroundColor', [[f(PRESS1) + 6, '#111115'], [f(PRESS1) + 12, '#EBFDA0']]);
+M.exit('#adW', { at: f(PRESS1) + 5, frames: 12, ease: 'accelExit', to: { y: 1400, rotation: -4 }, hide: true });
+M.enter('#calW', { at: f(PRESS1) + 3, frames: 14, ease: 'softLand', from: { y: -560 } });
+sfx(PRESS1 + .12, 'whoosh', .4, .3);
+
+/* ---------- C2 · the week fills ---------- */
+const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI'], TIMES = ['8a', '10a', '1p', '3p'];
+const JOBS = [[0, 0, 'AC tune-up'], [2, 1, 'Furnace repair'], [4, 0, 'Heat pump install'], [1, 2, 'Duct cleaning'], [3, 3, 'Thermostat install'], [0, 2, 'AC repair'], [2, 3, 'Mini-split install'], [4, 2, 'Boiler service'], [1, 0, 'Filter change'], [3, 1, 'Emergency heat'], [0, 3, 'Maintenance plan'], [2, 0, 'AC install'], [4, 3, 'Air quality check'], [1, 1, 'Vent cleaning'], [3, 0, 'AC tune-up'], [0, 1, 'Furnace tune-up']];
+{
+  const g = $('#grid');
+  DAYS.forEach((d, c) => g.insertAdjacentHTML('beforeend', `<div class="dh" style="left:${130 + c * 172}px">${d}</div>`));
+  TIMES.forEach((tm, r) => g.insertAdjacentHTML('beforeend', `<div class="tm" style="top:${226 + r * 190}px">${tm}</div>`));
+  for (let c = 0; c < 5; c++) for (let r = 0; r < 4; r++) g.insertAdjacentHTML('beforeend', `<div class="slot" style="left:${130 + c * 172}px;top:${210 + r * 190}px"></div>`);
+  JOBS.forEach(([c, r, n], i) => g.insertAdjacentHTML('beforeend', `<div class="job" id="job${i}" style="left:${130 + c * 172}px;top:${210 + r * 190}px"><b>${n}</b><span>BOOKED</span></div>`));
+}
+M.show('#job0', LAND);
+const JT = [LAND];
+for (let i = 1; i < JOBS.length; i++) JT.push(JT[i - 1] + [5, 4, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3][i - 1]);
+JOBS.forEach((_, i) => { if (i) { M.enter('#job' + i, { at: JT[i], frames: 8, ease: 'softLand', from: { scale: 1.32 } }); sfx(JT[i] / FPS, 'chip', .35, i); } });
+M.count('#cntv', { at: LAND, from: 1, to: 16, frames: JT[JT.length - 1] - LAND, round: true, format: v => v + (v === 1 ? ' job' : ' jobs') });
+const DING = T1(28) + .02;
+M.kf('#cnt', 'scale', [[f(DING), 1], [f(DING) + 4, 1.08, 'softLand'], [f(DING) + 12, 1, 'softInOut']]);
+sfx(DING, 'ding', .6);
+M.drift('#cal', { prop: 'scale', from: 1, to: 1.025, start: LAND, end: f(XCD) });
+
+/* ---------- C2 → D1 · dive into the hours: it is already night ---------- */
+M.dive('#calCam', { at: f(XCD), frames: 8, perStep: 1.22, origin: [100, 1100] });
+M.cut(f(XCD) + 8, { hide: ['#calW'], show: ['#nightW'] });
+sfx(XCD, 'whoosh', .45, .5);
+{
+  const hours = ['6 PM', '7 PM', '8 PM', '9 PM', '10 PM', '11 PM', '12 AM', '1 AM', '2 AM', '3 AM', '4 AM'];
+  const s = $('#strip');
+  hours.forEach((h, i) => s.insertAdjacentHTML('beforeend', `<div class="hr" style="top:${i * 200}px"><i>${h}</i></div>`));
+  s.insertAdjacentHTML('beforeend', `<div id="late" style="top:${8 * 200 + 12}px"><b>2:14 AM</b><em>Emergency heat</em><span>BOOKED</span></div>`);
+}
+const NIGHT0 = f(XCD) + 8, LATE = f(T0(31));
+M.kf('#strip', 'y', [[NIGHT0, 200], [NIGHT0 + 10, -380, 'cruise'], [LATE - 2, -1235, 'softLand']]);
+M.enter('#late', { at: LATE, frames: 10, ease: 'softLand', from: { scale: 1.35 } });
+sfx(LATE / FPS, 'check', .6, 1);
+M.drift('#night', { prop: 'scale', from: 1, to: 1.03, start: LATE, end: f(T0(33) - .25) });
+M.exit('#nightW', { at: f(T0(33) - .3), frames: 12, ease: 'accelExit', to: { x: -1200, rotation: -5 }, hide: true });
+sfx(T0(33) - .3, 'swish', .4);
+
+/* ---------- D2 · "Raise? Nah." ---------- */
+M.enter('#bub', { at: f(T0(37) - .15), frames: 10, ease: 'softLand', from: { scale: 1.6, y: 20 } });
+M.exit('#bub', { at: f(T0(38) - .15), frames: 8, ease: 'accelExit', to: { scale: .6, y: 30 }, hide: true });
+sfx(T0(37) - .15, 'pop', .4, 1.1);
+
+/* ---------- D3 · ideas fly out of Mo to their own slots ---------- */
+const IDEAS = [['Summer tune-up promo', 520, 900, 'r'], ['5 signs your AC is failing', 572, 935, 'l'], ['Before & after: new furnace', 630, 1100, 'l'], ['Review reel', 735, 1250, 'l'],
+  ['Filter reminder email', 560, 1620, 'l'], ['Holiday heating check', 505, 1585, 'r'], ['Thermostat meme', 345, 1420, 'r'], ['Heat pump rebate explainer', 452, 1062, 'r']];
+const BULB = '<svg viewBox="0 0 24 24" fill="none" stroke="#623AEC" stroke-width="2" stroke-linecap="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/></svg>';
+const IDEA0 = T0(40) - .17, RETRACT = f(XDE + .05);
+IDEAS.forEach(([txt, ax, ay, side], i) => {
+  const el = document.createElement('div'); el.className = 'idea'; el.id = 'idea' + i; el.innerHTML = BULB + txt;
+  el.style[side === 'r' ? 'right' : 'left'] = (side === 'r' ? 1080 - ax : ax) + 'px'; el.style.top = (ay - 31) + 'px';
+  $('#ideas').appendChild(el);
+  const a = f(IDEA0 + i * .045), sx = 540 - ax, sy = 1330 - ay, xp = side === 'r' ? 50 : -50;
+  M.show('#' + el.id, a, RETRACT + 9);
+  M.kf('#' + el.id, 'x', [[a, sx], [a + 14, 0, 'softLand'], [RETRACT, 0], [RETRACT + 9, sx, 'accelExit']]);
+  M.kf('#' + el.id, 'xPercent', [[a, xp], [a + 14, 0, 'softLand'], [RETRACT, 0], [RETRACT + 9, xp, 'accelExit']]);
+  M.kf('#' + el.id, 'y', [[a, sy], [a + 14, 0, 'softLand'], [RETRACT, 0], [RETRACT + 9, sy, 'accelExit']]);
+  M.kf('#' + el.id, 'scale', [[a, .4], [a + 14, 1, 'softLand'], [RETRACT, 1], [RETRACT + 9, .3, 'accelExit']]);
+  sfx(a / FPS, 'pop', .26, 1.2 + i * .06);
+});
+
+/* ---------- E · the staff badge swings in on its lanyard (the film's one spring) ---------- */
+const BADGE = f(XDE + .1);
+document.querySelector('#badgeSwing').style.transformOrigin = '540px -100px';
+M.show('#badgeW', BADGE, f(XEF + .55) + 15);
+M.kf('#badgeW', 'y', [[BADGE, -1500], [BADGE + 11, 0, 'softLand'], [f(XEF + .55), 0], [f(XEF + .55) + 14, 1500, 'accelExit']]);
+M.kf('#badgeSwing', 'rotation', [[BADGE, -16], [BADGE + 11, 4, 'softLand'], [BADGE + 18, -1.5, 'softInOut'], [BADGE + 25, 0, 'softInOut']]);
+document.querySelectorAll('.spark').forEach(p => p.setAttribute('d', (() => { let d = ''; for (let k = 0; k < 360; k += 2) { const a = k * Math.PI / 180; d += (k ? 'L' : 'M') + (Math.cos(a) ** 3).toFixed(4) + ' ' + (Math.sin(a) ** 3).toFixed(4); } return d + 'Z'; })()));
+sfx(XDE + .1, 'swish', .5);
+M.drift('#badge', { prop: 'scale', from: 1, to: 1.02, start: BADGE + 25, end: f(XEF + .5) });
+
+/* ---------- E2 · "the best hire": the site's own button rises; F · it gets clicked ---------- */
+M.enter('#hireW', { at: f(at(53)) - 2, frames: 11, ease: 'softLand', from: { y: 70 } });
+sfx(at(53) - .05, 'pop', .35, 1.0);
+const PRESS2 = T1(57) - .03;
+M.cursor('#curF', { keys: [[f(PRESS2 - .62), 1240, 2000, 3.4, -24], [f(PRESS2 - .62) + 9, 900, 1520, 1.7, -8], [f(PRESS2 - .62) + 15, 690, 1300, 1, 0], [f(PRESS2) + 3, 690, 1300, 1, 0], [f(PRESS2) + 16, 860, 1560, 1, 0, 'accelExit']], ease: 'glide' });
+M.show('#curF', f(PRESS2 - .62), f(PRESS2) + 16);
+M.press('#curF', '#hire', { at: f(PRESS2), cursorDepth: .82, targetDepth: .93, lag: 1, frames: 3, release: true });
+sfx(PRESS2, 'click', .6);
+sfx(XEF + .55, 'whoosh', .4, .4);
+// the pressed button rises to the middle and stretches into the browser's address bar
+const B0 = f(XEF + .62), B1 = B0 + 14;
+M.kf('#hireW', 'y', [[B0, 0], [B1, 960 - 1272, 'softInOut']]);
+M.kf('#hire', 'left', [[B0, 280], [B1, 160, 'softInOut']]);
+M.kf('#hire', 'width', [[B0, 520], [B1, 760, 'softInOut']]);
+M.kf('#hire', 'borderRadius', [[B0, 62], [B1, 38, 'softInOut']]);
+M.kf('#hire', 'backgroundColor', [[B0 + 2, '#111115'], [B1 - 2, '#FFFFFF']]);
+M.exit('#hireL', { at: B0, frames: 7, ease: 'accelExit', to: { x: -40, opacity: 0 } });
+M.exit('#hireA', { at: B0, frames: 7, ease: 'accelExit', to: { x: 60, scale: .5, opacity: 0 } });
+M.cut(B1, { hide: ['#hireW'], show: ['#camG'] });
+sfx(B0 / FPS, 'swish', .35);
+
+/* ---------- G · www.personaos.com types (4 s, a person's pace), is clicked, and turns into the logo ---------- */
+const ADDR = 'www.personaos.com', GF = 50;
+const GAPS = [.8, .8, .9, 1.5, 1, .9, 1, .9, 1, .9, 1.1, .9, 1.3, 1, .9, .9];
+const KEYT = [END + .15];                                  // the first key lands just after "…today."
+GAPS.forEach(g => KEYT.push(KEYT[KEYT.length - 1] + g * 4 / GAPS.reduce((a, b) => a + b)));
+KEYT.forEach((kt, k) => sfx(kt, 'key', .3, k));
+const CUR0 = KEYT[KEYT.length - 1] + .25, CLICK = CUR0 + .7, MORPH = CLICK + .07, MORPH_D = .75;
+M.cursor('#curG', { keys: [[f(CUR0), 1240, 2000, 3.4, -24], [f(CUR0) + 9, 880, 1380, 1.7, -8], [f(CUR0) + 15, 632, 1004, 1, 0]], ease: 'glide' });
+M.show('#curG', f(CUR0), f(MORPH) + 10);
+M.press('#curG', '#gbarW', { at: f(CLICK), cursorDepth: .82, targetDepth: .985, lag: 1, frames: 3, release: false });
+M.kf('#curG', 'opacity', [[f(MORPH) + 2, 1], [f(MORPH) + 10, 0]]);
+sfx(CUR0, 'pop', .2, 1.5); sfx(CLICK, 'click', .6);
+M.mark(f(CLICK) + 1, 'cut', 'cut on the click');
+M.snap('#camG', { at: f(CLICK) + 1, from: { scale: 1.07 }, to: { scale: 1 }, firstFrameShare: .6, tail: 14, origin: '540px 960px' });
+sfx(MORPH + .05, 'whoosh', .3, .5); sfx(MORPH + MORPH_D - .15, 'shimmer', .7);
+// the camera leans in on the address while it types, eases back as it becomes the logo, then the logo keeps receding
+M.kf('#gDrift', 'scale', [[B1, 1], [f(KEYT[KEYT.length - 1]) + 6, 1.16, 'softInOut'], [f(MORPH), 1.16], [f(MORPH + MORPH_D), 1, 'softInOut'], [f(DUR), .92, 'cruise']]);
+
+/* ---------- the per-frame draw: Mo's eyes and the address-bar morph (pure functions of t) ---------- */
+const GZ = [[0, 0, 0], [MO_IN + .6, 0, 0], [at(14), .85, -.6], [at(15) + .3, 0, 0], [XBC + .3, -.85, .35], [XC12 + .5, -.5, .7], [T1(28) + .2, 0, .2],
+  [XCD + .5, -.85, -.25], [T0(33) + .2, 0, 0], [XDE + .8, 0, 0], [XEF + .1, -.2, .75], [XEF + .5, 0, .4]];
+const BLINK = [MO_IN + 1.2, XBC + 1.1, XC12 + 1.4, XCD + .9, T1(37) + .3, XDE + 1.5, T1(53) + .2];
+const HAPPY = [[T1(15) - .3, XBC + .05], [T1(28) - .35, XCD + .05], [IDEA0 + .1, XDE + .2], [T0(48), T1(50) + .4], [T0(54), XEF + .1]];
+const SHAKE = [T0(34), T0(37) + .3];
+const moSvg = $('#moBody svg');
+const eyes = [0, 1].map(() => {
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.innerHTML = '<g class="o"><ellipse fill="#36313A"/><ellipse fill="#fff" opacity=".95"/></g><path fill="none" stroke="#2E2A2F" stroke-linecap="round"/>';
+  moSvg.appendChild(g); return { g, o: g.querySelector('.o'), b: g.querySelectorAll('ellipse')[0], h: g.querySelectorAll('ellipse')[1], arc: g.querySelector('path') };
+});
+function eyeGeom(gx, gy) {                                // eyes painted on Mo's sphere: they slide and foreshorten as he looks around
+  const C = { x: 525.8, y: 525.7 }, RS = 500, phi = gx * 38.6, half = 14.9;
+  return [phi - half, phi + half].map((deg, i) => { const th = deg * Math.PI / 180;
+    return { x: C.x + RS * Math.sin(th), y: C.y + (i === 0 ? 38 + 8 * gx : 30 - 14 * gx) + gy * 42, w: 100 * (.25 + .75 * Math.cos(th)) - 4, h: 160 * (.88 + .12 * Math.cos(th)) - 4, r: 2 + 5 * Math.sin(th) }; });
+}
+function gaze(t) {
+  let gx = 0, gy = 0;
+  for (let k = 0; k < GZ.length; k++) { const [a, x, y] = GZ[k]; const p = ease.io(P(t, a, .2)); gx = lerp(gx, x, p); gy = lerp(gy, y, p); }
+  if (t > SHAKE[0] && t < SHAKE[1]) gx = .85 * Math.sin(2 * Math.PI * 4.2 * (t - SHAKE[0])) * (1 - P(t, SHAKE[1] - .2, .2));
+  return [gx, gy];
+}
+function drawMo(t) {
+  const [gx, gy] = gaze(t);
+  let blink = 0, happy = 0;
+  BLINK.forEach(b => { const u = (t - b) / .15; if (u > 0 && u < 1) blink = Math.max(blink, Math.sin(Math.PI * u)); });
+  HAPPY.forEach(([a, b]) => { happy = Math.max(happy, P(t, a, .12) * (1 - P(t, b, .12))); });
+  const close = Math.max(blink, happy), hp = clamp(happy * 1.6 - .5);
+  eyeGeom(gx, gy).forEach((e, i) => {
+    const q = eyes[i];
+    q.g.setAttribute('transform', `translate(${e.x.toFixed(1)} ${e.y.toFixed(1)}) rotate(${e.r.toFixed(2)})`);
+    q.b.setAttribute('rx', (e.w / 2).toFixed(1)); q.b.setAttribute('ry', (e.h / 2).toFixed(1));
+    const hx = (e.w * .14).toFixed(1), hy = (-e.h * .29).toFixed(1);
+    q.h.setAttribute('cx', hx); q.h.setAttribute('cy', hy); q.h.setAttribute('rx', 12); q.h.setAttribute('ry', 8); q.h.setAttribute('transform', `rotate(-50 ${hx} ${hy})`);
+    q.o.setAttribute('transform', `scale(1 ${(1 - .94 * close).toFixed(3)})`);
+    q.o.setAttribute('opacity', (1 - clamp(happy * 1.6 - .3)).toFixed(3));
+    const W = e.w * 1.5, H = W * .36;
+    q.arc.setAttribute('d', `M${(-W / 2).toFixed(1)} ${(H * .45).toFixed(1)} C${(-W / 4).toFixed(1)} ${(-H).toFixed(1)} ${(W / 4).toFixed(1)} ${(-H).toFixed(1)} ${(W / 2).toFixed(1)} ${(H * .45).toFixed(1)}`);
+    q.arc.setAttribute('stroke-width', (22 * hp).toFixed(2)); q.arc.setAttribute('opacity', hp.toFixed(3));
+  });
+  $('#moBob').style.transform = `translateY(${(Math.sin(t * 2.3) * 9).toFixed(2)}px)`;   // he never quite holds still
+}
+
+const G = {};
+function layoutG() {
+  const m = document.createElement('div'); m.className = 'gt'; m.style.visibility = 'hidden'; $('#main').appendChild(m);   // untransformed: #gDrift is scaled at load
+  const w = (txt, ls = '', wt = '') => { m.textContent = txt; m.style.letterSpacing = ls; m.style.fontWeight = wt; return m.getBoundingClientRect().width; };
+  G.pre = [...Array(ADDR.length + 1)].map((_, n) => w(ADDR.slice(0, n)));
+  G.wW = w('www.'); G.wP = w('personaos'); G.wP1 = w('personaos', '-.035em', '600'); m.remove();
+  G.x0 = 568 - G.pre[ADDR.length] / 2; G.top = 960 - .591 * GF;
+  $('#gP').style.transformOrigin = `0 ${(.591 * GF).toFixed(1)}px`;
+  const F1 = 700 / (1.24 + G.wP1 / GF);                    // the logo: sparkle .81 em, gap .43 em, 700 px wide, centred
+  G.S = F1 / GF; G.R1 = .405 * F1;
+  const left = 540 - (1.24 * F1 + G.wP1 * G.S) / 2;
+  G.sx1 = left + G.R1; G.sy1 = 960 - .08 * F1; G.px1 = left + 1.24 * F1; G.ready = true;
+}
+const INK = [17, 17, 21], PUR = [98, 58, 236], mix = (a, b, k) => `rgb(${a.map((v, i) => Math.round(lerp(v, b[i], k))).join(',')})`;
+const tf = (el, x, y, s = 1, o = 1, blur = 0) => { el.style.transform = `translate(${x.toFixed(2)}px,${y.toFixed(2)}px) scale(${s.toFixed(4)})`; el.style.opacity = o.toFixed(3); el.style.filter = blur > .2 ? `blur(${blur.toFixed(2)}px)` : 'none'; el.style.visibility = o < .002 ? 'hidden' : 'visible'; };
+function drawG(t) {
+  if (!G.ready) return;
+  const u = P(t, MORPH, MORPH_D), drop = ease.out(clamp(u / .22)), move = ease.io(clamp((u - .08) / .92)), grow = ease.io(clamp((u - .12) / .88));
+  const bo = ease.io(clamp((u - .1) / .4));
+  const gbar = $('#gbar'); gbar.style.opacity = (1 - bo).toFixed(3); gbar.style.transform = `scale(${(1 - .06 * bo).toFixed(4)},${(1 - .15 * bo).toFixed(4)})`;
+  const tin = P(t, B1 / FPS, .2);
+  const n = KEYT.filter(k => t >= k).length, typed = ADDR.slice(0, n), po = typed.slice(4, 13);
+  const gW = $('#gW'), gP = $('#gP'), gC = $('#gC');
+  gW.textContent = typed.slice(0, 4);
+  gP.innerHTML = po.slice(0, 7) + (po.length > 7 ? `<span style="color:${mix(PUR, INK, ease.io(clamp((u - .35) / .45)))}">${po.slice(7)}</span>` : '');
+  gC.textContent = typed.slice(13);
+  tf(gW, G.x0 - 12 * drop, G.top, 1, 1 - drop, 3 * drop);
+  tf(gC, G.x0 + G.wW + G.wP + 12 * drop, G.top, 1, 1 - drop, 3 * drop);
+  tf(gP, lerp(G.x0 + G.wW, G.px1, move), G.top, lerp(1, G.S, grow), 1);
+  gP.style.letterSpacing = `${lerp(-.01, -.035, grow).toFixed(4)}em`; gP.style.fontWeight = Math.round(lerp(700, 600, grow));
+  const typing = t >= KEYT[0] && t < KEYT[KEYT.length - 1] + .05, blink = (t - B1 / FPS) % .9 < .5;
+  tf($('#gcaret'), G.x0 + G.pre[n] + 3, 931, 1, tin * (t < CLICK && (typing || blink) ? 1 : 0));
+  // the magnifier's lens pinches into the sparkle (circle → diamond → astroid) while the handle retracts
+  const cx = lerp(244, G.sx1, move), cy = lerp(954, G.sy1, move), R = lerp(13, G.R1, grow);
+  const pw = 1 + 2 * ease.io(clamp((u - .1) / .75)), col = mix(INK, PUR, ease.io(clamp((u - .1) / .5))), sw = 5.5 * (1 - clamp((u - .15) / .45));
+  let d = '';
+  for (let k = 0; k <= 120; k++) { const th = k / 60 * Math.PI, c = Math.cos(th), s = Math.sin(th); d += `${k ? 'L' : 'M'}${(cx + Math.sign(c) * Math.abs(c) ** pw * R).toFixed(2)} ${(cy + Math.sign(s) * Math.abs(s) ** pw * R).toFixed(2)}`; }
+  const lens = $('#gLens'), hd = $('#gHandle');
+  lens.setAttribute('d', d + 'Z'); lens.setAttribute('fill', '#623AEC'); lens.setAttribute('fill-opacity', ease.io(clamp((u - .15) / .45)).toFixed(3)); lens.setAttribute('stroke', col); lens.setAttribute('stroke-width', sw.toFixed(2));
+  const hl = 12 * (1 - ease.in3(clamp(u / .4))), hx = cx - R * .7071, hy = cy + R * .7071;
+  hd.setAttribute('d', `M${hx.toFixed(2)} ${hy.toFixed(2)}L${(hx - hl * .7071).toFixed(2)} ${(hy + hl * .7071).toFixed(2)}`); hd.setAttribute('stroke', col); hd.setAttribute('stroke-width', (hl > .2 ? sw : 0).toFixed(2));
+  $('#gicon').style.opacity = tin.toFixed(3);
+}
+// a setter-driven clock on the film timeline (the runtime's own pattern), so the draw fires on every seek
+const clock = {}; let curT = -1;
+Object.defineProperty(clock, 't', { get: () => curT, set: t => { curT = t; drawMo(t); drawG(t); } });
+M.tl.fromTo(clock, { t: 0 }, { t: DUR, duration: DUR, ease: 'none', immediateRender: false, lazy: false }, 0);
+// and on every __seek, even one that does not move the playhead (GSAP skips the setter when the value is unchanged)
+{ const seek0 = window.__seek; window.__seek = t => { seek0(t); clock.t = Math.max(0, Math.min(DUR, t)); }; }
+
+window.__ready = Motion.loaded().then(() => { layoutG(); window.__seek && window.__seek(0); if (/selftest/.test(location.search)) Motion.selfTest(M, { samples: 24 }); });
+</script>
+</body>
+</html>
