@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Puzzle Piece Explainer</title>
+<meta name="viewport" content="width=1920, height=1080">
+<link rel="stylesheet" href="./runtime/fonts.css">
+<style>
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-display: block; }
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: block; }
+:root {
+  --paper: #f6f1e6; --cream: #fbf8f0; --sage: #e3e9d8; --sage2: #cfdcc2; --green: #21433c; --green2: #2e5a4d;
+  --ink: #1d2a24; --muted: #6c786f; --yellow: #eec86b; --red: #e3613f;
+  --sans: "Inter", system-ui, sans-serif; --serif: "SSerif", Georgia, serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+#main { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+.sc { position: absolute; inset: 0; overflow: hidden; }
+.cam { position: absolute; inset: 0; transform-origin: 960px 540px; }
+.abs { position: absolute; }
+.serif { font-family: var(--serif); font-weight: 500; letter-spacing: -.015em; }
+.ctr { left: 0; width: 1920px; text-align: center; }
+img { display: block; }
+.round { border-radius: 50%; overflow: hidden; }
+#grain { position: absolute; inset: 0; z-index: 90; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+.blob { position: absolute; border-radius: 50%; filter: blur(60px); }
+/* scene 1 */
+.kid { position: absolute; top: 612px; width: 80px; height: 170px; }
+.kid .hd { position: absolute; left: 13px; top: 0; width: 54px; height: 54px; border-radius: 50%; background: #e7c3a6; }
+.kid .bd { position: absolute; left: 4px; top: 60px; width: 72px; height: 110px; border-radius: 36px 36px 18px 18px; background: var(--c); }
+/* cards */
+.paper { position: absolute; background: #fffdf8; border-radius: 26px; box-shadow: 0 30px 60px rgba(40,50,35,.16), 0 4px 10px rgba(40,50,35,.08); }
+.gcard { position: absolute; width: 380px; background: #fff; border-radius: 30px; padding: 12px; box-shadow: 0 24px 50px rgba(40,50,35,.18); }
+.gcard .im { width: 356px; height: 356px; border-radius: 20px; overflow: hidden; }
+.gcard .im img { width: 100%; height: 100%; object-fit: cover; }
+.gcard .nm { text-align: center; font-size: 32px; font-weight: 700; color: #26322c; padding: 16px 0 6px; }
+.bubble { position: absolute; padding: 26px 34px; border-radius: 34px; font-size: 38px; line-height: 1.3; box-shadow: 0 14px 30px rgba(40,50,35,.10); }
+.mk { background: linear-gradient(transparent 58%, #f2d77d 58%, #f2d77d 92%, transparent 92%); }
+.step { position: absolute; left: 1120px; display: flex; align-items: center; gap: 34px; color: #fff; font-family: var(--serif); font-size: 62px; font-weight: 500; }
+.step .n { width: 92px; height: 92px; border-radius: 50%; border: 3px solid rgba(255,255,255,.7); display: flex; align-items: center; justify-content: center; font-family: var(--sans); font-size: 38px; font-weight: 700; }
+.wbar { position: absolute; bottom: 0; width: 12px; border-radius: 6px; background: var(--yellow); transform-origin: 50% 100%; }
+.dot7 { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--green); }
+.rcard { position: absolute; width: 760px; height: 540px; background: #fffdf8; border-radius: 22px; padding: 48px 54px; box-shadow: 0 30px 70px rgba(40,50,35,.18), 0 3px 8px rgba(40,50,35,.08); }
+.rcard .org { font-size: 26px; font-weight: 700; color: var(--green2); }
+.rcard .ti { font-family: var(--serif); font-size: 44px; line-height: 1.18; margin-top: 18px; color: #1b2520; font-weight: 500; }
+.rcard .ln { height: 2px; background: #e4e1d6; margin: 34px 0 30px; }
+.rcard .fd { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; margin: 0 -20px; }
+.rcard .fd .hb { position: absolute; inset: 0; background: #f4dc87; border-radius: 10px; transform-origin: 0 50%; }
+.rcard .fd b { position: relative; font-size: 38px; color: #17201c; }
+.rcard .fd span { position: relative; font-size: 30px; font-weight: 700; color: var(--green); display: flex; align-items: center; gap: 10px; }
+.rcard .ft { margin-top: 30px; font-size: 24px; line-height: 1.45; color: #6c776f; }
+.stamp { position: absolute; width: 130px; height: 130px; border-radius: 50%; border: 6px solid var(--green); color: var(--green); display: flex; align-items: center; justify-content: center; background: rgba(255,253,248,.85); }
+</style>
+</head>
+<body>
+<div id="main">
+
+<!-- S1  Every kid walked outside, except mine -->
+<section id="s1" class="sc" style="background:linear-gradient(#f5f0e3,#ede6d4)">
+  <div id="cam1" class="cam" style="transform-origin:400px 690px">
+    <div class="blob" style="left:1200px;top:260px;width:700px;height:500px;background:#f7dc8c;opacity:.55"></div>
+    <div class="abs" style="left:0;top:782px;width:1920px;height:300px;background:#dfe7d2"></div>
+    <div class="abs" style="left:0;top:782px;width:1920px;height:8px;background:#cbd8bd"></div>
+    <div class="abs" style="left:1440px;top:420px;width:250px;height:362px;border-radius:125px 125px 0 0;background:linear-gradient(#fbe7a4,#f2c862)"></div>
+    <div id="kids" class="abs" style="left:0;top:0;width:1565px;height:1080px;overflow:hidden"></div>
+    <div class="abs" style="left:1422px;top:402px;width:286px;height:380px;border-radius:143px 143px 0 0;border:20px solid #21433c;border-bottom:0"></div>
+    <div class="kid" id="ryankid" style="left:360px;--c:#3d4642"><div class="hd" style="background:#e9c09c"></div><div class="bd"></div></div>
+  </div>
+  <div id="t1a" class="abs serif ctr" style="top:150px;font-size:104px;color:#1d2a24">Every kid walked outside.</div>
+  <div id="t1b" class="abs serif ctr" style="top:150px;font-size:104px;color:#1d2a24">Except mine.</div>
+</section>
+
+<!-- S2  Ryan's autistic / the noise, the flashing, everyone moving at once -->
+<section id="s2" class="sc" style="background:#f6f1e6">
+  <div id="cam2" class="cam">
+    <div class="blob" style="left:560px;top:160px;width:800px;height:640px;background:#e3e9d8;opacity:.9"></div>
+    <div id="rings"></div>
+    <div id="streaks"></div>
+    <div id="rport" class="abs round" style="left:760px;top:240px;width:400px;height:400px;border:14px solid #eec86b;background:#efe9df;box-shadow:0 30px 60px rgba(40,50,35,.18)"><img src="img/ryan_big.png" style="width:100%;height:100%;object-fit:cover"></div>
+    <div id="t2" class="abs serif ctr" style="top:700px;font-size:100px">Ryan’s autistic.</div>
+    <div id="w_noise" class="abs serif" style="left:200px;top:150px;font-size:150px;color:#2e5a4d;transform-origin:50% 50%">Noise.</div>
+    <div id="w_flash" class="abs serif" style="left:1260px;top:200px;font-size:150px;color:#c9542f">Flashing.</div>
+    <div id="w_move" class="abs serif ctr" style="top:760px;font-size:110px;color:#1d2a24">Everyone moving at once.</div>
+  </div>
+  <div id="flash" class="abs" style="inset:0;background:radial-gradient(circle at 50% 40%,#ffd65a,#e3613f);mix-blend-mode:multiply;opacity:0"></div>
+</section>
+
+<!-- S3  A fire drill isn't practice, it's an emergency -->
+<section id="s3" class="sc" style="background:radial-gradient(circle at 50% 30%,#2b5448,#16302a 70%)">
+  <div id="cam3" class="cam">
+    <div id="glow" class="abs" style="left:660px;top:-60px;width:600px;height:600px;border-radius:50%;background:radial-gradient(#e3613f,rgba(227,97,63,0) 65%);opacity:.3"></div>
+    <svg id="bell" class="abs" style="left:875px;top:150px;transform-origin:50% 15%" width="170" height="170" viewBox="0 0 24 24" fill="#eec86b"><path d="M12 2a1.5 1.5 0 0 1 1.5 1.5v.6A6.5 6.5 0 0 1 18.5 10.5v4.2l1.7 2.6a.8.8 0 0 1-.7 1.2H4.5a.8.8 0 0 1-.7-1.2l1.7-2.6v-4.2a6.5 6.5 0 0 1 5-6.4v-.6A1.5 1.5 0 0 1 12 2Z"/><path d="M9.5 20a2.6 2.6 0 0 0 5 0z"/></svg>
+    <div id="t3a" class="abs serif ctr" style="top:400px;font-size:112px;color:#fbf8f0">A fire drill isn’t practice.</div>
+    <div id="strike" class="abs" style="height:12px;border-radius:6px;background:#e3613f;transform-origin:0 50%"></div>
+    <div id="t3b" class="abs serif ctr" style="top:580px;font-size:128px;color:#f4a27c;font-weight:600">It’s an emergency.</div>
+  </div>
+</section>
+
+<!-- S4  Telling isn't showing -->
+<section id="s4" class="sc" style="background:#f6f1e6">
+  <div id="cam4" class="cam">
+    <div class="blob" style="left:120px;top:200px;width:760px;height:560px;background:#e3e9d8;opacity:.8"></div>
+    <div class="blob" style="left:1080px;top:200px;width:700px;height:560px;background:#f6e3b0;opacity:.6"></div>
+    <div id="mom4" class="abs round" style="left:110px;top:200px;width:170px;height:170px;background:#efe9df;border:6px solid #fff;box-shadow:0 10px 24px rgba(40,50,35,.15)"><img src="img/av_mom.png" style="width:100%;height:100%;object-fit:cover"></div>
+    <div id="b1" class="bubble" style="left:310px;top:190px;font-size:52px;background:#fff;color:#22302a;border-bottom-left-radius:8px">There’s a fire drill tomorrow.</div>
+    <div id="b2" class="bubble" style="left:310px;top:370px;font-size:52px;background:#fff;color:#22302a;border-bottom-left-radius:8px">It will be loud.</div>
+    <div id="l4a" class="abs serif" style="left:120px;top:660px;width:820px;text-align:center;font-size:120px;color:#2e5a4d">Telling</div>
+    <div id="neq" class="abs serif" style="left:960px;top:330px;width:120px;text-align:center;font-size:170px;color:#21433c;line-height:1">≠</div>
+    <div id="frame4" class="abs" style="left:1140px;top:180px;width:660px;height:450px;border:5px dashed #aebca3;border-radius:34px;background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center"><div id="q4" class="serif" style="font-size:220px;color:#aebca3;line-height:1">?</div></div>
+    <div id="l4b" class="abs serif" style="left:1060px;top:660px;width:820px;text-align:center;font-size:120px;color:#2e5a4d">Showing</div>
+  </div>
+</section>
+
+<!-- S5  Social Stories: the definition -->
+<section id="s5" class="sc" style="background:#fbf8f0">
+  <div id="cam5" class="cam">
+    <div class="blob" style="left:460px;top:80px;width:1000px;height:420px;background:#f3e6bf;opacity:.55"></div>
+    <div id="t5a" class="abs ctr" style="top:120px;font-size:38px;color:#6c786f;font-weight:500">His therapist suggested</div>
+    <div id="t5b" class="abs serif ctr" style="top:168px;font-size:176px;color:#21433c;line-height:1.1">Social Stories</div>
+    <div id="t5c" class="abs ctr" style="top:378px;font-size:30px;color:#8a948b">so·cial sto·ries &nbsp;·&nbsp; noun</div>
+    <div id="t5d" class="abs serif" style="left:260px;top:430px;width:1400px;text-align:center;font-size:62px;line-height:1.28;color:#1d2a24">Short stories that walk a child through a moment before it happens.</div>
+    <div id="p1" class="paper" style="left:330px;top:650px;width:400px;height:290px;padding:12px"><img src="img/s_water.png" style="width:376px;height:266px;object-fit:cover;object-position:center 30%;border-radius:16px"></div>
+    <div id="p2" class="paper" style="left:760px;top:650px;width:400px;height:290px;padding:12px"><img src="img/t_help.png" style="width:376px;height:266px;object-fit:cover;border-radius:16px"></div>
+    <div id="p3" class="paper" style="left:1190px;top:650px;width:400px;height:290px;padding:12px"><img src="img/t_wrong.png" style="width:376px;height:266px;object-fit:cover;object-position:center 30%;border-radius:16px"></div>
+    <div id="t5e" class="abs ctr" style="top:986px;font-size:27px;color:#7c867e">Developed by Carol Gray, 1991</div>
+  </div>
+</section>
+
+<!-- S6  The proof -->
+<section id="s6" class="sc" style="background:#eef1e5">
+  <div id="cam6" class="cam">
+    <div id="t6" class="abs serif ctr" style="top:110px;font-size:84px;color:#1d2a24">An evidence-based practice for autistic kids.</div>
+    <div id="rc1" class="rcard" style="left:170px;top:300px">
+      <div class="org">National Clearinghouse on Autism Evidence &amp; Practice</div>
+      <div class="ti">Evidence-Based Practices for Children, Youth, and Young Adults with Autism</div>
+      <div class="ln"></div>
+      <div class="fd"><div class="hb" id="hb1"></div><b>Social Narratives</b><span>✓ Evidence-based</span></div>
+      <div class="ft">Steinbrenner et al., 2020<br>Systematic review of autism research, 1990–2017</div>
+      <div class="stamp" id="st1" style="right:-40px;top:-46px"><svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#21433c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+    </div>
+    <div id="rc2" class="rcard" style="left:990px;top:320px">
+      <div class="org">National Autism Center</div>
+      <div class="ti">National Standards Project, Phase 2</div>
+      <div class="ln" style="margin-top:86px"></div>
+      <div class="fd"><div class="hb" id="hb2"></div><b>Story-based Intervention</b><span>✓ Established</span></div>
+      <div class="ft">National Autism Center, 2015<br>Review of treatments for autism</div>
+      <div class="stamp" id="st2" style="right:-40px;top:-46px"><svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#21433c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- S7  But I'm not an illustrator -->
+<section id="s7" class="sc" style="background:#f6f1e6">
+  <div id="cam7" class="cam">
+    <div id="sheet7" class="paper" style="left:580px;top:140px;width:760px;height:560px;transform-origin:50% 50%">
+      <svg class="abs" style="left:0;top:0" width="760" height="560" viewBox="0 0 760 560" fill="none" stroke="#3a4741" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+        <path id="sk1" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1" d="M380 92c-40-4-62 30-56 62 7 34 52 46 78 22 22-20 18-62-12-80-6-4-14-5-20-4"/>
+        <path id="sk2" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1" d="M386 190c-4 50 6 98-2 150"/>
+        <path id="sk3" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1" d="M300 236c30 10 62 4 90-6 30-12 58-6 86 10"/>
+        <path id="sk4" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1" d="M384 338c-24 40-46 70-76 104M386 340c20 36 46 70 78 98"/>
+        <path id="sk5" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1" d="M358 122l2 2M398 118l2 2M362 150c10 8 24 8 34-2"/>
+      </svg>
+    </div>
+    <div id="t7" class="abs serif ctr" style="top:770px;font-size:96px">But I’m not an illustrator.</div>
+  </div>
+</section>
+
+<!-- S8  Then I found Puzzle Piece -->
+<section id="s8" class="sc" style="background:radial-gradient(circle at 50% 46%,#fffaf0,#f1ead9 70%)">
+  <div id="cam8" class="cam">
+    <div id="t8" class="abs ctr" style="top:180px;font-size:44px;color:#6c786f;font-weight:500">Then I found</div>
+    <img id="pz8" class="abs" src="img/puzzle_a.png" style="left:810px;top:290px;width:300px;transform-origin:50% 50%">
+    <img id="wm8" class="abs" src="img/wordmark.png" style="left:705px;top:690px;width:510px">
+  </div>
+</section>
+
+<!-- S9  Add the people in his life -->
+<section id="s9" class="sc" style="background:#fbf8f0">
+  <div id="cam9" class="cam">
+    <div class="blob" style="left:300px;top:300px;width:1300px;height:500px;background:#e3e9d8;opacity:.8"></div>
+    <div id="t9a" class="abs serif ctr" style="top:120px;font-size:96px">Add the people in his life</div>
+    <div id="t9b" class="abs serif ctr" style="top:120px;font-size:96px">They show up in his stories.</div>
+    <div id="fam9"></div>
+    <div id="pol" class="abs" style="left:0;top:0;width:250px;height:300px;background:#fff;border-radius:10px;box-shadow:0 20px 40px rgba(40,50,35,.2)"></div>
+    <div id="sc9" class="paper" style="left:520px;top:280px;width:880px;height:700px;padding:16px;overflow:hidden">
+      <img src="img/train.png" style="width:848px;height:550px;object-fit:cover;border-radius:16px">
+      <div style="display:flex;align-items:center;gap:20px;padding:22px 14px"><div class="round" style="width:72px;height:72px;background:#efe9df"><img src="img/av_ryan.png" style="width:100%;height:100%;object-fit:cover"></div><div style="font-size:40px;font-weight:750;color:#1f2b26">Ryan's Big Train Adventure</div></div>
+    </div>
+    <div id="flash9" class="abs" style="inset:0;background:#fff;opacity:0"></div>
+  </div>
+</section>
+
+<!-- S10  Pick a moment he struggles with -->
+<section id="s10" class="sc" style="background:#f6f1e6">
+  <div id="cam10" class="cam">
+    <div id="t10" class="abs serif ctr" style="top:110px;font-size:96px">Pick a moment he struggles with</div>
+    <div class="gcard" id="g0" data-ui="captured" style="left:250px;top:380px"><div class="im"><img src="img/t_help.png"></div><div class="nm">Asking for Help</div></div>
+    <div class="gcard" id="g1" data-ui="captured" style="left:620px;top:360px"><div class="im"><img src="img/t_nosey.png"></div><div class="nm">Being Nosey</div></div>
+    <div class="gcard" id="g2" data-ui="captured" style="left:920px;top:360px"><div class="im"><img src="img/t_wrong.png"></div><div class="nm">Being Wrong</div></div>
+    <div class="gcard" id="g3" data-ui="captured" style="left:1290px;top:380px"><div class="im"><img src="img/t_chat.png"></div><div class="nm">Chatterbox</div></div>
+  </div>
+</section>
+
+<!-- S11  Or just tell it what's hard -->
+<section id="s11" class="sc" style="background:#fbf8f0">
+  <div id="cam11" class="cam">
+    <div class="blob" style="left:160px;top:300px;width:700px;height:640px;background:#f6dfc7;opacity:.8"></div>
+    <div id="t11a" class="abs serif ctr" style="top:100px;font-size:96px">Or just tell it what’s hard,</div>
+    <div id="t11b" class="abs serif ctr" style="top:226px;font-size:58px;color:#6c786f">the way you’d tell a friend.</div>
+    <img id="bud11" class="abs" src="img/buddy_a.png" style="left:260px;top:360px;width:520px;transform-origin:50% 100%">
+    <div id="c11a" class="bubble" style="left:880px;top:420px;max-width:820px;background:#efefe9;color:#26302b;border-bottom-left-radius:8px">What little moment would you like this story to help with?</div>
+    <div id="c11b" class="bubble" style="left:1200px;top:640px;background:#21433c;color:#fff;border-bottom-right-radius:8px;font-weight:600">Doctor's visits for Ryan</div>
+  </div>
+</section>
+
+<!-- S12  Choose who's in it, art style, a world he loves -->
+<section id="s12" class="sc" style="background:#eef1e5">
+  <div id="cam12" class="cam">
+    <div id="k1" class="paper" style="left:140px;top:170px;width:520px;height:740px;padding:40px">
+      <div class="serif" style="font-size:54px;color:#1d2a24">Who’s in it</div>
+      <div class="abs round" style="left:120px;top:190px;width:280px;height:280px;background:#efe9df;border:10px solid #eec86b"><img src="img/ryan_big.png" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="abs round" style="left:90px;top:520px;width:150px;height:150px;background:#efe9df;border:6px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.12)"><img src="img/av_dad.png" style="width:100%;height:100%;object-fit:cover"></div>
+      <div class="abs round" style="left:280px;top:520px;width:150px;height:150px;background:#efe9df;border:6px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.12)"><img src="img/av_mom.png" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+    <div id="k2" class="paper" style="left:700px;top:170px;width:520px;height:740px;padding:40px">
+      <div class="serif" style="font-size:54px;color:#1d2a24">His art style</div>
+      <img src="img/s_3d.png" class="abs" style="left:40px;top:150px;width:440px;height:440px;object-fit:cover;border-radius:22px">
+      <div class="abs" style="left:40px;top:620px;width:440px;text-align:center;font-size:38px;font-weight:700;color:#26322c">3D Storybook</div>
+    </div>
+    <div id="k3" class="paper" style="left:1260px;top:170px;width:520px;height:740px;padding:40px">
+      <div class="serif" style="font-size:54px;color:#1d2a24">A world he loves</div>
+      <div class="abs" style="left:40px;top:150px;width:440px;height:440px;border-radius:22px;overflow:hidden">
+        <img id="w1" class="abs" src="img/th_castle.png" style="width:440px;height:440px;object-fit:cover">
+        <img id="w2" class="abs" src="img/th_sea.png" style="width:440px;height:440px;object-fit:cover">
+        <img id="w3" class="abs" src="img/s_water.png" style="width:440px;height:440px;object-fit:cover">
+        <img id="w4" class="abs" src="img/th_space.png" style="width:440px;height:440px;object-fit:cover"></div>
+      <div id="wl" class="abs" style="left:40px;top:620px;width:440px;height:50px;text-align:center;font-size:38px;font-weight:700;color:#26322c">
+        <span id="wl1" class="abs" style="left:0;right:0">Royal Castle</span><span id="wl2" class="abs" style="left:0;right:0">Under the Sea</span><span id="wl3" class="abs" style="left:0;right:0">Real World</span><span id="wl4" class="abs" style="left:0;right:0">Outer Space</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- S13  It writes and illustrates the whole thing -->
+<section id="s13" class="sc" style="background:#f6f1e6">
+  <div id="cam13" class="cam">
+    <div id="t13" class="abs serif ctr" style="top:80px;font-size:92px">It writes and illustrates the whole thing.</div>
+    <div id="book" class="abs" style="left:300px;top:240px;width:1320px;height:760px;perspective:2400px">
+      <div class="abs" style="left:-14px;top:14px;width:1348px;height:760px;border-radius:24px;background:#21433c"></div>
+      <div class="abs" style="left:0;top:0;width:660px;height:760px;background:#fffdf8;border-radius:22px 0 0 22px;box-shadow:inset -30px 0 40px -20px rgba(0,0,0,.12)">
+        <div id="bt" class="abs serif" style="left:70px;top:150px;width:520px;font-size:54px;line-height:1.45;color:#22302a">I'm so excited! Today is the day—Dad and I are going on a real train adventure!</div></div>
+      <div class="abs" style="left:660px;top:0;width:660px;height:760px;background:#fffdf8;border-radius:0 22px 22px 0;padding:40px"><img src="img/th_space.png" style="width:580px;height:680px;object-fit:cover;border-radius:12px"></div>
+      <div id="pg1" class="abs" style="left:660px;top:0;width:660px;height:760px;transform-origin:0 50%;transform-style:preserve-3d;z-index:2">
+        <div class="abs" style="inset:0;background:#fffdf8;border-radius:0 22px 22px 0;backface-visibility:hidden;padding:40px"><img src="img/train.png" style="width:580px;height:680px;object-fit:cover;border-radius:12px"></div>
+        <div class="abs" style="inset:0;background:#fffdf8;border-radius:22px 0 0 22px;backface-visibility:hidden;transform:rotateY(180deg);padding:40px"><img src="img/th_sea.png" style="width:580px;height:680px;object-fit:cover;border-radius:12px"></div></div>
+      <div id="pgR" class="abs" style="left:660px;top:0;width:660px;height:760px;transform-origin:0 50%;transform-style:preserve-3d;z-index:3">
+        <div class="abs" style="inset:0;background:#fffdf8;border-radius:0 22px 22px 0;backface-visibility:hidden;overflow:hidden;box-shadow:inset 30px 0 40px -20px rgba(0,0,0,.12)">
+          <img src="img/reader.png" class="abs" style="left:40px;top:40px;width:580px;height:680px;object-fit:cover;border-radius:12px">
+          <div id="wipe" class="abs" style="left:40px;top:40px;width:580px;height:680px;background:#fffdf8;transform-origin:100% 50%"></div></div>
+        <div class="abs" style="inset:0;background:#fffdf8;border-radius:22px 0 0 22px;backface-visibility:hidden;transform:rotateY(180deg);padding:40px"><img src="img/th_castle.png" style="width:580px;height:680px;object-fit:cover;border-radius:12px"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- S14  It can even read it to him in my voice -->
+<section id="s14" class="sc" style="background:#1b1f1b">
+  <img class="abs" src="img/reader_blur.png" style="left:-80px;top:-80px;width:2080px;height:1240px;object-fit:cover;filter:brightness(.42) saturate(1.15)">
+  <div id="cam14" class="cam">
+    <div id="t14" class="abs serif ctr" style="top:170px;font-size:100px;color:#fbf8f0">It reads to him in my voice.</div>
+    <div id="pl14" class="abs" style="left:430px;top:420px;width:1060px;height:300px;border-radius:150px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.22)">
+      <div class="abs round" style="left:40px;top:40px;width:220px;height:220px;background:#eec86b;display:flex;align-items:center;justify-content:center"><svg width="86" height="86" viewBox="0 0 24 24" fill="#22362f"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></div>
+      <div id="wave" class="abs" style="left:310px;top:60px;width:700px;height:180px"></div>
+    </div>
+    <div id="chip14" class="abs" style="left:700px;top:780px;width:520px;height:110px;border-radius:55px;background:#fbf8f0;display:flex;align-items:center;gap:22px;padding:0 34px">
+      <div class="round" style="width:70px;height:70px;background:#21433c;display:flex;align-items:center;justify-content:center"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg></div>
+      <div><div style="font-size:36px;font-weight:750;color:#1c2420">My voice</div><div style="font-size:26px;color:#59615b">Your recorded voice</div></div></div>
+  </div>
+</section>
+
+<!-- S15  I read it first, then together, then on his own, again and again -->
+<section id="s15" class="sc" style="background:#141613">
+  <img class="abs" src="img/reader_blur.png" style="left:-80px;top:-80px;width:2080px;height:1240px;object-fit:cover;filter:brightness(.38) saturate(1.1)">
+  <div class="abs" style="left:0;top:0;width:1060px;height:1080px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 78%,transparent)">
+    <img id="art15" class="abs" src="img/reader.png" style="left:0;top:-40px;width:1060px;height:1166px;object-fit:cover;transform-origin:40% 40%"></div>
+  <div id="cam15" class="cam">
+    <div class="step" id="st_a" style="top:250px"><div class="n">1</div><span>I read it first.</span></div>
+    <div class="step" id="st_b" style="top:400px"><div class="n">2</div><span>We read it together.</span></div>
+    <div class="step" id="st_c" style="top:550px"><div class="n">3</div><span>He reads it on his own.</span></div>
+    <div id="rep" class="abs" style="left:1120px;top:760px;display:flex;align-items:center;gap:30px">
+      <svg id="repic" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#eec86b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      <div id="t15" class="serif" style="font-size:72px;color:#eec86b;font-weight:600">Again and again.</div></div>
+  </div>
+</section>
+
+<!-- S16  It gives him the words before he needs them -->
+<section id="s16" class="sc" style="background:#fbf8f0">
+  <div id="cam16" class="cam">
+    <div class="blob" style="left:300px;top:300px;width:1300px;height:520px;background:#f3e6bf;opacity:.6"></div>
+    <div id="t16a" class="abs ctr" style="top:260px;font-size:46px;color:#6c786f;font-weight:500">It doesn’t replace his therapist.</div>
+    <div id="t16b" class="abs serif" style="left:210px;top:380px;width:1500px;text-align:center;font-size:124px;line-height:1.18;color:#1d2a24">It gives him the words before he needs them.</div>
+  </div>
+</section>
+
+<!-- S17  Make a free account, see his story before you pay -->
+<section id="s17" class="sc" style="background:#eef1e5">
+  <div id="cam17" class="cam">
+    <div id="free17" class="abs" style="left:700px;top:100px;width:520px;height:100px;border-radius:50px;background:#eec86b;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:750;color:#22362f">Make a free account</div>
+    <div id="sc17" class="paper" style="left:560px;top:250px;width:800px;height:600px;padding:16px;overflow:hidden">
+      <div class="abs" style="left:16px;top:16px;width:768px;height:470px;border-radius:16px;overflow:hidden"><img src="img/train.png" style="width:768px;height:470px;object-fit:cover">
+        <div id="lockov" class="abs" style="inset:0;background:rgba(246,241,230,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center">
+          <svg id="lockic" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#21433c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path id="shackle" d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div></div>
+      <div class="abs" style="left:30px;top:500px;display:flex;align-items:center;gap:20px"><div class="round" style="width:70px;height:70px;background:#efe9df"><img src="img/av_ryan.png" style="width:100%;height:100%;object-fit:cover"></div><div style="font-size:38px;font-weight:750;color:#1f2b26">Ryan's Big Train Adventure</div></div>
+    </div>
+    <div id="t17" class="abs serif ctr" style="top:900px;font-size:76px">See his story before you pay anything.</div>
+  </div>
+</section>
+
+<!-- S18  Puzzle Piece, try it free for seven days -->
+<section id="s18" class="sc" style="background:radial-gradient(circle at 50% 42%,#fffaf0,#efe8d6 72%)">
+  <div id="cam18" class="cam">
+    <img id="pz18" class="abs" src="img/puzzle_a.png" style="left:600px;top:300px;width:190px;transform-origin:50% 50%">
+    <img id="wm18" class="abs" src="img/wordmark.png" style="left:820px;top:350px;width:520px">
+    <div id="cta" class="abs" style="left:610px;top:600px;width:700px;height:130px;border-radius:65px;background:#21433c;display:flex;align-items:center;justify-content:center"><div id="t18" style="font-size:54px;font-weight:700;color:#fff">Try it free for 7 days</div></div>
+    <div id="dots7" class="abs" style="left:0;top:790px;width:1920px;display:flex;justify-content:center;gap:26px"></div>
+  </div>
+</section>
+
+<div id="grain"></div>
+</div>
+
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script>
+const OFF = 0.3, FPS = 30;
+const F = t => Math.round((t + OFF) * FPS);
+const M = Motion.film({ fps: FPS, duration: 76.6, width: 1920, height: 1080, clock: 'smooth' });
+
+// deterministic pseudo-random
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// ---------- procedural DOM ----------
+(function () {
+  const C = ['#7fa38c', '#e3a65b', '#6d8fb3', '#c97a6a', '#a99bc9', '#e6c15e', '#5f8f86', '#d98f74', '#8fb07f', '#b5866b'];
+  const skins = ['#e7c3a6', '#c99a76', '#f0d2b8', '#a8795a', '#e2b993'];
+  let h = '';
+  for (let i = 0; i < 9; i++) h += `<div class="kid" id="kid${i}" style="left:${700 + i * 105}px;--c:${C[i]}"><div class="hd" style="background:${skins[i % 5]}"></div><div class="bd"></div></div>`;
+  document.getElementById('kids').innerHTML = h;
+  let r = ''; for (let i = 0; i < 3; i++) r += `<div class="abs round ring" id="ring${i}" style="left:760px;top:240px;width:400px;height:400px;border:6px solid #2e5a4d"></div>`;
+  document.getElementById('rings').innerHTML = r;
+  let s = '';
+  for (let i = 0; i < 26; i++) { const y = 80 + rnd() * 920, w = 140 + rnd() * 260; s += `<div class="abs" id="sk_${i}" style="left:0;top:${y | 0}px;width:${w | 0}px;height:${14 + (rnd() * 14 | 0)}px;border-radius:12px;background:${C[i % C.length]};opacity:.85"></div>`; }
+  document.getElementById('streaks').innerHTML = s;
+  const fam = [['ryan', 'Ryan'], ['dad', 'Dad'], ['mom', 'Mom'], ['evan', 'Evan'], ['sam', 'Sam'], ['bo', 'Bo']];
+  document.getElementById('fam9').innerHTML = fam.map(([k, n], i) => `<div class="abs" id="fm${i}" style="left:${335 + i * 250 - 95}px;top:380px;width:190px;text-align:center">
+     <div class="round" style="width:190px;height:190px;background:#efe9df;border:8px solid ${i === 0 ? '#eec86b' : '#fff'};box-shadow:0 14px 30px rgba(40,50,35,.15)"><img src="img/av_${k}.png" style="width:100%;height:100%;object-fit:cover"></div>
+     <div style="font-size:34px;font-weight:650;color:#4d5a52;margin-top:16px">${n}</div></div>`).join('');
+  let w = ''; for (let i = 0; i < 34; i++) w += `<div class="wbar" id="wb${i}" style="left:${i * 20.5}px;height:180px"></div>`;
+  document.getElementById('wave').innerHTML = w;
+  document.getElementById('dots7').innerHTML = Array.from({ length: 7 }, (_, i) => `<div class="dot7" id="d7_${i}"><div id="d7f_${i}" style="width:100%;height:100%;border-radius:50%;background:#eec86b"></div></div>`).join('');
+})();
+
+window.__ready = Motion.loaded().then(build);
+
+function build() {
+  const $ = s => typeof s === 'string' ? document.querySelector(s) : s;
+  const KF = new Map();
+  const key = (el, prop, f, v, ease) => { el = $(el); if (!KF.has(el)) KF.set(el, {}); const m = KF.get(el); (m[prop] = m[prop] || []).push([f, v, ease]); };
+  const flush = () => { for (const [el, m] of KF) for (const p in m) { const ks = m[p].map((k, i) => [k, i]).sort((a, b) => a[0][0] - b[0][0] || a[1] - b[1]).map(x => x[0]); if (ks.length === 1) ks.push([ks[0][0] + 1, ks[0][1]]); M.kf(el, p, ks); } };
+  // entrances / exits (pure keyframes, one track per element+prop)
+  const pop = (el, f, o = {}) => { const fr = o.frames || 14;
+    key(el, 'opacity', 0, 0); key(el, 'opacity', f, 0); key(el, 'opacity', f + Math.min(4, fr), 1);
+    key(el, 'scale', 0, o.s0 ?? .6); key(el, 'scale', f, o.s0 ?? .6); key(el, 'scale', f + fr, o.s1 ?? 1, o.ease || 'snapSettle');
+    if (o.dy) { key(el, 'y', 0, o.dy); key(el, 'y', f, o.dy); key(el, 'y', f + fr, 0, 'softLand'); }
+    if (o.rot != null) { key(el, 'rotation', 0, o.rot); key(el, 'rotation', f, o.rot); key(el, 'rotation', f + fr, o.rot1 || 0, 'softLand'); } };
+  const rise = (el, f, o = {}) => { const fr = o.frames || 14, dy = o.dy ?? 70;
+    key(el, 'opacity', 0, 0); key(el, 'opacity', f, 0); key(el, 'opacity', f + 5, 1);
+    key(el, 'y', 0, dy); key(el, 'y', f, dy); key(el, 'y', f + fr, 0, o.ease || 'softLand'); };
+  const out = (el, f, o = {}) => { const fr = o.frames || 10;
+    key(el, 'opacity', f, 1); key(el, 'opacity', f + fr, 0, 'gentleIn');
+    if (o.dy != null) { key(el, 'y', f, 0); key(el, 'y', f + fr, o.dy, 'accelExit'); } };
+  const drift = (el, a, b, s0 = 1, s1 = 1.04) => { key(el, 'scale', a, s0); key(el, 'scale', b, s1); };
+  // words land on the voice: times are VO seconds for each word, 1 frame early
+  const say = (el, times, o = {}) => {
+    const fr = times.map(t => F(t) - 1), gaps = fr.slice(1).map((v, i) => Math.max(1, v - fr[i]));
+    return M.words(el, Object.assign({ at: fr[0], mech: 'rise', dist: o.dist ?? 46, gaps: gaps.length ? gaps : [4], frames: 12, ease: 'softLand' }, o));
+  };
+  const span = (el, i) => $(el).querySelectorAll('.mw')[i];
+  const scenes = ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13', 's14', 's15', 's16', 's17', 's18'];
+  const cuts = [-OFF, 4.25, 9.85, 14.3, 20.55, 27.45, 30.55, 32.75, 35.05, 39.7, 44.25, 47.5, 51.9, 54.5, 56.95, 63.4, 68.35, 72.2, 99];
+  scenes.forEach((id, i) => { M.show('#' + id, Math.max(0, F(cuts[i])), Math.min(F(cuts[i + 1]), 2298)); if (i) M.mark(F(cuts[i]), 'cut', id); });
+  const W = i => [F(cuts[i]), F(cuts[i + 1])];
+
+  // ===== S1  Every kid walked outside. Except mine.
+  for (let i = 0; i < 9; i++) {
+    const k = '#kid' + i, x0 = 700 + i * 105;
+    key(k, 'x', 0, 0); key(k, 'x', 140, 9 * 140);
+    for (let f = 0; f <= 140; f += 6) key(k, 'y', f + (i % 2) * 3, (f / 6) % 2 ? -9 : 0, 'softInOut');
+  }
+  say('#t1a', [0.12, 0.46, 1.5, 1.76], { dist: 60 });
+  out('#t1a', F(2.8), { dy: -40, frames: 8 });
+  say('#t1b', [2.98, 3.38], { mech: 'shrink', dist: 1.3 });
+  out('#t1b', F(3.85), { dy: -60, frames: 8 });
+  span('#t1b', 1).style.color = '#c9542f';
+  key('#ryankid', 'y', 0, 0); key('#ryankid', 'y', F(3.38), 0); key('#ryankid', 'y', F(3.38) + 4, -10, 'softLand'); key('#ryankid', 'y', F(3.38) + 12, 0, 'softInOut');
+  key('#cam1', 'scale', 0, 1); key('#cam1', 'scale', F(3.7), 1.04); key('#cam1', 'scale', F(4.25), 3.4, 'gentleIn');
+
+  // ===== S2  Ryan's autistic. Noise. Flashing. Everyone moving at once.
+  const [a2, b2] = W(1);
+  pop('#rport', a2, { s0: 1.7, frames: 16, ease: 'softLand' });
+  say('#t2', [4.42, 4.88]);
+  span('#t2', 1).style.color = '#2e5a4d';
+  out('#t2', F(6.0), { dy: -30, frames: 8 });
+  key('#rport', 'scale', F(6.1), 1); key('#rport', 'scale', F(9.6), .8, 'softInOut');
+  for (let r = 0; r < 3; r++) for (let k = 0; k < 5; k++) { const s = F(6.28) + r * 7 + k * 18, el = '#ring' + r;
+    key(el, 'opacity', 0, 0); key(el, 'opacity', s, .55); key(el, 'opacity', s + 22, 0, 'glide');
+    key(el, 'scale', 0, 1); key(el, 'scale', s, 1); key(el, 'scale', s + 22, 2.5, 'glide'); key(el, 'scale', s + 23, 1); }
+  pop('#w_noise', F(6.28), { s0: 1.8, rot: -14, rot1: -6, frames: 12 });
+  pop('#w_flash', F(7.12), { s0: 1.8, rot: 14, rot1: 5, frames: 12 });
+  for (let k = 0; k < 4; k++) { const s = F(7.12) + k * 6; key('#flash', 'opacity', s, 0); key('#flash', 'opacity', s + 1, .38); key('#flash', 'opacity', s + 3, .38); key('#flash', 'opacity', s + 4, 0); }
+  for (let i = 0; i < 26; i++) { const s = F(8.18) + (i * 3) % 34, dir = i % 2 ? 1 : -1, d = 16 + (i % 5) * 3, el = '#sk_' + i;
+    key(el, 'x', 0, dir > 0 ? -500 : 2200); key(el, 'x', s, dir > 0 ? -500 : 2200); key(el, 'x', s + d, dir > 0 ? 2200 : -500, 'cruise'); }
+  say('#w_move', [8.18, 8.68, 8.98, 9.16], { dist: 50 });
+  for (let f = F(8.18); f < b2; f += 2) { key('#cam2', 'x', f, ((f * 37) % 13) - 6); key('#cam2', 'y', f, ((f * 53) % 11) - 5); }
+  drift('#cam2', a2, b2, 1, 1.05);
+
+  // ===== S3  A fire drill isn't practice. It's an emergency.
+  const [a3, b3] = W(2);
+  pop('#bell', a3 + 2, { s0: 1.6, frames: 12 });
+  for (let f = F(10.9); f < b3; f += 3) key('#bell', 'rotation', f, ((f / 3) % 2 ? 1 : -1) * (f < F(13.0) ? 8 : 14));
+  for (let f = a3; f < b3; f += 12) { key('#glow', 'opacity', f, .22); key('#glow', 'opacity', f + 6, .55, 'softInOut'); }
+  say('#t3a', [10.76, 10.92, 11.24, 11.54, 11.84]);
+  const pw = span('#t3a', 4), host3 = $('#t3a');
+  Object.assign($('#strike').style, { left: (host3.offsetLeft + pw.offsetLeft - 10) + 'px', top: (host3.offsetTop + pw.offsetTop + pw.offsetHeight * .52) + 'px', width: (pw.offsetWidth + 20) + 'px' });
+  key('#strike', 'scaleX', 0, 0); key('#strike', 'scaleX', F(12.36), 0); key('#strike', 'scaleX', F(12.36) + 7, 1, 'softLand');
+  key(pw, 'opacity', F(12.36), 1); key(pw, 'opacity', F(12.36) + 7, .45);
+  say('#t3b', [12.76, 12.92, 13.02], { mech: 'shrink', words: (i) => i === 2 ? { scale: 1.5, frames: 14 } : null });
+  drift('#cam3', a3, b3, 1, 1.06);
+
+  // ===== S4  Telling isn't showing
+  const [a4, b4] = W(3);
+  pop('#mom4', a4 + 4, { s0: .5, frames: 12 });
+  pop('#b1', F(14.66), { s0: .7, dy: 30, frames: 12 }); $('#b1').style.transformOrigin = '0 100%';
+  pop('#b2', F(15.78), { s0: .7, dy: 30, frames: 12 }); $('#b2').style.transformOrigin = '0 100%';
+  rise('#l4a', F(17.24));
+  pop('#neq', F(18.52), { s0: 2.2, frames: 12 });
+  pop('#frame4', F(18.9), { s0: .8, frames: 14 });
+  rise('#l4b', F(18.9));
+  key('#q4', 'rotation', F(19.6), 0); key('#q4', 'rotation', F(19.6) + 5, -12, 'softInOut'); key('#q4', 'rotation', F(19.6) + 10, 10, 'softInOut'); key('#q4', 'rotation', F(19.6) + 16, 0, 'softInOut');
+  drift('#cam4', a4, b4, 1.02, 1.06);
+
+  // ===== S5  Social Stories definition
+  const [a5, b5] = W(4);
+  say('#t5a', [20.78, 21.02, 21.5], { dist: 30 });
+  say('#t5b', [22.18, 22.64], { mech: 'shrink', dist: 1.5, frames: 14 });
+  rise('#t5c', F(22.9), { dy: 20 });
+  say('#t5d', [23.54, 23.9, 24.38, 24.58, 24.82, 24.94, 25.26, 25.48, 25.62, 26.1, 26.52, 26.66], { dist: 36 });
+  [8, 9, 10, 11].forEach(i => span('#t5d', i).classList.add('mk'));
+  pop('#p1', F(24.58), { s0: .85, dy: 120, rot: -8, rot1: -3, frames: 16 });
+  pop('#p2', F(25.62), { s0: .85, dy: 120, rot: 6, rot1: 1, frames: 16 });
+  pop('#p3', F(26.1), { s0: .85, dy: 120, rot: 10, rot1: 4, frames: 16 });
+  rise('#t5e', F(26.5), { dy: 16 });
+  drift('#cam5', a5, b5, 1, 1.035);
+
+  // ===== S6  Proof
+  const [a6, b6] = W(5);
+  say('#t6', [27.75, 27.98, 28.7, 29.18, 29.3, 29.84], { dist: 40 });
+  span('#t6', 1).style.color = '#2e5a4d';
+  pop('#rc1', F(28.05), { s0: .9, dy: 700, rot: -10, rot1: -2.5, frames: 18, ease: 'softLand' });
+  pop('#rc2', F(28.45), { s0: .9, dy: 700, rot: 10, rot1: 2, frames: 18, ease: 'softLand' });
+  [['#hb1', 28.85], ['#hb2', 29.35]].forEach(([e, t]) => { key(e, 'scaleX', 0, 0); key(e, 'scaleX', F(t), 0); key(e, 'scaleX', F(t) + 8, 1, 'softLand'); });
+  pop('#st1', F(29.15), { s0: 2.4, rot: -30, rot1: -12, frames: 10, ease: 'softLand' });
+  pop('#st2', F(29.65), { s0: 2.4, rot: 30, rot1: 10, frames: 10, ease: 'softLand' });
+  drift('#cam6', a6, b6, 1.0, 1.045);
+
+  // ===== S7  But I'm not an illustrator
+  const [a7, b7] = W(6);
+  pop('#sheet7', a7, { s0: .9, dy: 40, rot: -3, rot1: -1, frames: 12 });
+  [['#sk1', 30.65, 9], ['#sk2', 30.98, 5], ['#sk3', 31.15, 6], ['#sk4', 31.38, 8], ['#sk5', 31.7, 6]].forEach(([e, t, d]) => { key(e, 'strokeDashoffset', 0, 1); key(e, 'strokeDashoffset', F(t), 1); key(e, 'strokeDashoffset', F(t) + d, 0); });
+  say('#t7', [30.68, 31.14, 31.26, 31.44, 31.62]);
+  key('#sheet7', 'scale', F(32.25), 1); key('#sheet7', 'scale', F(32.25) + 12, .15, 'accelExit');
+  key('#sheet7', 'rotation', F(32.25), -1); key('#sheet7', 'rotation', F(32.25) + 12, -200, 'accelExit');
+  key('#sheet7', 'y', F(32.25), 0); key('#sheet7', 'y', F(32.25) + 12, 420, 'accelExit');
+  key('#sheet7', 'opacity', F(32.25) + 8, 1); key('#sheet7', 'opacity', F(32.25) + 12, 0);
+  drift('#cam7', a7, b7, 1, 1.03);
+
+  // ===== S8  Then I found Puzzle Piece
+  const [a8, b8] = W(7);
+  say('#t8', [33.02, 33.62, 33.66], { dist: 30 });
+  pop('#pz8', F(34.04) - 1, { s0: 3.6, rot: -70, rot1: 0, frames: 16, ease: 'softLand' });
+  rise('#wm8', F(34.4), { dy: 50 });
+  key('#pz8', 'y', F(34.04) + 16, 0); key('#pz8', 'y', b8, -10);
+  drift('#cam8', a8, b8, 1, 1.04);
+
+  // ===== S9  Add the people in his life / they show up in his stories
+  const [a9, b9] = W(8);
+  say('#t9a', [35.26, 35.48, 35.66, 35.8, 36.12, 36.24, 36.46].slice(1), { dist: 40 });
+  span('#t9a', 2).style.color = '#2e5a4d';
+  for (let i = 0; i < 6; i++) pop('#fm' + i, F(35.8) + i * 3, { s0: .3, dy: 40, frames: 14 });
+  // a photo is taken of Mom
+  const mom = $('#fm2'); const mr = mom.getBoundingClientRect();
+  Object.assign($('#pol').style, { left: (mr.left - 30) + 'px', top: (mr.top - 30) + 'px' });
+  $('#fam9').before($('#pol'));
+  pop('#pol', F(37.2), { s0: 1.3, rot: -8, rot1: -4, frames: 10 });
+  key('#flash9', 'opacity', F(37.24), 0); key('#flash9', 'opacity', F(37.24) + 1, .85); key('#flash9', 'opacity', F(37.24) + 9, 0, 'glide');
+  out('#t9a', F(37.85), { dy: -40, frames: 8 }); out('#pol', F(37.95), { frames: 6 });
+  say('#t9b', [38.0, 38.18, 38.44, 38.58, 38.7, 38.9], { dist: 40 });
+  span('#t9b', 5).style.color = '#2e5a4d';
+  pop('#sc9', F(38.1), { s0: .7, dy: 500, frames: 16, ease: 'softLand' });
+  for (let i = 0; i < 6; i++) { const el = '#fm' + i, cx = 335 + i * 250, f0 = F(38.2) + i * 2;
+    key(el, 'x', f0, 0); key(el, 'x', f0 + 14, 960 - cx, 'gentleIn'); key(el, 'y', f0, 0); key(el, 'y', f0 + 14, 120, 'gentleIn');
+    key(el, 'scale', f0, 1); key(el, 'scale', f0 + 14, .2, 'gentleIn'); key(el, 'opacity', f0 + 10, 1); key(el, 'opacity', f0 + 14, 0); }
+  drift('#cam9', a9, b9, 1, 1.04);
+
+  // ===== S10  Pick a moment: Asking for help / Being wrong
+  const [a10, b10] = W(9);
+  say('#t10', [39.88, 40.08, 40.2, 40.5, 40.7, 41.14], { dist: 40 });
+  span('#t10', 2).style.color = '#2e5a4d';
+  const rots = [-10, -3, 4, 11];
+  ['#g0', '#g1', '#g2', '#g3'].forEach((g, i) => pop(g, F(40.25) + i * 3, { s0: .9, dy: 700, rot: rots[i] * 2, rot1: rots[i], frames: 16, ease: 'softLand' }));
+  const lift = (g, t, back, rot) => { key(g, 'y', F(t), 0); key(g, 'y', F(t) + 10, -70, 'snapSettle'); key(g, 'scale', F(t), 1); key(g, 'scale', F(t) + 10, 1.14, 'snapSettle');
+    key(g, 'rotation', F(t), rot); key(g, 'rotation', F(t) + 10, 0, 'softLand');
+    if (back) { key(g, 'y', F(back), -70); key(g, 'y', F(back) + 10, 0, 'softLand'); key(g, 'scale', F(back), 1.14); key(g, 'scale', F(back) + 10, 1, 'softLand'); key(g, 'rotation', F(back), 0); key(g, 'rotation', F(back) + 10, rot, 'softLand'); } };
+  lift('#g0', 42.02, 43.3, -10); lift('#g2', 43.34, null, 4);
+  $('#g0').style.zIndex = 3; $('#g2').style.zIndex = 4;
+  [['#g1', 42.0], ['#g3', 42.0]].forEach(([g, t]) => { key(g, 'opacity', F(t), 1); key(g, 'opacity', F(t) + 8, .55); });
+  key('#g2', 'opacity', F(42.0), 1); key('#g2', 'opacity', F(42.0) + 8, .55); key('#g2', 'opacity', F(43.34), .55); key('#g2', 'opacity', F(43.34) + 6, 1);
+  key('#g0', 'opacity', F(43.3), 1); key('#g0', 'opacity', F(43.3) + 8, .55);
+  drift('#cam10', a10, b10, 1, 1.04);
+
+  // ===== S11  Or just tell it what's hard
+  const [a11, b11] = W(10);
+  say('#t11a', [44.4, 44.56, 44.84, 45.06, 45.2, 45.44], { dist: 40 });
+  span('#t11a', 5).style.color = '#c9542f';
+  say('#t11b', [46.1, 46.2, 46.36, 46.54, 46.72, 46.86], { dist: 24 });
+  pop('#bud11', a11, { s0: .5, dy: 200, frames: 16 });
+  for (let k = 0; k < 6; k++) { const s = a11 + 16 + k * 16; key('#bud11', 'rotation', s, -3); key('#bud11', 'rotation', s + 8, 3, 'softInOut'); }
+  pop('#c11a', F(44.6), { s0: .7, dy: 30, frames: 12 }); $('#c11a').style.transformOrigin = '0 100%';
+  pop('#c11b', F(45.3), { s0: .7, dy: 30, frames: 12 }); $('#c11b').style.transformOrigin = '100% 100%';
+  drift('#cam11', a11, b11, 1, 1.04);
+
+  // ===== S12  Who's in it / art style / a world he loves
+  const [a12, b12] = W(11);
+  pop('#k1', F(47.74), { s0: .85, dy: 160, rot: -6, rot1: -1.5, frames: 16, ease: 'softLand' });
+  pop('#k2', F(48.88), { s0: .85, dy: 160, rot: 4, rot1: 0, frames: 16, ease: 'softLand' });
+  pop('#k3', F(50.38), { s0: .85, dy: 160, rot: 8, rot1: 1.5, frames: 16, ease: 'softLand' });
+  const wt = [50.38, 50.62, 50.86, 51.18];
+  wt.forEach((t, i) => { M.show('#w' + (i + 1), F(t), i < 3 ? F(wt[i + 1]) : 99999); M.show('#wl' + (i + 1), F(t), i < 3 ? F(wt[i + 1]) : 99999); });
+  key('#w4', 'scale', F(51.18), 1.15); key('#w4', 'scale', F(51.18) + 14, 1, 'softLand');
+  drift('#cam12', a12, b12, 1, 1.05);
+
+  // ===== S13  It writes and illustrates the whole thing
+  const [a13, b13] = W(12);
+  say('#t13', [52.1, 52.26, 52.64, 52.84, 53.48, 53.68, 54.02], { dist: 40 });
+  span('#t13', 1).style.color = '#2e5a4d'; span('#t13', 3).style.color = '#2e5a4d';
+  pop('#book', a13, { s0: .92, dy: 120, frames: 14, ease: 'softLand' });
+  const bt = M.words('#bt', { at: F(52.26), mech: 'focus', gaps: 2, frames: 6 });
+  key('#wipe', 'scaleX', 0, 1); key('#wipe', 'scaleX', F(52.84), 1); key('#wipe', 'scaleX', F(52.84) + 22, 0, 'softInOut');
+  [['#pgR', 53.68], ['#pg1', 54.0]].forEach(([p, t]) => { key(p, 'transformPerspective', 0, 2400); key(p, 'rotationY', 0, 0); key(p, 'rotationY', F(t), 0); key(p, 'rotationY', F(t) + 12, -180, 'softInOut'); });
+  key('#pg1', 'zIndex', F(54.0) + 6, 2); key('#pg1', 'zIndex', F(54.0) + 7, 4);
+  drift('#cam13', a13, b13, 1, 1.03);
+
+  // ===== S14  It can even read it to him in my voice
+  const [a14, b14] = W(13);
+  say('#t14', [54.72, 55.24, 55.56, 55.7, 55.86, 55.98, 56.18], { dist: 40 });
+  span('#t14', 5).style.color = '#eec86b'; span('#t14', 6).style.color = '#eec86b';
+  pop('#pl14', a14 + 2, { s0: .85, frames: 14 });
+  for (let i = 0; i < 34; i++) { const el = '#wb' + i; key(el, 'scaleY', 0, .12);
+    for (let f = a14 + 4; f <= b14; f += 3) { const v = .15 + .85 * Math.abs(Math.sin(f * .21 + i * .55) * Math.cos(f * .07 + i * .31)); key(el, 'scaleY', f, v, 'softInOut'); } }
+  pop('#chip14', F(55.98), { s0: .7, dy: 40, frames: 12 });
+  drift('#cam14', a14, b14, 1, 1.04);
+
+  // ===== S15  I read it first / together / on his own / again and again
+  const [a15, b15] = W(14);
+  key('#art15', 'scale', a15, 1.12); key('#art15', 'scale', b15, 1.0);
+  const steps = [['#st_a', 57.34], ['#st_b', 58.94], ['#st_c', 60.78]];
+  steps.forEach(([s, t], i) => { pop(s, F(t) - 2, { s0: .9, dy: 30, frames: 12 }); $(s).style.transformOrigin = '0 50%';
+    const n = $(s).querySelector('.n'); key(n, 'backgroundColor', F(t), 'rgba(238,200,107,0)'); key(n, 'backgroundColor', F(t) + 6, 'rgba(238,200,107,1)');
+    key(n, 'color', F(t), '#ffffff'); key(n, 'color', F(t) + 6, '#22362f');
+    if (i < 2) { key(s, 'opacity', F(steps[i + 1][1]) - 2, 1); key(s, 'opacity', F(steps[i + 1][1]) + 8, .45); } });
+  rise('#rep', F(61.9), { dy: 30 });
+  key('#repic', 'rotation', F(61.96), 0); key('#repic', 'rotation', F(61.96) + 14, 360, 'softInOut'); key('#repic', 'rotation', F(62.72), 360); key('#repic', 'rotation', F(62.72) + 14, 720, 'softInOut');
+
+  // ===== S16  It gives him the words before he needs them
+  const [a16, b16] = W(15);
+  say('#t16a', [63.64, 63.74, 64.06, 64.56, 64.78], { dist: 26 });
+  key('#t16a', 'opacity', F(65.6), 1); key('#t16a', 'opacity', F(65.6) + 10, .5);
+  say('#t16b', [65.76, 65.92, 66.16, 66.34, 66.48, 66.9, 67.44, 67.6, 67.94], { dist: 50 });
+  const wd = span('#t16b', 4); wd.classList.add('mk'); wd.style.backgroundSize = '0% 100%'; wd.style.backgroundRepeat = 'no-repeat';
+  key(wd, 'backgroundSize', F(66.6), '0% 100%'); key(wd, 'backgroundSize', F(66.6) + 10, '100% 100%');
+  span('#t16b', 5).style.color = '#2e5a4d';
+  drift('#cam16', a16, b16, 1, 1.05);
+
+  // ===== S17  Make a free account, see his story before you pay
+  const [a17, b17] = W(16);
+  pop('#sc17', a17, { s0: .9, dy: 120, frames: 14, ease: 'softLand' });
+  pop('#free17', F(68.66), { s0: .5, frames: 12 });
+  key('#lockic', 'scale', F(69.8), 1); key('#lockic', 'scale', F(69.8) + 6, 1.25, 'softLand'); key('#lockic', 'scale', F(69.8) + 14, 0, 'accelExit');
+  key('#shackle', 'y', F(69.8), 0); key('#shackle', 'y', F(69.8) + 5, -3, 'softLand');
+  key('#lockov', 'opacity', F(69.95), 1); key('#lockov', 'opacity', F(69.95) + 12, 0, 'softInOut');
+  say('#t17', [69.88, 70.08, 70.3, 70.64, 71.04, 71.2, 71.48], { dist: 34 });
+  span('#t17', 2).style.color = '#2e5a4d';
+  drift('#cam17', a17, b17, 1, 1.04);
+
+  // ===== S18  Puzzle Piece, try it free for 7 days
+  const [a18] = W(17);
+  pop('#pz18', F(72.42) - 1, { s0: 3.2, rot: -80, rot1: 0, frames: 16, ease: 'softLand' });
+  rise('#wm18', F(72.78), { dy: 40 });
+  pop('#cta', F(73.45), { s0: .7, frames: 12 });
+  say('#t18', [73.5, 73.72, 73.92, 74.2, 74.46, 74.78], { dist: 24, frames: 9 });
+  for (let i = 0; i < 7; i++) { pop('#d7_' + i, F(73.9) + i * 2, { s0: .3, frames: 10 }); key('#d7f_' + i, 'scale', 0, 0); key('#d7f_' + i, 'scale', F(74.46) + i * 3, 0); key('#d7f_' + i, 'scale', F(74.46) + i * 3 + 6, 1, 'snapSettle'); }
+  drift('#cam18', a18, 2298, 1, 1.035);
+
+  flush();
+}
+</script>
+</body>
+</html>
