@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Puzzle Piece Logo</title>
+<meta name="viewport" content="width=1080, height=1920">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#main { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(circle at 50% 46%, #fffaf0, #efe7d4 72%); }
+.abs { position: absolute; }
+.pat { position: absolute; inset: -60px; opacity: .5; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><path id="PZ" d="M0,0 H35 C35,-8 30,-12 30,-18 C30,-28 40,-34 50,-34 C60,-34 70,-28 70,-18 C70,-12 65,-8 65,0 H100 V35 C108,35 112,30 118,30 C128,30 134,40 134,50 C134,60 128,70 118,70 C112,70 108,65 100,65 V100 H65 C65,92 70,88 70,82 C70,72 60,66 50,66 C40,66 30,72 30,82 C30,88 35,92 35,100 H0 V65 C8,65 12,70 18,70 C28,70 34,60 34,50 C34,40 28,30 18,30 C12,30 8,35 0,35 Z"/></defs></svg>
+<div id="main">
+  <div class="pat" id="pat"></div>
+  <div id="cam" class="abs" style="inset:0;transform-origin:540px 900px">
+    <div id="glow" class="abs" style="left:40px;top:380px;width:1000px;height:1000px;border-radius:50%;background:radial-gradient(#fff3c4,rgba(255,243,196,0) 65%);opacity:0"></div>
+    <svg id="slot" class="abs" style="left:330px;top:640px;width:420px;height:420px;overflow:visible" viewBox="0 -34 134 134"><use href="#PZ" fill="rgba(33,67,60,.07)" stroke="#21433c" stroke-width="1.6" stroke-dasharray="4 4"/></svg>
+    <div id="burst" class="abs" style="left:340px;top:650px;width:400px;height:400px;border-radius:50%;border:8px solid #eec86b;opacity:0"></div>
+    <div id="burst2" class="abs" style="left:340px;top:650px;width:400px;height:400px;border-radius:50%;border:4px solid #eec86b;opacity:0"></div>
+    <img id="logo" class="abs" src="img/puzzle_a.png" style="left:400px;top:680px;width:280px;transform-origin:50% 50%">
+    <img id="wm" class="abs" src="img/wordmark.png" style="left:220px;top:1110px;width:640px">
+  </div>
+</div>
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script>
+const MARK_ONLY = /markonly/.test(location.href);
+if (MARK_ONLY) { document.getElementById('wm').style.display = 'none'; document.getElementById('cam').style.top = '120px'; }
+(function () {
+  const P = document.getElementById('PZ').getAttribute('d'); let g = '';
+  [[60, 80, 20, 1], [760, 40, -15, .9], [420, 380, 35, .8], [880, 520, 10, 1.1], [40, 700, -30, 1], [600, 860, 25, .9], [300, 1180, -10, 1.1], [860, 1300, 40, .8], [80, 1560, 15, 1], [560, 1640, -25, 1.1], [980, 1860, 5, .9]]
+    .forEach(([x, y, r, s]) => g += `<path d="${P}" transform="translate(${x} ${y}) rotate(${r}) scale(${1.6 * s})" fill="none" stroke="#d6cdb4" stroke-width="1.6"/>`);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2040">${g}</svg>`;
+  const p = document.getElementById('pat'); p.style.backgroundImage = 'url("data:image/svg+xml;utf8,' + encodeURIComponent(svg) + '")';
+})();
+const FPS = 30, DUR = 4.5, END = Math.round(DUR * FPS);
+const M = Motion.film({ fps: FPS, duration: DUR, width: 1080, height: 1920, clock: 'smooth' });
+window.__ready = Motion.loaded().then(() => {
+  const L = 30;            // the piece lands at 1.0 s
+  M.kf('#slot', 'opacity', [[0, 0], [8, 1, 'softLand'], [L, 1], [L + 6, 0]]);
+  M.kf('#slot', 'scale', [[0, .9], [12, 1, 'softLand']]);
+  M.kf('#logo', 'y', [[0, -1300], [L - 12, -1300], [L, 0, 'softLand']]);
+  M.kf('#logo', 'rotation', [[0, 70], [L - 12, 70], [L + 2, 0, 'softLand'], [L + 70, 0], [END, 8, 'softInOut']]);
+  M.kf('#logo', 'scale', [[0, 1.25], [L - 12, 1.25], [L, 1, 'softLand'], [L + 2, .9], [L + 10, 1, 'snapSettle']]);
+  M.kf('#burst', 'opacity', [[0, 0], [L - 1, 0], [L, .9], [L + 22, 0, 'glide']]);
+  M.kf('#burst', 'scale', [[0, .7], [L, .7], [L + 22, 2.3, 'glide']]);
+  M.kf('#burst2', 'opacity', [[0, 0], [L + 4, 0], [L + 5, .7], [L + 28, 0, 'glide']]);
+  M.kf('#burst2', 'scale', [[0, .7], [L + 4, .7], [L + 28, 3.0, 'glide']]);
+  M.kf('#glow', 'opacity', [[0, 0], [L, 0], [L + 10, 1, 'softLand']]);
+  M.kf('#wm', 'opacity', [[0, 0], [L + 8, 0], [L + 14, 1]]);
+  M.kf('#wm', 'y', [[0, 50], [L + 8, 50], [L + 22, 0, 'softLand']]);
+  M.kf('#cam', 'scale', [[0, 1], [L, 1.02], [END, 1.07, 'softInOut']]);
+});
+</script>
+</body>
+</html>
