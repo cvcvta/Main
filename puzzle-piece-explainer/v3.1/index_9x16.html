@@ -1,0 +1,647 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Puzzle Piece My Story Time</title>
+<meta name="viewport" content="width=1080, height=1920">
+<link rel="stylesheet" href="./runtime/fonts.css">
+<style>
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-400-normal.woff2") format("woff2"); font-weight: 400; font-display: block; }
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-500-normal.woff2") format("woff2"); font-weight: 500; font-display: block; }
+@font-face { font-family: "SSerif"; src: url("fonts/source-serif-4-latin-600-normal.woff2") format("woff2"); font-weight: 600; font-display: block; }
+:root { --paper: #f6f1e6; --cream: #fbf8f0; --green: #21433c; --green2: #2e5a4d; --ink: #1d2a24; --muted: #6c786f; --yellow: #eec86b; --coral: #e3613f;
+  --sans: "Inter", system-ui, sans-serif; --serif: "SSerif", Georgia, serif; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#main { position: absolute; inset: 0; overflow: hidden; background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+.sc { position: absolute; inset: 0; overflow: hidden; }
+.cam { position: absolute; inset: 0; transform-origin: 540px 960px; }
+.abs { position: absolute; }
+.serif { font-family: var(--serif); font-weight: 500; letter-spacing: -.015em; }
+.ctr { left: 60px; width: 960px; text-align: center; }
+img { display: block; }
+.round { border-radius: 50%; overflow: hidden; }
+.pz { position: absolute; overflow: visible; filter: drop-shadow(0 26px 30px rgba(30,40,30,.22)) drop-shadow(0 4px 6px rgba(30,40,30,.12)); }
+.blob { position: absolute; border-radius: 50%; filter: blur(70px); }
+.paper { position: absolute; background: #fffdf8; border-radius: 26px; box-shadow: 0 30px 60px rgba(40,50,35,.18), 0 4px 10px rgba(40,50,35,.08); }
+.mk { background: linear-gradient(transparent 58%, #f2d77d 58%, #f2d77d 92%, transparent 92%) no-repeat; }
+.chip { position: absolute; left: 90px; height: 84px; padding: 0 30px; border-radius: 42px; background: #fff; box-shadow: 0 10px 24px rgba(40,50,35,.12); display: flex; align-items: center; gap: 16px; font-size: 28px; color: #26322c; }
+.chip b { color: var(--green); }
+.tile { position: absolute; background-image: url(img/firedrill.png); background-repeat: no-repeat; }
+.ring { position: absolute; border-radius: 50%; border: 6px solid var(--yellow); }
+.tag { position: absolute; height: 58px; padding: 0 22px; border-radius: 29px; background: var(--yellow); color: #22362f; font-size: 28px; font-weight: 750; display: flex; align-items: center; white-space: nowrap; }
+.moon { width: 92px; height: 92px; border-radius: 50%; background: #2b3b52; position: relative; overflow: hidden; }
+.moon i { position: absolute; inset: 0; border-radius: 50%; background: #f6dc8c; box-shadow: 0 0 30px #f6dc8c; }
+.moon i::after { content: ""; position: absolute; left: 30px; top: -10px; width: 92px; height: 92px; border-radius: 50%; background: #2b3b52; }
+.day { text-align: center; color: rgba(255,255,255,.6); font-size: 26px; font-weight: 600; margin-top: 12px; }
+.wbar { position: absolute; bottom: 0; width: 10px; border-radius: 5px; background: var(--green); transform-origin: 50% 100%; }
+#grain { position: absolute; inset: 0; z-index: 90; pointer-events: none; opacity: .07; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.4 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+
+@font-face { font-family: "Fraunces"; src: url("fonts/fraunces-latin-700-normal.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: block; }
+@font-face { font-family: "Fraunces"; src: url("fonts/fraunces-latin-800-normal.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: block; }
+@font-face { font-family: "Fraunces"; src: url("fonts/fraunces-latin-700-italic.woff2") format("woff2"); font-weight: 700; font-style: italic; font-display: block; }
+@font-face { font-family: "Fraunces"; src: url("fonts/fraunces-latin-800-italic.woff2") format("woff2"); font-weight: 800; font-style: italic; font-display: block; }
+.serif { font-family: "Fraunces", Georgia, serif !important; font-weight: 700 !important; letter-spacing: -.02em !important; }
+.hd { font-family: "Fraunces", Georgia, serif; font-weight: 800; letter-spacing: -.025em; color: #22362f; line-height: 1.06; }
+.it { font-style: italic; }
+.mkY { background: linear-gradient(transparent 55%, #f2d77d 55%, #f2d77d 90%, transparent 90%) no-repeat; padding: 0 6px; }
+.pat { position: absolute; inset: -60px; pointer-events: none; opacity: .55; }
+.warm { background: radial-gradient(circle at 50% 28%, #fdf4d6, #f5efdf 55%, #eee7d4); }
+.ph { position: absolute; border-radius: 48px; overflow: hidden; background: #fefcf7; box-shadow: 0 40px 80px rgba(40,50,35,.24), 0 6px 14px rgba(40,50,35,.1); }
+.ph > img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.scard { position: absolute; width: 760px; background: #fff; border-radius: 30px; overflow: hidden; box-shadow: 0 30px 60px rgba(40,50,35,.2); }
+.scard .im { position: relative; width: 760px; height: 300px; overflow: hidden; }
+.scard .im img { width: 100%; height: 100%; object-fit: cover; }
+.scard .im b { position: absolute; left: 30px; bottom: 22px; font: 800 44px/1.05 Inter, sans-serif; color: #fff; text-shadow: 0 3px 14px rgba(0,0,0,.45); letter-spacing: -.01em; }
+.scard .im::after { content: ""; position: absolute; inset: 40% 0 0 0; background: linear-gradient(rgba(20,40,30,0), rgba(20,40,30,.7)); }
+.scard .im b { z-index: 2; }
+.scard .ft { height: 100px; display: flex; align-items: center; gap: 18px; padding: 0 26px; font-size: 30px; font-weight: 700; color: #1f2b26; }
+.scard .ft .av { width: 62px; height: 62px; border-radius: 50%; overflow: hidden; background: #e8efe0; flex: none; }
+.scard .ft .av img { width: 100%; height: 100%; object-fit: cover; }
+.heart { margin-left: auto; width: 56px; height: 56px; border-radius: 50%; background: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; }
+.step3 { position: absolute; left: 0; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 26px; font-size: 38px; font-weight: 600; color: #3c4a43; }
+.step3 .s { position: relative; display: flex; align-items: center; gap: 14px; padding: 12px 30px 12px 14px; border-radius: 40px; }
+.step3 .n { width: 52px; height: 52px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; }
+.opt { position: absolute; left: 30px; width: 540px; height: 150px; border-radius: 28px; background: #f3f2ea; border: 3px solid #e3e3d9; display: flex; align-items: center; gap: 22px; padding: 0 24px; }
+.opt .e { width: 86px; height: 86px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 48px; flex: none; }
+.opt b { display: block; font-size: 30px; color: #1f2b26; }
+.opt span { font-size: 22px; color: #6c776f; line-height: 1.25; }
+.opt .rd { margin-left: auto; width: 40px; height: 40px; border-radius: 50%; border: 3px solid #9aa39b; flex: none; }
+.tabbar { position: absolute; left: 20px; right: 20px; bottom: 22px; height: 110px; border-radius: 34px; background: #21433c; display: flex; justify-content: space-around; align-items: center; color: #e7efe9; font-size: 18px; }
+.tabbar div { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.tabbar .c { width: 100px; height: 100px; border-radius: 50%; background: #eec86b; margin-top: -60px; box-shadow: 0 6px 16px rgba(0,0,0,.2); display: flex; align-items: center; justify-content: center; }
+.lc { position: absolute; left: 22px; width: 556px; border-radius: 24px; overflow: hidden; background: #fff; box-shadow: 0 10px 26px rgba(40,50,35,.12); }
+.lc .im { position: relative; height: 250px; }
+.lc .im img { width: 100%; height: 100%; object-fit: cover; }
+.lc .im::after { content: ""; position: absolute; inset: 35% 0 0 0; background: linear-gradient(rgba(20,40,30,0), rgba(20,40,30,.7)); }
+.lc .im b { position: absolute; z-index: 2; left: 22px; bottom: 16px; font: 800 34px/1.05 Inter, sans-serif; color: #fff; }
+.lc .ft { height: 84px; display: flex; align-items: center; gap: 14px; padding: 0 18px; font-size: 22px; font-weight: 700; color: #1f2b26; }
+.lc .ft .av { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; flex: none; }
+.lc .ft .av img { width: 100%; height: 100%; object-fit: cover; }
+.newb { position: absolute; z-index: 2; left: 18px; top: 16px; padding: 6px 14px; border-radius: 12px; background: #f2d77d; font: 800 20px Inter; color: #3e3a20; }
+.spark { position: absolute; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <path id="PZ" d="M0,0 H35 C35,-8 30,-12 30,-18 C30,-28 40,-34 50,-34 C60,-34 70,-28 70,-18 C70,-12 65,-8 65,0 H100 V35 C108,35 112,30 118,30 C128,30 134,40 134,50 C134,60 128,70 118,70 C112,70 108,65 100,65 V100 H65 C65,92 70,88 70,82 C70,72 60,66 50,66 C40,66 30,72 30,82 C30,88 35,92 35,100 H0 V65 C8,65 12,70 18,70 C28,70 34,60 34,50 C34,40 28,30 18,30 C12,30 8,35 0,35 Z"/>
+    <clipPath id="PZC"><use href="#PZ"/></clipPath>
+    <linearGradient id="gY" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6d672"/><stop offset="1" stop-color="#e3a93a"/></linearGradient>
+    <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fb4e4"/><stop offset="1" stop-color="#3f74b0"/></linearGradient>
+    <linearGradient id="gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0846c"/><stop offset="1" stop-color="#c9452f"/></linearGradient>
+    <linearGradient id="gG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8cc18b"/><stop offset="1" stop-color="#4c8a5a"/></linearGradient>
+    <linearGradient id="gP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c2acec"/><stop offset="1" stop-color="#8462c0"/></linearGradient>
+    <linearGradient id="gT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#72c7bb"/><stop offset="1" stop-color="#358a7f"/></linearGradient>
+    <linearGradient id="gO" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7b37a"/><stop offset="1" stop-color="#df7a36"/></linearGradient>
+    <linearGradient id="gS" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  </defs>
+</svg>
+<div id="main">
+<section id="s1" class="sc" style="background:radial-gradient(circle at 50% 55%,#fbf6ea,#efe7d4 75%)">
+  <div class="pat"></div>
+  <div id="cam1" class="cam">
+    <div class="blob" style="left:190px;top:700px;width:700px;height:640px;background:#f3dfa8;opacity:.6"></div>
+    <svg id="slot1" class="abs" style="left:280px;top:820px;width:520px;height:520px;overflow:visible" viewBox="0 -34 134 134"><use href="#PZ" fill="rgba(33,67,60,.07)" stroke="#21433c" stroke-width="1.6" stroke-dasharray="4 4"/></svg>
+    <div id="l1" class="abs serif ctr" style="top:220px;font-size:92px">I told him.</div>
+    <div id="l2" class="abs serif ctr" style="top:340px;font-size:92px">I showed him.</div>
+    <div id="l3" class="abs serif ctr" style="top:460px;font-size:92px">I played the sound.</div>
+    <div id="att"></div>
+  </div>
+</section>
+<section id="s2" class="sc" style="background:#f4eee1">
+  <div class="pat"></div>
+  <div id="cam2" class="cam">
+    <div id="door2" class="abs" style="left:900px;top:0;width:400px;height:1920px;background:linear-gradient(90deg,rgba(246,212,120,0),rgba(246,212,120,.85) 60%,#fff3cf)"></div>
+    <div id="t2a" class="abs serif ctr" style="top:220px;font-size:100px;line-height:1.12">Every kid walked outside.</div>
+    <div id="t2b" class="abs serif ctr" style="top:280px;font-size:130px">Except mine.</div>
+    <div id="board" style="position:absolute;inset:0;transform-origin:540px 960px"></div>
+  </div>
+</section>
+<section id="s3" class="sc" style="background:#f4eee1">
+  <div id="dark3" class="abs" style="inset:0;background:radial-gradient(circle at 50% 45%,#3a1d17,#120a08 75%);opacity:0"></div>
+  <div id="beam" class="abs" style="left:-460px;top:-60px;width:2000px;height:2000px;border-radius:50%;background:conic-gradient(from 0deg,rgba(255,70,50,.0),rgba(255,70,50,.55) 8%,rgba(255,70,50,0) 18%,rgba(255,70,50,0) 50%,rgba(255,70,50,.55) 58%,rgba(255,70,50,0) 68%);mix-blend-mode:screen;opacity:0"></div>
+  <div id="cam3" class="cam">
+    <div id="rings3"></div>
+    <div id="rp3wrap" class="abs" style="left:280px;top:600px;width:520px;height:520px"><svg id="rp3" class="pz" style="left:0;top:0;width:520px;height:520px" viewBox="0 -34 134 134"></svg></div>
+    <div id="t3a" class="abs serif ctr" style="top:1250px;font-size:104px">Ryan’s autistic.</div>
+    <div id="t3b" class="abs serif ctr" style="top:1240px;font-size:84px;color:#fbe9df">It’s not practice.</div>
+    <div id="strike3" class="abs" style="height:10px;border-radius:5px;background:#ff6a4d;transform-origin:0 50%"></div>
+    <div id="t3c" class="abs serif ctr" style="top:1370px;font-size:100px;line-height:1.08;color:#ff8a6a;font-weight:600">It’s an emergency.</div>
+  </div>
+</section>
+<section id="s4" class="sc" style="background:#2a2a28">
+  <div id="cam4" class="cam">
+    <img id="blur4" class="abs" src="img/firedrill.png" style="left:-1180px;top:0;width:3441px;height:1920px;filter:blur(38px) saturate(.8) brightness(.8)">
+    <div class="abs" style="inset:0;background:rgba(246,241,230,.28)"></div>
+    <div id="lens" class="abs round" style="left:0;top:0;width:300px;height:300px;border:6px solid rgba(255,255,255,.85);box-shadow:0 20px 50px rgba(0,0,0,.3)">
+      <img id="lensimg" class="abs" src="img/firedrill.png" style="left:-1180px;top:0;width:3441px;height:1920px"></div>
+    <div id="t4" class="abs serif ctr" style="top:300px;font-size:120px;line-height:1.1;color:#fff;text-shadow:0 6px 30px rgba(0,0,0,.35)">Telling isn’t showing.</div>
+  </div>
+</section>
+<section id="s5" class="sc" style="background:#fbf8f0">
+  <div class="pat"></div>
+  <div id="cam5" class="cam">
+    <div class="blob" style="left:60px;top:900px;width:960px;height:800px;background:#e3e9d8;opacity:.9"></div>
+    <div id="t5a" class="abs ctr" style="top:150px;font-size:38px;color:#6c786f;font-weight:500">His therapist suggested</div>
+    <div id="t5b" class="abs serif ctr" style="top:200px;font-size:118px;color:#21433c">A social story</div>
+    <div id="t5c" class="abs serif" style="left:70px;top:400px;width:940px;text-align:center;font-size:54px;line-height:1.28">A short story that walks him through the moment before it happens.</div>
+    <div id="ch1" class="chip" style="top:590px"><b>✓</b>Evidence-based practice&nbsp;<span style="color:#7c867e">· NCAEP, 2020</span></div>
+    <div id="ch2" class="chip" style="top:690px"><b>✓</b>Established intervention&nbsp;<span style="color:#7c867e">· National Autism Center, 2015</span></div>
+    <svg id="path5svg" class="abs" style="left:0;top:0" width="1080" height="1920"><path id="path5" d="M 120 1820 C 140 1560, 920 1640, 900 1400 S 160 1180, 330 960" fill="none" stroke="#21433c" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 22" /></svg>
+    <div id="pg_a" class="abs" style="left:560px;top:1520px;width:300px;height:230px;transform-style:preserve-3d"><div class="paper" style="inset:0;padding:10px;backface-visibility:hidden"><img src="img/s_water.png" style="width:280px;height:210px;object-fit:cover;border-radius:16px"></div><div class="paper" style="inset:0;backface-visibility:hidden;transform:rotateY(180deg)"></div></div>
+    <div id="pg_b" class="abs" style="left:640px;top:1150px;width:300px;height:230px;transform-style:preserve-3d"><div class="paper" style="inset:0;padding:10px;backface-visibility:hidden"><img src="img/t_help.png" style="width:280px;height:210px;object-fit:cover;border-radius:16px"></div><div class="paper" style="inset:0;backface-visibility:hidden;transform:rotateY(180deg)"></div></div>
+    <div id="pg_c" class="abs" style="left:120px;top:1120px;width:300px;height:230px;transform-style:preserve-3d"><div class="paper" style="inset:0;padding:10px;backface-visibility:hidden"><img src="img/t_wrong.png" style="width:280px;height:210px;object-fit:cover;border-radius:16px"></div><div class="paper" style="inset:0;backface-visibility:hidden;transform:rotateY(180deg)"></div></div>
+    <div id="mark5" class="abs round" style="left:250px;top:880px;width:160px;height:160px;background:#eec86b;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 18px rgba(238,200,107,.3)"><svg width="80" height="80" viewBox="0 0 24 24" fill="#21433c"><path d="M12 2a1.5 1.5 0 0 1 1.5 1.5v.6A6.5 6.5 0 0 1 18.5 10.5v4.2l1.7 2.6a.8.8 0 0 1-.7 1.2H4.5a.8.8 0 0 1-.7-1.2l1.7-2.6v-4.2a6.5 6.5 0 0 1 5-6.4v-.6A1.5 1.5 0 0 1 12 2Z"/><path d="M9.5 20a2.6 2.6 0 0 0 5 0z"/></svg></div>
+    <svg id="rp5" class="pz" style="left:0;top:0;width:170px;height:170px" viewBox="0 -34 134 134"></svg>
+    <div id="t6a" class="abs serif ctr" style="top:260px;font-size:120px">Great idea.</div>
+    <div id="t6b" class="abs serif ctr" style="top:400px;font-size:120px;color:#c9542f">Except I can’t draw.</div>
+  </div>
+</section>
+<section id="s7" class="sc" style="background:radial-gradient(circle at 50% 46%,#fffaf0,#efe7d4 72%)">
+  <div class="pat"></div>
+  <div id="cam7" class="cam">
+    <div id="glow7" class="abs" style="left:40px;top:380px;width:1000px;height:1000px;border-radius:50%;background:radial-gradient(#fff3c4,rgba(255,243,196,0) 65%);opacity:0"></div>
+    <div id="t7" class="abs ctr" style="top:470px;font-size:48px;color:#6c786f;font-weight:500">Then I found</div>
+    <svg id="slot7" class="abs" style="left:330px;top:660px;width:420px;height:420px;overflow:visible" viewBox="0 -34 134 134"><use href="#PZ" fill="rgba(33,67,60,.07)" stroke="#21433c" stroke-width="1.6" stroke-dasharray="4 4"/></svg>
+    <div id="burst7" class="abs round" style="left:340px;top:670px;width:400px;height:400px;border:8px solid #eec86b;opacity:0"></div>
+    <img id="logo7" class="abs" src="img/puzzle_a.png" style="left:400px;top:700px;width:280px;transform-origin:50% 50%">
+    <img id="wm7" class="abs" src="img/wordmark.png" style="left:250px;top:1100px;width:580px">
+    <div id="mst7" class="abs hd ctr" style="top:1250px;font-size:84px">My Story <span class="it">Time</span></div>
+  </div>
+</section>
+<!-- N8  Everyday moments. Their story. -->
+<section id="n8" class="sc warm">
+  <div class="pat"></div>
+  <div id="cam_n8" class="cam">
+    <div id="h8a" class="abs hd ctr" style="top:190px;font-size:96px">Everyday moments.</div>
+    <div id="h8b" class="abs hd ctr" style="top:300px;font-size:96px"><span class="it mkY">Their</span> story.</div>
+    <div id="c81" class="scard" style="left:160px;top:470px"><div class="im"><img src="img/firedrill.png" style="object-position:center"><b>RYAN'S FIRE<br>DRILL DAY</b></div>
+      <div class="ft"><div class="av"><img src="img/ryan_ref.png"></div>Ryan's Fire Drill Day<div class="heart"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9aa39b" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div></div></div>
+    <div id="c82" class="scard" style="left:180px;top:890px"><div class="im"><img src="img/m_friend.png" style="object-position:center 20%"><b>FIRST DAY<br>OF SCHOOL</b></div>
+      <div class="ft"><div class="av"><img src="img/ryan_ref.png"></div>First Day of School<div class="heart"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9aa39b" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div></div></div>
+    <div id="c83" class="scard" style="left:140px;top:1310px"><div class="im"><img src="img/m_bed.png" style="object-position:center 30%"><b>A COZY<br>BEDTIME</b></div>
+      <div class="ft"><div class="av"><img src="img/ryan_ref.png"></div>A Cozy Bedtime<div class="heart"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9aa39b" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div></div></div>
+    <div id="sp1" class="spark" style="left:140px;top:450px"><svg width="64" height="64" viewBox="0 0 24 24" fill="#eec86b"><path d="M12 1.5C12.7 8 16 11.3 22.5 12 16 12.7 12.7 16 12 22.5 11.3 16 8 12.7 1.5 12 8 11.3 11.3 8 12 1.5Z"/></svg></div>
+    <div id="sp2" class="spark" style="left:900px;top:870px"><svg width="64" height="64" viewBox="0 0 24 24" fill="#eec86b"><path d="M12 1.5C12.7 8 16 11.3 22.5 12 16 12.7 12.7 16 12 22.5 11.3 16 8 12.7 1.5 12 8 11.3 11.3 8 12 1.5Z"/></svg></div>
+    <div id="sp3" class="spark" style="left:110px;top:1290px"><svg width="64" height="64" viewBox="0 0 24 24" fill="#eec86b"><path d="M12 1.5C12.7 8 16 11.3 22.5 12 16 12.7 12.7 16 12 22.5 11.3 16 8 12.7 1.5 12 8 11.3 11.3 8 12 1.5Z"/></svg></div>
+  </div>
+</section>
+
+<!-- N9  Choose a topic, or describe what's hard -->
+<section id="n9" class="sc warm">
+  <div class="pat"></div>
+  <div id="cam_n9" class="cam">
+    <div id="h9a" class="abs hd" style="left:20px;top:260px;width:480px;text-align:center;font-size:80px">Choose <span class="it mkY">a topic</span></div>
+    <div id="or9" class="abs round" style="left:494px;top:300px;width:92px;height:92px;background:#eec86b;display:flex;align-items:center;justify-content:center;font:italic 800 40px Fraunces;color:#22362f">or</div>
+    <div id="h9b" class="abs hd" style="left:580px;top:260px;width:490px;text-align:center;font-size:80px">Describe <span class="it mkY">what’s hard</span></div>
+    <div id="pA" class="ph" style="left:40px;top:560px;width:500px;height:1004px"><img src="img/ph_topic.png"></div>
+    <div id="pB" class="ph" style="left:560px;top:620px;width:500px;height:1004px"><img src="img/ph_buddy.png"></div>
+  </div>
+</section>
+
+<!-- N10  Cast, style, silliness -->
+<section id="n10" class="sc warm">
+  <div class="pat"></div>
+  <div id="cam_n10" class="cam">
+    <div id="h10a" class="abs hd ctr" style="top:150px;font-size:116px">Who’s <span class="it mkY">in it</span></div>
+    <div id="h10b" class="abs hd ctr" style="top:150px;font-size:116px">The art <span class="it mkY">style</span></div>
+    <div id="h10c" class="abs hd ctr" style="top:150px;font-size:116px">A world <span class="it mkY">he loves</span></div>
+    <div class="step3" style="top:310px">
+      <div id="pill10" class="abs" style="left:0;top:0;width:200px;height:76px;border-radius:38px;background:#eec86b"></div>
+      <div class="s"><div class="n">1</div>Cast</div><span style="color:#9aa39b">—</span><div class="s"><div class="n">2</div>Style</div><span style="color:#9aa39b">—</span><div class="s"><div class="n">3</div>Theme</div>
+    </div>
+    <div id="strip" class="abs" style="left:0;top:440px;width:3000px;height:1300px">
+      <div id="q1" class="ph" style="left:240px;top:40px;width:600px;height:1205px"><img src="img/ph_cast.png"></div>
+      <div id="q2" class="ph" style="left:920px;top:40px;width:600px;height:1205px"><img src="img/ph_style.png"></div>
+      <div id="q3" class="ph" style="left:1600px;top:40px;width:600px;height:1205px"><img src="img/ph_theme.png"></div>
+    </div>
+  </div>
+</section>
+
+<!-- N11  Listen in my voice / highlighted words / own pace -->
+<section id="n11" class="sc warm">
+  <div class="pat"></div>
+  <div id="night11" class="abs" style="inset:0;background:linear-gradient(#152440,#243a5e);opacity:0"></div>
+  <div id="cam_n11" class="cam">
+    <div id="h11a" class="abs hd ctr" style="top:170px;font-size:90px">Listen <span class="it mkY">in my voice</span></div>
+    <div id="h11b" class="abs hd ctr" style="top:170px;font-size:90px">Follow <span class="it mkY">highlighted</span> words</div>
+    <div id="h11c" class="abs hd ctr" style="top:170px;font-size:90px;color:#fbf8f0">or read at <span class="it" style="color:#f2d77d">his own pace.</span></div>
+    <div id="rd" class="ph" style="left:220px;top:420px;width:640px;height:1286px;background:#1b1d1a">
+      <img src="img/firedrill.png" style="position:absolute;left:-520px;top:120px;width:1680px;height:940px;object-fit:cover">
+      <div class="abs" style="left:0;top:560px;width:640px;height:726px;background:linear-gradient(rgba(20,22,20,0),rgba(20,22,20,.85) 30%,#141613)"></div>
+      <div class="abs" style="left:30px;top:30px;width:580px;display:flex;gap:6px"><div style="flex:1;height:5px;border-radius:3px;background:#fff"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div><div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.35)"></div></div>
+      <div class="abs" style="left:30px;top:56px;display:flex;gap:16px;align-items:center;color:#fff"><div class="round" style="width:64px;height:64px;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:30px">✕</div><div><div style="font-size:24px;font-weight:750">Ryan's Fire Drill Day</div><div style="font-size:18px;opacity:.8">Ryan's story · Page 2 of 9</div></div></div>
+      <div id="rdt" class="abs" style="left:40px;top:820px;width:560px;font-size:40px;line-height:1.35;color:#fff;font-weight:500">When the alarm rings, I walk outside with my class.</div>
+      <div class="abs" style="left:0;top:1060px;width:640px;display:flex;justify-content:center;align-items:center;gap:50px">
+        <div class="round" style="width:84px;height:84px;background:rgba(255,255,255,.15);color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center">‹</div>
+        <div id="pp" class="round" style="width:118px;height:118px;background:#eec86b;display:flex;align-items:center;justify-content:center"><svg width="46" height="46" viewBox="0 0 24 24" fill="#22362f"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg></div>
+        <div class="round" style="width:84px;height:84px;background:rgba(255,255,255,.15);color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center">›</div></div>
+      <div class="abs" style="left:0;top:1200px;width:640px;display:flex;justify-content:space-around;color:#fff;font-size:20px"><span>🔊 Sound on</span><span>CC On</span><span>1×</span></div>
+    </div>
+    <div id="mv11" class="abs" style="left:320px;top:1740px;width:440px;height:120px;border-radius:60px;background:#fff;box-shadow:0 20px 40px rgba(40,50,35,.2);display:flex;align-items:center;gap:18px;padding:0 22px">
+      <div class="round" style="width:80px;height:80px;background:#21433c;display:flex;align-items:center;justify-content:center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg></div>
+      <div><div style="font-size:32px;font-weight:750;color:#1c2420">My voice</div><div id="mvw" style="position:relative;width:260px;height:36px;margin-top:6px"></div></div></div>
+  </div>
+</section>
+
+<!-- N12  Library -->
+<section id="n12" class="sc warm">
+  <div class="pat"></div>
+  <div id="cam_n12" class="cam">
+    <div id="h12a" class="abs hd ctr" style="top:150px;font-size:88px">Saved to <span class="it mkY">his library</span></div>
+    <div id="h12b" class="abs hd ctr" style="top:262px;font-size:58px;font-weight:700">to read <span class="it">again and again</span></div>
+    <div id="lib" class="ph" style="left:240px;top:430px;width:600px;height:1300px;background:#fbfaf6">
+      <div class="abs" style="left:26px;top:36px;display:flex;align-items:center;gap:16px"><span style="font-size:36px;color:#22362f">←</span><div class="round" style="width:62px;height:62px;background:#e8efe0"><img src="img/ryan_ref.png" style="width:100%;height:100%;object-fit:cover"></div><div><div style="font-size:20px;color:#6c776f">My Library</div><div style="font-size:34px;font-weight:600;color:#22362f">Ryan's books</div></div></div>
+      <div id="libs" class="abs" style="left:0;top:140px;width:600px;height:1000px">
+        <div class="lc" id="lc1" style="top:0"><div class="im"><img src="img/firedrill.png"><div class="newb">NEW</div><b>RYAN'S FIRE<br>DRILL DAY</b></div><div class="ft"><div class="av"><img src="img/ryan_ref.png"></div>Ryan's Fire Drill Day<div class="heart" id="hrt1" style="width:50px;height:50px;position:relative"><span id="h1o"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9aa39b" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span><span id="h1f" style="position:absolute"><svg width="32" height="32" viewBox="0 0 24 24" fill="#e0453a"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span></div></div></div>
+        <div class="lc" id="lc2" style="top:356px"><div class="im"><img src="img/m_friend.png" style="object-position:center 20%"><b>FIRST DAY<br>OF SCHOOL</b></div><div class="ft"><div class="av"><img src="img/ryan_ref.png"></div>First Day of School<div class="heart" style="width:50px;height:50px"><svg width="32" height="32" viewBox="0 0 24 24" fill="#e0453a"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div></div></div>
+        <div class="lc" id="lc3" style="top:712px"><div class="im"><img src="img/m_bed.png" style="object-position:center 30%"><b>A COZY<br>BEDTIME</b></div><div class="ft"><div class="av"><img src="img/ryan_ref.png"></div>A Cozy Bedtime<div class="heart" style="width:50px;height:50px"><svg width="32" height="32" viewBox="0 0 24 24" fill="#e0453a"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div></div></div>
+      </div>
+      <div class="tabbar"><div>⌂<span>Home</span></div><div>▤<span>Stories</span></div><div><div class="c"><svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#22362f" stroke-width="2" stroke-linecap="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/></svg></div><span>Create</span></div><div>♡<span>Favorites</span></div><div>◯<span>Parents</span></div></div>
+    </div>
+    <svg id="rep12" class="abs" style="left:880px;top:560px" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#21433c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+  </div>
+</section>
+
+<!-- N14  Make it their story -->
+<section id="n14" class="sc warm">
+  <div class="pat"></div>
+  <div id="cam_n14" class="cam">
+    <div id="fl14"></div>
+    <div id="h14" class="abs hd ctr" style="top:300px;font-size:160px;line-height:1.02">Make it <span class="it mkY">their</span> story.</div>
+    <img id="pz14" class="abs" src="img/puzzle_a.png" style="left:150px;top:700px;width:160px;transform-origin:50% 50%">
+    <img id="wm14" class="abs" src="img/wordmark.png" style="left:330px;top:735px;width:620px">
+    <div id="ln14" class="abs" style="left:465px;top:885px;width:150px;height:5px;border-radius:3px;background:#eec86b;transform-origin:50% 50%"></div>
+    <div id="mst14" class="abs hd ctr" style="top:915px;font-size:84px">My Story <span class="it">Time</span></div>
+    <div id="cards14">
+      <div class="lc" id="k1" style="left:40px;top:1120px;width:380px;transform:rotate(-8deg)"><div class="im" style="height:200px"><img src="img/m_friend.png" style="object-position:center 20%"><b style="font-size:26px">FIRST DAY<br>OF SCHOOL</b></div></div>
+      <div class="lc" id="k2" style="left:350px;top:1100px;width:380px;z-index:2"><div class="im" style="height:200px"><img src="img/firedrill.png"><b style="font-size:26px">RYAN'S FIRE<br>DRILL DAY</b></div></div>
+      <div class="lc" id="k3" style="left:660px;top:1120px;width:380px;transform:rotate(8deg)"><div class="im" style="height:200px"><img src="img/m_bed.png" style="object-position:center 30%"><b style="font-size:26px">A COZY<br>BEDTIME</b></div></div>
+    </div>
+    <div id="cta14" class="abs" style="left:100px;top:1470px;width:880px;height:140px;border-radius:70px;background:#21433c;display:flex;align-items:center;justify-content:center"><div id="t14c" style="font-size:50px;font-weight:700;color:#fff">See your child’s first story free</div></div>
+  </div>
+</section>
+<section id="s9" class="sc" style="background:linear-gradient(#0f1a2b,#23344c)">
+  <div id="stars"></div>
+  <div id="cam9" class="cam">
+    <div id="t9" class="abs serif ctr" style="top:300px;font-size:110px;color:#fbf8f0">Every night that week.</div>
+    <div id="card9" class="paper" style="left:190px;top:620px;width:700px;height:470px;padding:16px;box-shadow:0 0 120px rgba(246,220,140,.35),0 30px 60px rgba(0,0,0,.4)"><img src="img/firedrill.png" style="width:668px;height:372px;object-fit:cover;border-radius:14px"><div style="font-size:34px;font-weight:750;color:#1f2b26;padding:18px 6px">Ryan's Fire Drill Day</div></div>
+    <div id="week" class="abs" style="left:0;top:1260px;width:1080px;display:flex;justify-content:center;gap:28px"></div>
+  </div>
+</section>
+<section id="s10" class="sc" style="background:#fbf8f0">
+  <div class="pat"></div>
+  <div class="abs" style="left:0;top:0;width:1080px;height:1260px;overflow:hidden">
+    <img id="hall10" class="abs" src="img/firedrill.png" style="left:-580px;top:0;width:2240px;height:1250px;transform-origin:50% 60%"></div>
+  <div class="abs" style="left:0;top:1060px;width:1080px;height:220px;background:linear-gradient(rgba(251,248,240,0),#fbf8f0)"></div>
+  <div id="cam10" class="cam">
+    <div id="t10a" class="abs ctr" style="top:1270px;font-size:44px;color:#6c786f;font-weight:500">At the next fire drill,</div>
+    <div id="t10b" class="abs serif ctr" style="top:1340px;font-size:104px;line-height:1.1">he walked outside with his class.</div>
+    <div id="march" class="abs" style="left:0;top:1640px;width:1080px;height:220px"></div>
+  </div>
+</section>
+<section id="s11" class="sc" style="background:#fbf8f0">
+  <div class="pat"></div>
+  <div id="cam11" class="cam">
+    <div class="blob" style="left:140px;top:240px;width:800px;height:700px;background:#f3e6bf;opacity:.6"></div>
+    <div id="orbit" class="abs" style="left:540px;top:600px;width:0;height:0"></div>
+    <svg id="rp11" class="pz" style="left:390px;top:440px;width:300px;height:300px" viewBox="0 -34 134 134"></svg>
+    <div id="t11a" class="abs ctr" style="top:930px;font-size:46px;color:#6c786f;font-weight:500">It doesn’t replace his therapist.</div>
+    <div id="t11b" class="abs serif" style="left:50px;top:1040px;width:980px;text-align:center;font-size:112px;line-height:1.15">It gives him the words before he needs them.</div>
+  </div>
+</section>
+<div id="grain"></div>
+</div>
+<script src="./runtime/vendor/gsap.min.js"></script>
+<script src="./runtime/motion.js"></script>
+<script>
+const OFF = 0.4, FPS = 30, END = 2424;
+let TM = t => t;
+const F = t => Math.round((TM(t) + OFF) * FPS);
+const Fr = t => Math.round((t + OFF) * FPS);
+const M = Motion.film({ fps: FPS, duration: 80.8, width: 1080, height: 1920, clock: 'smooth' });
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const ICON = {
+  talk: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  play: '<rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3z" fill="#fff"/>',
+  sound: '<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.7"/>' };
+const pieceInner = (fill, icon) => `<use href="#PZ" fill="url(#${fill})"/><use href="#PZ" fill="url(#gS)"/><use href="#PZ" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.4"/>` +
+  (icon ? `<g transform="translate(26,26) scale(2)" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[icon]}</g>` : '');
+const ryanInner = () => `<use href="#PZ" fill="#e8efe0"/><image href="img/ryan_ref.png" x="-4" y="-30" width="142" height="142" clip-path="url(#PZC)" preserveAspectRatio="xMidYMid slice" style="mix-blend-mode:multiply"/><use href="#PZ" fill="none" stroke="#eec86b" stroke-width="3.2"/>`;
+const pzSvg = (id, x, y, s, inner, extra = '') => `<svg id="${id}" class="pz" style="left:${x}px;top:${y}px;width:${s}px;height:${s}px;${extra}" viewBox="0 -34 134 134">${inner}</svg>`;
+
+(function () {
+  document.getElementById('att').innerHTML =
+    pzSvg('pa', 300, 840, 480, pieceInner('gY', 'talk')) + pzSvg('pb', 300, 840, 480, pieceInner('gB', 'play')) +
+    pzSvg('pc', 300, 840, 480, pieceInner('gR', 'sound')) +
+    [0, 1, 2].map(i => `<div class="abs round" id="sw${i}" style="left:290px;top:830px;width:500px;height:500px;border:7px solid #e3613f;opacity:0"></div>`).join('');
+  const cols = ['gY', 'gB', 'gR', 'gG', 'gP', 'gT', 'gO', 'gB', 'gY', 'gG', 'gR', 'gP'];
+  let b = '';
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 3; c++) { const i = r * 3 + c, x = 130 + c * 260, y = 600 + r * 260;
+    b += pzSvg('bp' + i, x, y, 330, i === 4 ? ryanInner() : pieceInner(cols[i])); }
+  document.getElementById('board').innerHTML = b;
+  for (const id of ['rp3', 'rp5', 'rp11']) document.getElementById(id).innerHTML = ryanInner();
+  document.getElementById('rings3').innerHTML = [0, 1, 2].map(i => `<div class="abs round" id="r3_${i}" style="left:290px;top:610px;width:500px;height:500px;border:7px solid #ff6a4d;opacity:0"></div>`).join('');
+  // tiles of the story illustration (4 x 3)
+  let t = ''; for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) t += `<div class="tile" id="tl${r * 4 + c}" style="left:${c * 225}px;top:${(r * 167.34).toFixed(2)}px;width:225px;height:167.34px;background-size:900px 502px;background-position:-${c * 225}px -${(r * 167.34).toFixed(2)}px;${r === 0 && c === 0 ? 'border-top-left-radius:16px;' : ''}${r === 0 && c === 3 ? 'border-top-right-radius:16px;' : ''}${r === 2 && c === 0 ? 'border-bottom-left-radius:16px;' : ''}${r === 2 && c === 3 ? 'border-bottom-right-radius:16px;' : ''}"></div>`;
+  (document.getElementById('tiles') || {}).innerHTML = t;
+  let w = ''; for (let i = 0; i < 40; i++) w += `<div class="wbar" id="wb${i}" style="left:${i * 17.5}px;height:70px"></div>`;
+  (document.getElementById('wave8') || {}).innerHTML = w;
+  let st = ''; for (let i = 0; i < 60; i++) st += `<div class="abs round" id="st${i}" style="left:${(rnd() * 1080) | 0}px;top:${(rnd() * 1200) | 0}px;width:${3 + (rnd() * 5 | 0)}px;height:${3 + (rnd() * 5 | 0)}px;background:#fff;opacity:.7"></div>`;
+  document.getElementById('stars').innerHTML = st;
+  document.getElementById('week').innerHTML = ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => `<div><div class="moon" id="mn${i}"><i id="mi${i}"></i></div><div class="day">${d}</div></div>`).join('');
+  const mc = ['gY', 'gB', 'gR', 'gG', 'gP', 'gT'];
+  document.getElementById('march').innerHTML = [0, 1, 2, 3, 4, 5, 6].map(i => pzSvg('mp' + i, 20 + i * 150, 20, 170, i === 3 ? ryanInner() : pieceInner(mc[i % 6]))).join('');
+  document.getElementById('orbit').innerHTML = [0, 1, 2, 3, 4, 5].map(i => { const a = i / 6 * Math.PI * 2; return pzSvg('ob' + i, Math.cos(a) * 300 - 50, Math.sin(a) * 230 - 50, 100, pieceInner(mc[i])); }).join('');
+})();
+
+
+// faint puzzle-outline pattern (reference style)
+(function () {
+  const P = document.getElementById('PZ').getAttribute('d');
+  let g = '';
+  const spots = [[60, 80, 20, 1], [760, 40, -15, .9], [420, 380, 35, .8], [880, 520, 10, 1.1], [40, 700, -30, 1], [600, 860, 25, .9], [300, 1180, -10, 1.1], [860, 1300, 40, .8], [80, 1560, 15, 1], [560, 1640, -25, 1.1], [980, 1860, 5, .9], [380, 1960, 30, 1]];
+  for (const [x, y, r, sc] of spots) g += `<path d="${P}" transform="translate(${x} ${y}) rotate(${r}) scale(${1.6 * sc})" fill="none" stroke="#d6cdb4" stroke-width="1.6"/>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="2040" viewBox="0 0 1200 2040">${g}</svg>`;
+  const url = 'url("data:image/svg+xml;utf8,' + encodeURIComponent(svg) + '")';
+  document.querySelectorAll('.pat').forEach(p => { p.style.backgroundImage = url; p.style.backgroundSize = '1200px 2040px'; });
+  // floating colourful pieces on the end card
+  const mc = ['gY', 'gB', 'gR', 'gG', 'gP', 'gT', 'gO'];
+  const spotsE = [[60, 140, 110], [880, 120, 100], [40, 960, 90], [930, 980, 100], [140, 1700, 90], [860, 1720, 110], [480, 1800, 70]];
+  document.getElementById('fl14').innerHTML = spotsE.map(([x, y, s], i) => pzSvg('fe' + i, x, y, s, pieceInner(mc[i]))).join('');
+  let w = ''; for (let i = 0; i < 22; i++) w += `<div class="wbar" id="mw${i}" style="left:${i * 12}px;height:36px;width:7px"></div>`;
+  document.getElementById('mvw').innerHTML = w;
+})();
+
+window.__ready = Motion.loaded().then(build);
+
+function build() {
+  const $ = s => typeof s === 'string' ? document.querySelector(s) : s;
+  const KF = new Map();
+  const key = (el, prop, f, v, ease) => { el = $(el); if (!KF.has(el)) KF.set(el, {}); const m = KF.get(el); (m[prop] = m[prop] || []).push([f, v, ease]); };
+  const flush = () => { for (const [el, m] of KF) for (const p in m) { const ks = m[p].map((k, i) => [k, i]).sort((a, b) => a[0][0] - b[0][0] || a[1] - b[1]).map(x => x[0]); if (ks.length === 1) ks.push([ks[0][0] + 1, ks[0][1]]); M.kf(el, p, ks); } };
+  const pop = (el, f, o = {}) => { const fr = o.frames || 14;
+    key(el, 'opacity', 0, 0); key(el, 'opacity', f, 0); key(el, 'opacity', f + Math.min(4, fr), 1);
+    key(el, 'scale', 0, o.s0 ?? .6); key(el, 'scale', f, o.s0 ?? .6); key(el, 'scale', f + fr, o.s1 ?? 1, o.ease || 'snapSettle');
+    if (o.dy) { key(el, 'y', 0, o.dy); key(el, 'y', f, o.dy); key(el, 'y', f + fr, 0, 'softLand'); }
+    if (o.dx) { key(el, 'x', 0, o.dx); key(el, 'x', f, o.dx); key(el, 'x', f + fr, 0, 'softLand'); }
+    if (o.rot != null) { key(el, 'rotation', 0, o.rot); key(el, 'rotation', f, o.rot); key(el, 'rotation', f + fr, o.rot1 || 0, 'softLand'); } };
+  const rise = (el, f, o = {}) => { const fr = o.frames || 14, dy = o.dy ?? 60;
+    key(el, 'opacity', 0, 0); key(el, 'opacity', f, 0); key(el, 'opacity', f + 5, 1);
+    key(el, 'y', 0, dy); key(el, 'y', f, dy); key(el, 'y', f + fr, 0, o.ease || 'softLand'); };
+  const out = (el, f, o = {}) => { const fr = o.frames || 10;
+    key(el, 'opacity', f, 1); key(el, 'opacity', f + fr, 0, 'gentleIn');
+    if (o.dy != null) { key(el, 'y', f, 0); key(el, 'y', f + fr, o.dy, 'accelExit'); } };
+  const drift = (el, a, b, s0 = 1, s1 = 1.04) => { key(el, 'scale', a, s0); key(el, 'scale', b, s1); };
+  const say0 = (el, times, o = {}) => { const fr = times.map(t => F(t) - 1), gaps = fr.slice(1).map((v, i) => Math.max(1, v - fr[i]));
+    return M.words(el, Object.assign({ at: fr[0], mech: 'rise', dist: o.dist ?? 46, gaps: gaps.length ? gaps : [4], frames: 12, ease: 'softLand' }, o)); };
+  const span = (el, i) => $(el).querySelectorAll('.mw')[i];
+  // keep italic / highlighted words styled after the words are split for animation
+  const say = (el, times, o = {}) => { const host = $(el), marks = [];
+    let idx = 0; host.childNodes.forEach(n => { const ws = n.textContent.split(/\s+/).filter(Boolean); if (n.nodeType === 1) ws.forEach((_, k) => marks.push([idx + k, n.className, n.getAttribute('style') || ''])); idx += ws.length; });
+    const r = say0(el, times, o); const sp = host.querySelectorAll('.mw');
+    marks.forEach(([i, c, st]) => { if (sp[i]) { sp[i].className += ' ' + c; if (st) sp[i].style.cssText += ';' + st; } }); return r; };
+  const S = ['s1', 's2', 's3', 's4', 's5', 's7', 'n8', 'n9', 'n10', 'n11', 'n12', 's9', 's10', 's11', 'n14'];
+  const C = [-OFF, 7.0, 12.05, 18.4, 22.15, 32.15, 35.48, 45.08, 48.1, 52.62, 58.78, 64.0, 66.2, 70.04, 75.02, 99];
+  S.forEach((id, i) => { M.show('#' + id, Math.max(0, Fr(C[i])), Math.min(Fr(C[i + 1]), END)); if (i) M.mark(Fr(C[i]), 'cut', id); });
+  const W = i => [Math.max(0, Fr(C[i])), Math.min(Fr(C[i + 1]), END)];
+
+  // the story scenes were authored against the v2 voice; map their times onto the v3 read
+  const AN = [[0, 0], [0.24, 0.2], [2.0, 2.0], [2.24, 2.16], [2.427, 2.347], [3.44, 3.48], [4.0, 4.04], [6.16, 6.0], [6.32, 6.16], [6.7, 6.6], [7.2, 7.0], [8.4, 8.16], [8.8, 8.56], [9.76, 9.44], [10.0, 9.96], [10.95, 10.65], [11.12, 10.8], [11.72, 11.4], [12.3, 12.05], [12.48, 12.24], [13.0, 12.76], [13.9, 13.85], [14.0, 13.92], [14.2, 14.1], [14.3, 14.22], [15.6, 15.44], [15.88, 15.72], [16.32, 16.16], [16.7, 16.6], [16.9, 16.75], [17.04, 16.88], [17.173, 17.04], [17.28, 17.12], [18.5, 18.4], [18.64, 18.52], [19.92, 19.84], [20.4, 20.36], [20.6, 20.56], [21.2, 21.15], [21.9, 21.95], [22.0, 22.15], [22.16, 22.28], [22.4, 22.48], [22.84, 23.067], [23.44, 23.52], [23.6, 23.68], [24.08, 24.08], [24.88, 24.88], [25.08, 25.08], [25.28, 25.28], [25.6, 25.6], [25.68, 25.72], [25.92, 25.96], [26.24, 26.24], [26.4, 26.4], [26.52, 26.52], [26.72, 26.64], [27.04, 27.16], [27.44, 27.44], [27.6, 27.56], [27.8, 27.85], [28.3, 28.4], [28.48, 28.56], [28.8, 28.88], [29.68, 29.92], [30.0, 30.2], [30.56, 30.8], [30.72, 31.04], [31.04, 31.48], [31.85, 32.15], [32.0, 32.32], [32.56, 32.64], [32.84, 32.92], [33.12, 33.12], [33.44, 33.52], [34.0, 34.0], [43.0, 63.16], [99, 119.16]];
+  const mapOld = t => { if (t >= 43) return t + 20.34; for (let i = 1; i < AN.length; i++) if (t <= AN[i][0]) { const [x0, y0] = AN[i - 1], [x1, y1] = AN[i]; return y0 + (y1 - y0) * (t - x0) / (x1 - x0); } return t; };
+  TM = mapOld;
+  // ===== S1  pieces that don't fit
+  const [a1, b1] = W(0);
+  drift('#cam1', a1, b1, 1, 1.05);
+  say('#l1', [0.0, 0.24, 0.48].map(t => t + 0.0).slice(0, 3), { dist: 40 });
+  say('#l2', [2.0, 2.24, 2.427], { dist: 40 });
+  say('#l3', [3.44, 4.0, 6.16, 6.32], { dist: 40 });
+  [['#l1', 1.75], ['#l2', 3.3]].forEach(([e, t]) => { key(e, 'opacity', F(t), 1); key(e, 'opacity', F(t) + 8, .32); });
+  key('#l3', 'opacity', F(6.7), 1); key('#l3', 'opacity', F(6.7) + 8, .32);
+  const attempt = (el, tIn, tFail, from, away) => {
+    const fi = Math.max(0, F(tIn) - 3), ff = F(tFail);
+    key(el, 'x', 0, from[0]); key(el, 'x', fi, from[0]); key(el, 'x', fi + 16, 26, 'softLand'); key(el, 'x', ff, 26); key(el, 'x', ff + 4, -14); key(el, 'x', ff + 20, away[0], 'accelExit');
+    key(el, 'y', 0, from[1]); key(el, 'y', fi, from[1]); key(el, 'y', fi + 16, -30, 'softLand'); key(el, 'y', ff, -30); key(el, 'y', ff + 4, -60); key(el, 'y', ff + 20, away[1], 'accelExit');
+    key(el, 'rotation', 0, from[2]); key(el, 'rotation', fi, from[2]); key(el, 'rotation', fi + 16, from[2] / 3, 'softLand'); key(el, 'rotation', ff - 6, from[2] / 3 + 6, 'softInOut'); key(el, 'rotation', ff, from[2] / 3 - 4, 'softInOut'); key(el, 'rotation', ff + 20, away[2], 'accelExit');
+    key(el, 'scale', 0, 1.15); key(el, 'scale', fi, 1.15); key(el, 'scale', fi + 16, .9, 'softLand');
+    // the slot refuses: a little shake
+    key('#slot1', 'x', ff, 0); key('#slot1', 'x', ff + 2, 14); key('#slot1', 'x', ff + 4, -10); key('#slot1', 'x', ff + 6, 6); key('#slot1', 'x', ff + 8, 0);
+  };
+  attempt('#pa', 0.0, 1.75, [-900, -300, -70], [-700, 1300, -160]);
+  attempt('#pb', 2.0, 3.3, [900, -200, 60], [800, 1300, 170]);
+  attempt('#pc', 3.44, 6.7, [0, -1400, 40], [-200, 1500, -140]);
+  for (let k = 0; k < 6; k++) for (let i = 0; i < 3; i++) { const s = F(4.4) + k * 12 + i * 4, el = '#sw' + i;
+    if (s > F(6.6)) continue;
+    key(el, 'opacity', 0, 0); key(el, 'opacity', s, .55); key(el, 'opacity', s + 18, 0, 'glide'); key(el, 'scale', 0, 1); key(el, 'scale', s, 1); key(el, 'scale', s + 18, 1.9, 'glide'); key(el, 'scale', s + 19, 1); }
+
+  // ===== S2  the board empties, except mine
+  const [a2, b2] = W(1);
+  pop('#board', a2, { s0: 1.12, frames: 14, ease: 'softLand' });
+  say('#t2a', [8.4, 8.8, 9.76, 10.0], { dist: 40 });
+  out('#t2a', F(10.95), { dy: -40, frames: 8 });
+  say('#t2b', [11.12, 11.72], { mech: 'shrink', dist: 1.35 });
+  span('#t2b', 1).style.color = '#c9542f';
+  for (let i = 0; i < 12; i++) { if (i === 4) continue; const r = (i / 3) | 0, c = i % 3, s = F(9.76) + (2 - c) * 3 + r * 2 + ((i * 7) % 4), el = '#bp' + i;
+    key(el, 'x', s, 0); key(el, 'x', s + 22, 1250 - c * 260, 'gentleIn');
+    key(el, 'rotation', s, 0); key(el, 'rotation', s + 8, (i % 2 ? 6 : -6), 'softInOut'); key(el, 'rotation', s + 22, (i % 2 ? -4 : 4), 'softInOut'); }
+  key('#door2', 'opacity', 0, .6); key('#door2', 'opacity', F(10.2), 1); key('#door2', 'opacity', F(11.4), .35);
+  // Ryan's piece is left alone, the camera finds him
+  key('#bp4', 'x', F(11.12), 0); key('#bp4', 'x', F(11.12) + 18, 0); key('#bp4', 'y', F(11.12), 0); key('#bp4', 'y', F(11.12) + 18, -60, 'softInOut');
+  key('#bp4', 'scale', F(11.12), 1); key('#bp4', 'scale', F(11.12) + 18, 1.35, 'softInOut');
+  key('#bp4', 'rotation', F(11.72), 0); key('#bp4', 'rotation', F(11.72) + 4, -3, 'softInOut'); key('#bp4', 'rotation', F(11.72) + 10, 0, 'softInOut');
+  drift('#cam2', a2, b2, 1, 1.06);
+
+  // ===== S3  the alarm
+  const [a3, b3] = W(2);
+  pop('#rp3wrap', a3, { s0: .82, frames: 12, ease: 'softLand' });
+  say('#t3a', [12.48, 13.0], { dist: 40 });
+  span('#t3a', 1).style.color = '#2e5a4d';
+  out('#t3a', F(13.9), { dy: -30, frames: 8 });
+  key('#dark3', 'opacity', 0, 0); key('#dark3', 'opacity', F(14.0), 0); key('#dark3', 'opacity', F(14.0) + 6, 1);
+  key('#beam', 'opacity', 0, 0); key('#beam', 'opacity', F(14.0), 0); key('#beam', 'opacity', F(14.0) + 6, 1);
+  key('#beam', 'rotation', F(14.0), 0); key('#beam', 'rotation', b3, 720);
+  for (let k = 0; k < 9; k++) for (let i = 0; i < 3; i++) { const s = F(14.3) + k * 15 + i * 5, el = '#r3_' + i; if (s > b3 - 4) continue;
+    key(el, 'opacity', 0, 0); key(el, 'opacity', s, .6); key(el, 'opacity', s + 20, 0, 'glide'); key(el, 'scale', 0, 1); key(el, 'scale', s, 1); key(el, 'scale', s + 20, 2.2, 'glide'); key(el, 'scale', s + 21, 1); }
+  for (let f = F(14.2); f < b3; f += 2) key('#rp3', 'x', f, ((f * 37) % 11) - 5);
+  say('#t3b', [15.6, 15.88, 16.32], { dist: 40 });
+  const ps = span('#t3b', 2), h3 = $('#t3b');
+  Object.assign($('#strike3').style, { left: (h3.offsetLeft + ps.offsetLeft - 8) + 'px', top: (h3.offsetTop + ps.offsetTop + ps.offsetHeight * .52) + 'px', width: (ps.offsetWidth + 16) + 'px' });
+  key('#strike3', 'scaleX', 0, 0); key('#strike3', 'scaleX', F(16.7), 0); key('#strike3', 'scaleX', F(16.7) + 6, 1, 'softLand');
+  key('#t3b', 'opacity', F(16.9), 1); key('#t3b', 'opacity', F(16.9) + 6, .45);
+  say('#t3c', [17.04, 17.173, 17.28], { mech: 'shrink', words: (i) => i === 2 ? { scale: 1.6, frames: 14 } : null });
+  drift('#cam3', a3, b3, 1, 1.08);
+
+  // ===== S4  telling isn't showing
+  const [a4, b4] = W(3);
+  key('#blur4', 'scale', a4, 1.08); key('#blur4', 'scale', b4, 1.0);
+  say('#t4', [18.64, 19.92, 20.4], { dist: 50 });
+  span('#t4', 2).style.color = '#f6dc8c';
+  // a small lens drifts over the scene: he only ever sees a sliver
+  const lens = [[F(20.6), 140, 1500], [F(21.2), 620, 1200], [F(21.9), 360, 900]];
+  key('#lens', 'opacity', 0, 0); key('#lens', 'opacity', F(20.6), 0); key('#lens', 'opacity', F(20.6) + 6, 1);
+  key('#lens', 'scale', 0, .3); key('#lens', 'scale', F(20.6), .3); key('#lens', 'scale', F(20.6) + 10, 1, 'snapSettle');
+  lens.forEach(([f, x, y], i) => { const e = i ? 'softInOut' : undefined; key('#lens', 'x', f, x, e); key('#lens', 'y', f, y, e); key('#lensimg', 'x', f, -x, e); key('#lensimg', 'y', f, -y, e); });
+  drift('#cam4', a4, b4, 1, 1.03);
+
+  // ===== S5  a social story: a path through the moment; then the pages go blank
+  const [a5, b5] = W(4);
+  say('#t5a', [22.16, 22.4, 22.84], { dist: 30 });
+  say('#t5b', [23.44, 23.6, 24.08], { mech: 'shrink', dist: 1.4, frames: 14 });
+  say('#t5c', [24.88, 25.08, 25.28, 25.68, 25.92, 26.24, 26.4, 26.52, 26.72, 27.04, 27.44, 27.6], { dist: 34 });
+  [8, 9, 10, 11].forEach(i => span('#t5c', i).classList.add('mk'));
+  pop('#ch1', F(26.0), { s0: .7, dy: 30, frames: 12 }); $('#ch1').style.transformOrigin = '0 50%';
+  pop('#ch2', F(26.6), { s0: .7, dy: 30, frames: 12 }); $('#ch2').style.transformOrigin = '0 50%';
+  const P5 = $('#path5'), L5 = P5.getTotalLength();
+  const pd = $('#path5svg'); key(pd, 'opacity', 0, 0); key(pd, 'opacity', F(24.88), 0); key(pd, 'opacity', F(24.88) + 8, 1);
+  key(pd, 'clipPath', 0, 'inset(100% 0 0 0)'); key(pd, 'clipPath', F(24.88), 'inset(100% 0 0 0)'); key(pd, 'clipPath', F(27.2), 'inset(0% 0 0 0)');
+  pop('#pg_a', F(25.3), { s0: .6, rot: -12, rot1: -4, frames: 14 });
+  pop('#pg_b', F(25.9), { s0: .6, rot: 10, rot1: 3, frames: 14 });
+  pop('#pg_c', F(26.5), { s0: .6, rot: -8, rot1: -2, frames: 14 });
+  pop('#mark5', F(27.04), { s0: .3, frames: 14 });
+  // Ryan's piece walks the path, through the moment
+  const r5a = F(25.6), r5b = F(27.8);
+  for (let f = r5a; f <= r5b; f += 2) { const u = Math.min(1, (f - r5a) / (r5b - r5a)), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2, p = P5.getPointAtLength(e * L5);
+    key('#rp5', 'x', f, p.x - 85); key('#rp5', 'y', f, p.y - 100); }
+  key('#rp5', 'opacity', 0, 0); key('#rp5', 'opacity', r5a, 0); key('#rp5', 'opacity', r5a + 4, 1);
+  // "Great idea. Except I can't draw."
+  ['#t5a', '#t5b', '#t5c', '#ch1', '#ch2'].forEach(e => out(e, F(28.3), { dy: -60, frames: 8 }));
+  say('#t6a', [28.48, 28.8], { dist: 40 });
+  say('#t6b', [29.68, 30.56, 30.72, 31.04], { dist: 40 });
+  [['#pg_a', 29.7], ['#pg_b', 29.85], ['#pg_c', 30.0]].forEach(([p, t]) => { key(p, 'transformPerspective', 0, 1600); key(p, 'rotationY', 0, 0); key(p, 'rotationY', F(t), 0); key(p, 'rotationY', F(t) + 12, 180, 'softInOut');
+    key(p, 'y', F(31.05), 0); key(p, 'y', F(31.05) + 16, 1300, 'accelExit'); });
+  key(pd, 'opacity', F(30.4), 1); key(pd, 'opacity', F(30.4) + 10, 0);
+  key('#mark5', 'opacity', F(30.4), 1); key('#mark5', 'opacity', F(30.4) + 10, .0);
+  key('#rp5', 'opacity', F(30.6), 1); key('#rp5', 'opacity', F(30.6) + 10, .25);
+  drift('#cam5', a5, b5, 1, 1.04);
+
+  // ===== S7  the piece that fits
+  const [a7, b7] = W(5);
+  say('#t7', [32.0, 32.56, 32.84], { dist: 30 });
+  key('#logo7', 'y', 0, -1200); key('#logo7', 'y', F(33.12) - 6, -1200); key('#logo7', 'y', F(33.12) + 6, 0, 'softLand');
+  key('#logo7', 'rotation', 0, 70); key('#logo7', 'rotation', F(33.12) - 6, 70); key('#logo7', 'rotation', F(33.12) + 8, 0, 'softLand');
+  key('#logo7', 'scale', F(33.12) + 6, 1); key('#logo7', 'scale', F(33.12) + 8, .92); key('#logo7', 'scale', F(33.12) + 14, 1, 'snapSettle');
+  key('#slot7', 'opacity', F(33.12) + 6, 1); key('#slot7', 'opacity', F(33.12) + 12, 0);
+  key('#burst7', 'opacity', 0, 0); key('#burst7', 'opacity', F(33.12) + 5, 0); key('#burst7', 'opacity', F(33.12) + 6, .9); key('#burst7', 'opacity', F(33.12) + 26, 0, 'glide');
+  key('#burst7', 'scale', 0, .7); key('#burst7', 'scale', F(33.12) + 6, .7); key('#burst7', 'scale', F(33.12) + 26, 2.2, 'glide');
+  key('#glow7', 'opacity', 0, 0); key('#glow7', 'opacity', F(33.12) + 6, 0); key('#glow7', 'opacity', F(33.12) + 14, 1);
+  rise('#wm7', F(33.44), { dy: 40 });
+  drift('#cam7', a7, b7, 1, 1.05);
+
+  // ===== S9  every night that week
+  const [a9, b9] = W(11);
+  for (let i = 0; i < 60; i++) { const el = '#st' + i, ph = (i * 7) % 12; for (let f = a9 + ph; f < b9; f += 12) { key(el, 'opacity', f, .25); key(el, 'opacity', f + 6, .9, 'softInOut'); } }
+  pop('#card9', a9, { s0: .9, dy: 60, frames: 14 });
+  say('#t9', [44.48, 44.72, 45.04, 45.2], { dist: 40 });
+  for (let i = 0; i < 7; i++) { const f = F(43.95) + i * 7; key('#mi' + i, 'opacity', 0, 0); key('#mi' + i, 'opacity', f, 0); key('#mi' + i, 'opacity', f + 5, 1); key('#mn' + i, 'scale', f, 1); key('#mn' + i, 'scale', f + 4, 1.18, 'softLand'); key('#mn' + i, 'scale', f + 10, 1, 'softInOut'); }
+  drift('#cam9', a9, b9, 1, 1.05);
+
+  // ===== S10  the next fire drill
+  const [a10, b10] = W(12);
+  key('#hall10', 'scale', a10, 1.14); key('#hall10', 'scale', b10, 1.0);
+  say('#t10a', [46.0, 46.12, 46.24, 46.48, 46.8], { dist: 26 });
+  say('#t10b', [47.44, 47.68, 48.12, 48.48, 48.68, 49.04], { dist: 50 });
+  span('#t10b', 2).style.color = '#2e5a4d'; span('#t10b', 5).style.color = '#2e5a4d';
+  for (let i = 0; i < 7; i++) { const el = '#mp' + i, s = F(47.6) + i * 2;
+    key(el, 'x', 0, -1200); key(el, 'x', s, -1200); key(el, 'x', s + 18, 0, 'softLand'); key(el, 'x', b10, 60);
+    for (let f = s; f < b10; f += 8) key(el, 'y', f + (i % 2) * 4, ((f - s) / 8) % 2 ? -10 : 0, 'softInOut'); }
+
+  // ===== S11  the words before he needs them
+  const [a11, b11] = W(13);
+  pop('#rp11', a11, { s0: .7, frames: 14 });
+  for (let i = 0; i < 6; i++) pop('#ob' + i, a11 + 4 + i * 2, { s0: .2, frames: 12 });
+  key('#orbit', 'rotation', a11, 0); key('#orbit', 'rotation', b11, 50);
+  say('#t11a', [49.76, 49.92, 50.16, 50.64, 50.8], { dist: 26 });
+  key('#t11a', 'opacity', F(51.7), 1); key('#t11a', 'opacity', F(51.7) + 10, .5);
+  say('#t11b', [51.84, 51.96, 52.24, 52.4, 52.68, 53.12, 53.44, 53.6, 53.92], { dist: 50 });
+  const wd = span('#t11b', 4); wd.classList.add('mk'); wd.style.backgroundSize = '0% 100%';
+  key(wd, 'backgroundSize', F(52.8), '0% 100%'); key(wd, 'backgroundSize', F(52.8) + 10, '100% 100%');
+  span('#t11b', 5).style.color = '#2e5a4d';
+  drift('#cam11', a11, b11, 1, 1.05);
+
+
+  // ======================= NEW PRODUCT SECTION (reference style) =======================
+  TM = t => (t >= 52.44 ? t + 0.18 : t);   // the spliced theme line runs 0.18 s longer than the line it replaced
+  // s7 extra: "My Story Time"
+  say('#mst7', [34.08, 34.4, 34.72], { dist: 40 });
+  // ===== N8  Everyday moments. Their story.
+  { const [a, b] = W(6);
+    say('#h8a', [36.16, 36.48], { dist: 50 });
+    [['#c81', 37.36, -6], ['#c82', 38.52, 3], ['#c83', 39.44, -3]].forEach(([c, t, r]) => pop(c, F(t) - 2, { s0: .8, dy: 260, rot: r * 3, rot1: r, frames: 16, ease: 'softLand' }));
+    // "personalized, illustrated stories": the cards breathe in turn
+    [['#c81', 41.4], ['#c82', 41.7], ['#c83', 42.0]].forEach(([c, t]) => { key(c, 'scale', F(t), 1); key(c, 'scale', F(t) + 6, 1.05, 'softInOut'); key(c, 'scale', F(t) + 14, 1, 'softInOut'); });
+    say('#h8b', [43.52, 43.92], { dist: 50 });
+    ['#sp1', '#sp2', '#sp3'].forEach((s, i) => { pop(s, F(43.6) + i * 4, { s0: 0, rot: -90, rot1: 0, frames: 12 }); key(s, 'rotation', F(43.6) + i * 4 + 12, 0); key(s, 'rotation', b, 90); });
+    drift('#cam_n8', a, b, 1, 1.05); }
+  // ===== N9  Choose a topic or describe what's hard
+  { const [a, b] = W(7);
+    say('#h9a', [45.2, 45.44, 45.76], { dist: 40 });
+    pop('#pA', F(45.3), { s0: .9, dy: 700, rot: -10, rot1: -4, frames: 18, ease: 'softLand' });
+    pop('#or9', F(46.24), { s0: .2, frames: 10 });
+    say('#h9b', [46.72, 47.2, 47.52], { dist: 40 });
+    pop('#pB', F(46.6), { s0: .9, dy: 700, rot: 10, rot1: 4, frames: 18, ease: 'softLand' });
+    drift('#cam_n9', a, b, 1, 1.04); }
+  // ===== N10  Cast, style, silliness
+  { const [a, b] = W(8);
+    const pill = $('#pill10'), st = [...document.querySelectorAll('.step3 .s')];
+    const pos = st.map(e => [e.offsetLeft, e.offsetWidth]);
+    const moves = [[48.58, 0], [49.82, 1], [51.22, 2]];
+    key(pill, 'x', 0, pos[0][0]); key(pill, 'width', 0, pos[0][1]);
+    for (const k of [1, 2]) { const [t, i] = moves[k]; key(pill, 'x', F(t) - 8, pos[i - 1][0]); key(pill, 'x', F(t), pos[i][0], 'snapSettle'); key(pill, 'width', F(t) - 8, pos[i - 1][1]); key(pill, 'width', F(t), pos[i][1], 'snapSettle'); }
+    pop('#q1', a, { s0: .9, dy: 300, frames: 16, ease: 'softLand' });
+    say('#h10a', [48.9, 49.14], { dist: 40 }); out('#h10a', F(49.74), { dy: -30, frames: 6 });
+    say('#h10b', [49.82, 49.94, 50.38], { dist: 40 }); out('#h10b', F(51.14), { dy: -30, frames: 6 });
+    say('#h10c', [51.22, 51.38, 51.78, 51.94], { dist: 40 });
+    key('#strip', 'x', F(49.66), 0); key('#strip', 'x', F(49.66) + 14, -680, 'whip'); key('#strip', 'x', F(51.06), -680); key('#strip', 'x', F(51.06) + 14, -1360, 'whip');
+    [['#q1', 49.66, 'out'], ['#q2', 49.66, 'in'], ['#q2', 51.06, 'out'], ['#q3', 51.06, 'in']].forEach(([q, t, d]) => { const f = F(t);
+      key(q, 'opacity', f, d === 'in' ? .55 : 1); key(q, 'opacity', f + 14, d === 'in' ? 1 : .55, 'softInOut'); });
+    key('#q2', 'opacity', 0, .55); key('#q3', 'opacity', 0, .55);
+    // a world he loves: the theme screen gets a gentle lift
+    key('#q3', 'scale', F(51.94), 1); key('#q3', 'scale', F(51.94) + 8, 1.04, 'softInOut'); key('#q3', 'scale', F(51.94) + 18, 1, 'softInOut');
+    drift('#cam_n10', a, b, 1, 1.03); }
+  // ===== N11  listen in my voice / highlighted words / own pace
+  { const [a, b] = W(9);
+    pop('#rd', a, { s0: .9, dy: 400, frames: 16, ease: 'softLand' });
+    say('#h11a', [53.16, 53.88, 54.0, 54.24], { dist: 40 }); out('#h11a', F(54.95), { dy: -30, frames: 6 });
+    pop('#mv11', F(53.9), { s0: .6, dy: 40, frames: 12 }); out('#mv11', F(56.6), { frames: 8 });
+    for (let i = 0; i < 22; i++) { const el = '#mw' + i; key(el, 'scaleY', 0, .2); for (let f = F(53.9); f <= F(56.8); f += 3) key(el, 'scaleY', f, .2 + .8 * Math.abs(Math.sin(f * .27 + i * .6)), 'softInOut'); }
+    say('#h11b', [55.04, 55.52, 56.08], { dist: 40 }); out('#h11b', F(56.75), { dy: -30, frames: 6 });
+    // karaoke highlight on the reader text
+    const rdw = M.words('#rdt', { at: a + 2, mech: 'focus', gaps: 1, frames: 4 });
+    const ws = [...document.querySelectorAll('#rdt .mw')], hs = F(55.0), he = F(56.75), g = (he - hs) / ws.length;
+    ws.forEach((w, i) => { const f = Math.round(hs + i * g); key(w, 'color', f - 1, '#ffffff'); key(w, 'color', f, '#eec86b'); key(w, 'color', Math.round(f + g), i === ws.length - 1 ? '#eec86b' : '#ffffff'); });
+    key('#night11', 'opacity', 0, 0); key('#night11', 'opacity', F(56.8), 0); key('#night11', 'opacity', F(56.8) + 8, 1);
+    say('#h11c', [56.84, 57.12, 57.48, 57.6, 57.76, 58.0], { dist: 40 });
+    key('#rd', 'y', F(56.8), 0); key('#rd', 'y', b, 30);
+    drift('#cam_n11', a, b, 1, 1.03); }
+  // ===== N12  library
+  { const [a, b] = W(10);
+    pop('#lib', a, { s0: .9, dy: 400, frames: 16, ease: 'softLand' });
+    say('#h12a', [59.92, 60.24, 60.4, 60.56], { dist: 40 });
+    key('#h1f', 'scale', 0, 0); key('#h1f', 'scale', F(60.6), 0); key('#h1f', 'scale', F(60.6) + 8, 1, 'snapSettle');
+    key('#libs', 'y', F(60.9), 0); key('#libs', 'y', F(61.6), -120, 'softInOut');
+    say('#h12b', [61.84, 62.08, 62.24, 62.8, 62.96], { dist: 30 });
+    pop('#rep12', F(62.2), { s0: .3, frames: 10 });
+    key('#rep12', 'rotation', F(62.24), 0); key('#rep12', 'rotation', F(62.24) + 14, 360, 'softInOut'); key('#rep12', 'rotation', F(62.96), 360); key('#rep12', 'rotation', F(62.96) + 14, 720, 'softInOut');
+    [62.24, 62.96].forEach(t => { key('#lc1', 'y', F(t), 0); key('#lc1', 'y', F(t) + 5, -24, 'softLand'); key('#lc1', 'y', F(t) + 12, 0, 'softInOut'); });
+    drift('#cam_n12', a, b, 1, 1.04); }
+  // ===== N14  Make it their story
+  { const [a] = W(14);
+    say('#h14', [74.88, 75.16, 75.4, 75.6], { mech: 'shrink', dist: 1.3, frames: 14 });
+    pop('#pz14', F(75.9), { s0: 2.4, rot: -70, rot1: 0, frames: 14, ease: 'softLand' });
+    rise('#wm14', F(76.0), { dy: 30 });
+    key('#ln14', 'scaleX', 0, 0); key('#ln14', 'scaleX', F(76.2), 0); key('#ln14', 'scaleX', F(76.2) + 10, 1, 'softLand');
+    rise('#mst14', F(76.3), { dy: 30 });
+    ['#k1', '#k2', '#k3'].forEach((k, i) => rise(k, F(76.5) + i * 3, { dy: 300, frames: 16 }));
+    pop('#cta14', F(76.56), { s0: .7, frames: 12 });
+    say('#t14c', [76.56, 76.8, 77.12, 77.56, 77.92, 78.4], { dist: 24, frames: 9 });
+    for (let i = 0; i < 7; i++) { pop('#fe' + i, a + 4 + i * 3, { s0: .2, rot: (i % 2 ? 60 : -60), rot1: 0, frames: 14 }); key('#fe' + i, 'y', a + 18, 0); key('#fe' + i, 'y', END, (i % 2 ? -40 : 40)); }
+    key('#cam_n14', 'scale', a, 1); key('#cam_n14', 'scale', F(78.5), 1.03); key('#cam_n14', 'scale', F(80.0), 1.08, 'softInOut');
+    key('#pz14', 'rotation', F(78.5), 0); key('#pz14', 'rotation', F(79.6), 14, 'softInOut'); key('#pz14', 'rotation', F(80.1), 0, 'softInOut');
+    key('#cta14', 'scale', F(79.2), 1); key('#cta14', 'scale', F(79.45), 1.05, 'softInOut'); key('#cta14', 'scale', F(79.8), 1, 'softInOut'); }
+  flush();
+}
+</script>
+</body>
+</html>
