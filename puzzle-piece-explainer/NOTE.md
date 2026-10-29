@@ -42,3 +42,9 @@ The research cards are stylised citation cards, not reproductions of the reports
 - **G3:** PASS. End hold 0.77 s.
 - **G5:** one C7 lead, the spoken line "It doesn't replace his therapist" sitting above the headline. I kept it because it's in the voiceover.
 - **No music or sound effects.** Every cut and word is listed in `final_9x16.mp4.events.json` for placing them.
+
+## Revision: blonde Ryan and the fire drill story
+- Ryan now matches the character reference (blonde, camo hoodie) everywhere he appears: the opening kid figure, the portrait, the family row, Who's in it, and both story cards.
+- The story is now "Ryan's Fire Drill Day". It uses the supplied hallway illustration in the family card, the book page, the "my voice" background, the reading hero and the free-account card.
+- The book page text now reads: "When the alarm rings, I walk outside with my class." This line is illustrative.
+- The page revealed by the second page-turn now shows the Cartoon style art in place of the train cover.

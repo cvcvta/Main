@@ -1197,61 +1197,61 @@
   "t": 52.5667,
   "frame": 1577,
   "type": "enter",
-  "label": "I'm"
+  "label": "When"
  },
  {
   "t": 52.5667,
   "frame": 1577,
   "type": "word",
-  "label": "I'm"
+  "label": "When"
  },
  {
   "t": 52.6333,
   "frame": 1579,
   "type": "enter",
-  "label": "so"
+  "label": "the"
  },
  {
   "t": 52.6333,
   "frame": 1579,
   "type": "word",
-  "label": "so"
+  "label": "the"
  },
  {
   "t": 52.7,
   "frame": 1581,
   "type": "enter",
-  "label": "excited!"
+  "label": "alarm"
  },
  {
   "t": 52.7,
   "frame": 1581,
   "type": "word",
-  "label": "excited!"
+  "label": "alarm"
  },
  {
   "t": 52.7667,
   "frame": 1583,
   "type": "enter",
-  "label": "Today"
+  "label": "rings,"
  },
  {
   "t": 52.7667,
   "frame": 1583,
   "type": "word",
-  "label": "Today"
+  "label": "rings,"
  },
  {
   "t": 52.8333,
   "frame": 1585,
   "type": "enter",
-  "label": "is"
+  "label": "I"
  },
  {
   "t": 52.8333,
   "frame": 1585,
   "type": "word",
-  "label": "is"
+  "label": "I"
  },
  {
   "t": 52.9,
@@ -1269,37 +1269,37 @@
   "t": 52.9,
   "frame": 1587,
   "type": "enter",
-  "label": "the"
+  "label": "walk"
  },
  {
   "t": 52.9,
   "frame": 1587,
   "type": "word",
-  "label": "the"
+  "label": "walk"
  },
  {
   "t": 52.9667,
   "frame": 1589,
   "type": "enter",
-  "label": "day—Dad"
+  "label": "outside"
  },
  {
   "t": 52.9667,
   "frame": 1589,
   "type": "word",
-  "label": "day—Dad"
+  "label": "outside"
  },
  {
   "t": 53.0333,
   "frame": 1591,
   "type": "enter",
-  "label": "and"
+  "label": "with"
  },
  {
   "t": 53.0333,
   "frame": 1591,
   "type": "word",
-  "label": "and"
+  "label": "with"
  },
  {
   "t": 53.1,
@@ -1317,97 +1317,25 @@
   "t": 53.1,
   "frame": 1593,
   "type": "enter",
-  "label": "I"
+  "label": "my"
  },
  {
   "t": 53.1,
   "frame": 1593,
   "type": "word",
-  "label": "I"
+  "label": "my"
  },
  {
   "t": 53.1667,
   "frame": 1595,
   "type": "enter",
-  "label": "are"
+  "label": "class."
  },
  {
   "t": 53.1667,
   "frame": 1595,
   "type": "word",
-  "label": "are"
- },
- {
-  "t": 53.2333,
-  "frame": 1597,
-  "type": "enter",
-  "label": "going"
- },
- {
-  "t": 53.2333,
-  "frame": 1597,
-  "type": "word",
-  "label": "going"
- },
- {
-  "t": 53.3,
-  "frame": 1599,
-  "type": "enter",
-  "label": "on"
- },
- {
-  "t": 53.3,
-  "frame": 1599,
-  "type": "word",
-  "label": "on"
- },
- {
-  "t": 53.3667,
-  "frame": 1601,
-  "type": "enter",
-  "label": "a"
- },
- {
-  "t": 53.3667,
-  "frame": 1601,
-  "type": "word",
-  "label": "a"
- },
- {
-  "t": 53.4333,
-  "frame": 1603,
-  "type": "enter",
-  "label": "real"
- },
- {
-  "t": 53.4333,
-  "frame": 1603,
-  "type": "word",
-  "label": "real"
- },
- {
-  "t": 53.5,
-  "frame": 1605,
-  "type": "enter",
-  "label": "train"
- },
- {
-  "t": 53.5,
-  "frame": 1605,
-  "type": "word",
-  "label": "train"
- },
- {
-  "t": 53.5667,
-  "frame": 1607,
-  "type": "enter",
-  "label": "adventure!"
- },
- {
-  "t": 53.5667,
-  "frame": 1607,
-  "type": "word",
-  "label": "adventure!"
+  "label": "class."
  },
  {
   "t": 53.7333,
