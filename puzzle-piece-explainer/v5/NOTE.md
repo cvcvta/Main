@@ -1,6 +1,6 @@
 # Puzzle Piece – v5 (extended features + science), 9:16
 
-- `final_9x16.mp4`: 1080x1920, 30 fps, 110.6 s, voice is take A (Linda, ElevenLabs), loudness-normalized.
+- `final_9x16.mp4`: 1080x1920, 30 fps, 127 s, voice is take A with extra pauses at sentence breaks (vo_v5_takeA_spaced.mp3) (Linda, ElevenLabs), loudness-normalized.
 - `index_9x16.html` + `img/`: the source for the animation (Motion runtime), in the v3/v3.1 style.
 - `vo_v5_takeA.mp3` (used) and `vo_v5_takeB.mp3`: the two voice takes.
 

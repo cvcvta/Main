@@ -126,2498 +126,2510 @@
   "label": "sound."
  },
  {
-  "t": 7.4,
-  "frame": 222,
+  "t": 7.6667,
+  "frame": 230,
   "type": "show",
   "label": "#s2"
  },
  {
-  "t": 7.4,
-  "frame": 222,
+  "t": 7.6667,
+  "frame": 230,
   "type": "cut",
   "label": "s2"
  },
  {
-  "t": 8.5333,
-  "frame": 256,
+  "t": 8.7667,
+  "frame": 263,
   "type": "enter",
   "label": "Every"
  },
  {
-  "t": 8.5333,
-  "frame": 256,
+  "t": 8.7667,
+  "frame": 263,
   "type": "word",
   "label": "Every"
  },
  {
-  "t": 8.8333,
-  "frame": 265,
+  "t": 9.1,
+  "frame": 273,
   "type": "enter",
   "label": "kid"
  },
  {
-  "t": 8.8333,
-  "frame": 265,
+  "t": 9.1,
+  "frame": 273,
   "type": "word",
   "label": "kid"
  },
  {
-  "t": 9.7333,
-  "frame": 292,
+  "t": 9.9667,
+  "frame": 299,
   "type": "enter",
   "label": "walked"
  },
  {
-  "t": 9.7333,
-  "frame": 292,
+  "t": 9.9667,
+  "frame": 299,
   "type": "word",
   "label": "walked"
  },
  {
-  "t": 10.2333,
-  "frame": 307,
+  "t": 10.5,
+  "frame": 315,
   "type": "enter",
   "label": "outside."
  },
  {
-  "t": 10.2333,
-  "frame": 307,
+  "t": 10.5,
+  "frame": 315,
   "type": "word",
   "label": "outside."
  },
  {
-  "t": 11.1,
-  "frame": 333,
+  "t": 11.6,
+  "frame": 348,
   "type": "enter",
   "label": "Except"
  },
  {
-  "t": 11.1,
-  "frame": 333,
+  "t": 11.6,
+  "frame": 348,
   "type": "word",
   "label": "Except"
  },
  {
-  "t": 11.7,
-  "frame": 351,
+  "t": 12.2,
+  "frame": 366,
   "type": "enter",
   "label": "mine."
  },
  {
-  "t": 11.7,
-  "frame": 351,
+  "t": 12.2,
+  "frame": 366,
   "type": "word",
   "label": "mine."
  },
  {
-  "t": 12.3,
-  "frame": 369,
+  "t": 13.1667,
+  "frame": 395,
   "type": "show",
   "label": "#s3"
  },
  {
-  "t": 12.3,
-  "frame": 369,
+  "t": 13.1667,
+  "frame": 395,
   "type": "cut",
   "label": "s3"
  },
  {
-  "t": 12.4333,
-  "frame": 373,
+  "t": 13.3,
+  "frame": 399,
   "type": "enter",
   "label": "Ryan’s"
  },
  {
-  "t": 12.4333,
-  "frame": 373,
+  "t": 13.3,
+  "frame": 399,
   "type": "word",
   "label": "Ryan’s"
  },
  {
-  "t": 12.9667,
-  "frame": 389,
+  "t": 13.8333,
+  "frame": 415,
   "type": "enter",
   "label": "autistic."
  },
  {
-  "t": 12.9667,
-  "frame": 389,
+  "t": 13.8333,
+  "frame": 415,
   "type": "word",
   "label": "autistic."
  },
  {
-  "t": 15.4,
-  "frame": 462,
+  "t": 16.2667,
+  "frame": 488,
   "type": "enter",
   "label": "It’s"
  },
  {
-  "t": 15.4,
-  "frame": 462,
+  "t": 16.2667,
+  "frame": 488,
   "type": "word",
   "label": "It’s"
  },
  {
-  "t": 15.6333,
-  "frame": 469,
+  "t": 16.5,
+  "frame": 495,
   "type": "enter",
   "label": "not"
  },
  {
-  "t": 15.6333,
-  "frame": 469,
+  "t": 16.5,
+  "frame": 495,
   "type": "word",
   "label": "not"
  },
  {
-  "t": 15.8,
-  "frame": 474,
+  "t": 16.6667,
+  "frame": 500,
   "type": "enter",
   "label": "practice."
  },
  {
-  "t": 15.8,
-  "frame": 474,
+  "t": 16.6667,
+  "frame": 500,
   "type": "word",
   "label": "practice."
  },
  {
-  "t": 16.7,
-  "frame": 501,
+  "t": 17.5333,
+  "frame": 526,
   "type": "enter",
   "label": "It’s"
  },
  {
-  "t": 16.7,
-  "frame": 501,
+  "t": 17.5333,
+  "frame": 526,
   "type": "word",
   "label": "It’s"
  },
  {
-  "t": 16.8333,
-  "frame": 505,
+  "t": 17.7,
+  "frame": 531,
   "type": "enter",
   "label": "an"
  },
  {
-  "t": 16.8333,
-  "frame": 505,
+  "t": 17.7,
+  "frame": 531,
   "type": "word",
   "label": "an"
  },
  {
-  "t": 16.9333,
-  "frame": 508,
+  "t": 17.7667,
+  "frame": 533,
   "type": "enter",
   "label": "emergency."
  },
  {
-  "t": 16.9333,
-  "frame": 508,
+  "t": 17.7667,
+  "frame": 533,
   "type": "word",
   "label": "emergency."
  },
  {
-  "t": 18,
-  "frame": 540,
+  "t": 19.1,
+  "frame": 573,
   "type": "show",
   "label": "#s4"
  },
  {
-  "t": 18,
-  "frame": 540,
+  "t": 19.1,
+  "frame": 573,
   "type": "cut",
   "label": "s4"
  },
  {
-  "t": 18.1333,
-  "frame": 544,
+  "t": 19.2333,
+  "frame": 577,
   "type": "enter",
   "label": "Telling"
  },
  {
-  "t": 18.1333,
-  "frame": 544,
+  "t": 19.2333,
+  "frame": 577,
   "type": "word",
   "label": "Telling"
  },
  {
-  "t": 19.4,
-  "frame": 582,
+  "t": 20.5,
+  "frame": 615,
   "type": "enter",
   "label": "isn’t"
  },
  {
-  "t": 19.4,
-  "frame": 582,
+  "t": 20.5,
+  "frame": 615,
   "type": "word",
   "label": "isn’t"
  },
  {
-  "t": 19.8,
-  "frame": 594,
+  "t": 20.9,
+  "frame": 627,
   "type": "enter",
   "label": "showing."
  },
  {
-  "t": 19.8,
-  "frame": 594,
+  "t": 20.9,
+  "frame": 627,
   "type": "word",
   "label": "showing."
  },
  {
-  "t": 21.4,
-  "frame": 642,
+  "t": 22.9,
+  "frame": 687,
   "type": "show",
   "label": "#s5"
  },
  {
-  "t": 21.4,
-  "frame": 642,
+  "t": 22.9,
+  "frame": 687,
   "type": "cut",
   "label": "s5"
  },
  {
-  "t": 21.5667,
-  "frame": 647,
+  "t": 23.0667,
+  "frame": 692,
   "type": "enter",
   "label": "His"
  },
  {
-  "t": 21.5667,
-  "frame": 647,
+  "t": 23.0667,
+  "frame": 692,
   "type": "word",
   "label": "His"
  },
  {
-  "t": 21.8,
-  "frame": 654,
+  "t": 23.3,
+  "frame": 699,
   "type": "enter",
   "label": "therapist"
  },
  {
-  "t": 21.8,
-  "frame": 654,
+  "t": 23.3,
+  "frame": 699,
   "type": "word",
   "label": "therapist"
  },
  {
-  "t": 22.2333,
-  "frame": 667,
+  "t": 23.7333,
+  "frame": 712,
   "type": "enter",
   "label": "suggested"
  },
  {
-  "t": 22.2333,
-  "frame": 667,
+  "t": 23.7333,
+  "frame": 712,
   "type": "word",
   "label": "suggested"
  },
  {
-  "t": 22.8333,
-  "frame": 685,
+  "t": 24.3333,
+  "frame": 730,
   "type": "enter",
   "label": "A"
  },
  {
-  "t": 22.8333,
-  "frame": 685,
+  "t": 24.3333,
+  "frame": 730,
   "type": "word",
   "label": "A"
  },
  {
-  "t": 23,
-  "frame": 690,
+  "t": 24.5,
+  "frame": 735,
   "type": "enter",
   "label": "social"
  },
  {
-  "t": 23,
-  "frame": 690,
+  "t": 24.5,
+  "frame": 735,
   "type": "word",
   "label": "social"
- },
- {
-  "t": 23.5,
-  "frame": 705,
-  "type": "enter",
-  "label": "story"
- },
- {
-  "t": 23.5,
-  "frame": 705,
-  "type": "word",
-  "label": "story"
- },
- {
-  "t": 24.2,
-  "frame": 726,
-  "type": "enter",
-  "label": "A"
- },
- {
-  "t": 24.2,
-  "frame": 726,
-  "type": "word",
-  "label": "A"
- },
- {
-  "t": 24.4,
-  "frame": 732,
-  "type": "enter",
-  "label": "short"
- },
- {
-  "t": 24.4,
-  "frame": 732,
-  "type": "word",
-  "label": "short"
- },
- {
-  "t": 24.6,
-  "frame": 738,
-  "type": "enter",
-  "label": "story"
- },
- {
-  "t": 24.6,
-  "frame": 738,
-  "type": "word",
-  "label": "story"
  },
  {
   "t": 25,
   "frame": 750,
   "type": "enter",
-  "label": "that"
+  "label": "story"
  },
  {
   "t": 25,
   "frame": 750,
   "type": "word",
+  "label": "story"
+ },
+ {
+  "t": 25.7,
+  "frame": 771,
+  "type": "enter",
+  "label": "A"
+ },
+ {
+  "t": 25.7,
+  "frame": 771,
+  "type": "word",
+  "label": "A"
+ },
+ {
+  "t": 25.9,
+  "frame": 777,
+  "type": "enter",
+  "label": "short"
+ },
+ {
+  "t": 25.9,
+  "frame": 777,
+  "type": "word",
+  "label": "short"
+ },
+ {
+  "t": 26.1,
+  "frame": 783,
+  "type": "enter",
+  "label": "story"
+ },
+ {
+  "t": 26.1,
+  "frame": 783,
+  "type": "word",
+  "label": "story"
+ },
+ {
+  "t": 26.5,
+  "frame": 795,
+  "type": "enter",
   "label": "that"
  },
  {
-  "t": 25.1667,
-  "frame": 755,
+  "t": 26.5,
+  "frame": 795,
+  "type": "word",
+  "label": "that"
+ },
+ {
+  "t": 26.6667,
+  "frame": 800,
   "type": "enter",
   "label": "walks"
  },
  {
-  "t": 25.1667,
-  "frame": 755,
+  "t": 26.6667,
+  "frame": 800,
   "type": "word",
   "label": "walks"
  },
  {
-  "t": 25.5,
-  "frame": 765,
+  "t": 27,
+  "frame": 810,
   "type": "enter",
   "label": "him"
  },
  {
-  "t": 25.5,
-  "frame": 765,
+  "t": 27,
+  "frame": 810,
   "type": "word",
   "label": "him"
  },
  {
-  "t": 25.6333,
-  "frame": 769,
+  "t": 27.1333,
+  "frame": 814,
   "type": "enter",
   "label": "through"
  },
  {
-  "t": 25.6333,
-  "frame": 769,
+  "t": 27.1333,
+  "frame": 814,
   "type": "word",
   "label": "through"
  },
  {
-  "t": 25.8333,
-  "frame": 775,
+  "t": 27.3333,
+  "frame": 820,
   "type": "enter",
   "label": "the"
  },
  {
-  "t": 25.8333,
-  "frame": 775,
+  "t": 27.3333,
+  "frame": 820,
   "type": "word",
   "label": "the"
  },
  {
-  "t": 25.9667,
-  "frame": 779,
+  "t": 27.4667,
+  "frame": 824,
   "type": "enter",
   "label": "moment"
  },
  {
-  "t": 25.9667,
-  "frame": 779,
+  "t": 27.4667,
+  "frame": 824,
   "type": "word",
   "label": "moment"
  },
  {
-  "t": 26.3667,
-  "frame": 791,
+  "t": 27.8667,
+  "frame": 836,
   "type": "enter",
   "label": "before"
  },
  {
-  "t": 26.3667,
-  "frame": 791,
+  "t": 27.8667,
+  "frame": 836,
   "type": "word",
   "label": "before"
  },
  {
-  "t": 26.7667,
-  "frame": 803,
+  "t": 28.2667,
+  "frame": 848,
   "type": "enter",
   "label": "it"
  },
  {
-  "t": 26.7667,
-  "frame": 803,
+  "t": 28.2667,
+  "frame": 848,
   "type": "word",
   "label": "it"
  },
  {
-  "t": 26.9333,
-  "frame": 808,
+  "t": 28.4333,
+  "frame": 853,
   "type": "enter",
   "label": "happens."
  },
  {
-  "t": 26.9333,
-  "frame": 808,
+  "t": 28.4333,
+  "frame": 853,
   "type": "word",
   "label": "happens."
  },
  {
-  "t": 27.7667,
-  "frame": 833,
+  "t": 29.6667,
+  "frame": 890,
   "type": "show",
   "label": "#sci1"
  },
  {
-  "t": 27.7667,
-  "frame": 833,
+  "t": 29.6667,
+  "frame": 890,
   "type": "cut",
   "label": "sci1"
  },
  {
-  "t": 28,
-  "frame": 840,
+  "t": 29.9,
+  "frame": 897,
   "type": "enter",
   "label": "An"
  },
  {
-  "t": 28,
-  "frame": 840,
+  "t": 29.9,
+  "frame": 897,
   "type": "word",
   "label": "An"
  },
  {
-  "t": 28.1333,
-  "frame": 844,
+  "t": 30.0333,
+  "frame": 901,
   "type": "enter",
   "label": "evidence-based"
  },
  {
-  "t": 28.1333,
-  "frame": 844,
+  "t": 30.0333,
+  "frame": 901,
   "type": "word",
   "label": "evidence-based"
  },
  {
-  "t": 28.8333,
-  "frame": 865,
+  "t": 30.7333,
+  "frame": 922,
   "type": "enter",
   "label": "practice"
  },
  {
-  "t": 28.8333,
-  "frame": 865,
+  "t": 30.7333,
+  "frame": 922,
   "type": "word",
   "label": "practice"
  },
  {
-  "t": 29.3,
-  "frame": 879,
+  "t": 31.2,
+  "frame": 936,
   "type": "enter",
   "label": "for"
  },
  {
-  "t": 29.3,
-  "frame": 879,
+  "t": 31.2,
+  "frame": 936,
   "type": "word",
   "label": "for"
  },
  {
-  "t": 29.4,
-  "frame": 882,
+  "t": 31.3,
+  "frame": 939,
   "type": "enter",
   "label": "autistic"
  },
  {
-  "t": 29.4,
-  "frame": 882,
+  "t": 31.3,
+  "frame": 939,
   "type": "word",
   "label": "autistic"
  },
  {
-  "t": 29.9667,
-  "frame": 899,
+  "t": 31.8667,
+  "frame": 956,
   "type": "enter",
   "label": "kids."
  },
  {
-  "t": 29.9667,
-  "frame": 899,
+  "t": 31.8667,
+  "frame": 956,
   "type": "word",
   "label": "kids."
  },
  {
-  "t": 30.5333,
-  "frame": 916,
+  "t": 32.7333,
+  "frame": 982,
   "type": "show",
   "label": "#sci2"
  },
  {
-  "t": 30.5333,
-  "frame": 916,
+  "t": 32.7333,
+  "frame": 982,
   "type": "cut",
   "label": "sci2"
  },
  {
-  "t": 31.7333,
-  "frame": 952,
+  "t": 33.9333,
+  "frame": 1018,
   "type": "enter",
   "label": "Personal"
  },
  {
-  "t": 31.7333,
-  "frame": 952,
+  "t": 33.9333,
+  "frame": 1018,
   "type": "word",
   "label": "Personal"
  },
  {
-  "t": 32.3,
-  "frame": 969,
+  "t": 34.5,
+  "frame": 1035,
   "type": "enter",
   "label": "works"
  },
  {
-  "t": 32.3,
-  "frame": 969,
+  "t": 34.5,
+  "frame": 1035,
   "type": "word",
   "label": "works"
  },
  {
-  "t": 32.6,
-  "frame": 978,
+  "t": 34.8,
+  "frame": 1044,
   "type": "enter",
   "label": "better"
  },
  {
-  "t": 32.6,
-  "frame": 978,
+  "t": 34.8,
+  "frame": 1044,
   "type": "word",
   "label": "better"
  },
  {
-  "t": 32.8333,
-  "frame": 985,
+  "t": 35.0333,
+  "frame": 1051,
   "type": "enter",
   "label": "than"
  },
  {
-  "t": 32.8333,
-  "frame": 985,
+  "t": 35.0333,
+  "frame": 1051,
   "type": "word",
   "label": "than"
  },
  {
-  "t": 33,
-  "frame": 990,
+  "t": 35.2,
+  "frame": 1056,
   "type": "enter",
   "label": "generic."
  },
  {
-  "t": 33,
-  "frame": 990,
+  "t": 35.2,
+  "frame": 1056,
   "type": "word",
   "label": "generic."
  },
  {
-  "t": 39.9333,
-  "frame": 1198,
+  "t": 43.6333,
+  "frame": 1309,
   "type": "show",
   "label": "#s5"
  },
  {
-  "t": 39.9333,
-  "frame": 1198,
+  "t": 43.6333,
+  "frame": 1309,
   "type": "cut",
   "label": "s5"
  },
  {
-  "t": 40.1333,
-  "frame": 1204,
+  "t": 43.8333,
+  "frame": 1315,
   "type": "enter",
   "label": "Great"
  },
  {
-  "t": 40.1333,
-  "frame": 1204,
+  "t": 43.8333,
+  "frame": 1315,
   "type": "word",
   "label": "Great"
  },
  {
-  "t": 40.5333,
-  "frame": 1216,
+  "t": 44.2333,
+  "frame": 1327,
   "type": "enter",
   "label": "idea."
  },
  {
-  "t": 40.5333,
-  "frame": 1216,
+  "t": 44.2333,
+  "frame": 1327,
   "type": "word",
   "label": "idea."
  },
  {
-  "t": 41.4,
-  "frame": 1242,
+  "t": 45.1,
+  "frame": 1353,
   "type": "enter",
   "label": "Except"
  },
  {
-  "t": 41.4,
-  "frame": 1242,
+  "t": 45.1,
+  "frame": 1353,
   "type": "word",
   "label": "Except"
  },
  {
-  "t": 42.2,
-  "frame": 1266,
+  "t": 45.9,
+  "frame": 1377,
   "type": "enter",
   "label": "I"
  },
  {
-  "t": 42.2,
-  "frame": 1266,
+  "t": 45.9,
+  "frame": 1377,
   "type": "word",
   "label": "I"
  },
  {
-  "t": 42.3667,
-  "frame": 1271,
+  "t": 46.0667,
+  "frame": 1382,
   "type": "enter",
   "label": "can’t"
  },
  {
-  "t": 42.3667,
-  "frame": 1271,
+  "t": 46.0667,
+  "frame": 1382,
   "type": "word",
   "label": "can’t"
  },
  {
-  "t": 42.7,
-  "frame": 1281,
+  "t": 46.4,
+  "frame": 1392,
   "type": "enter",
   "label": "draw."
  },
  {
-  "t": 42.7,
-  "frame": 1281,
+  "t": 46.4,
+  "frame": 1392,
   "type": "word",
   "label": "draw."
  },
  {
-  "t": 43.5,
-  "frame": 1305,
+  "t": 47.7,
+  "frame": 1431,
   "type": "show",
   "label": "#s7"
  },
  {
-  "t": 43.5,
-  "frame": 1305,
+  "t": 47.7,
+  "frame": 1431,
   "type": "cut",
   "label": "s7"
  },
  {
-  "t": 43.6333,
-  "frame": 1309,
+  "t": 47.8333,
+  "frame": 1435,
   "type": "enter",
   "label": "Then"
  },
  {
-  "t": 43.6333,
-  "frame": 1309,
+  "t": 47.8333,
+  "frame": 1435,
   "type": "word",
   "label": "Then"
  },
  {
-  "t": 44.0333,
-  "frame": 1321,
+  "t": 48.2333,
+  "frame": 1447,
   "type": "enter",
   "label": "I"
  },
  {
-  "t": 44.0333,
-  "frame": 1321,
+  "t": 48.2333,
+  "frame": 1447,
   "type": "word",
   "label": "I"
  },
  {
-  "t": 44.3333,
-  "frame": 1330,
+  "t": 48.5333,
+  "frame": 1456,
   "type": "enter",
   "label": "found"
  },
  {
-  "t": 44.3333,
-  "frame": 1330,
+  "t": 48.5333,
+  "frame": 1456,
   "type": "word",
   "label": "found"
  },
  {
-  "t": 45.4,
-  "frame": 1362,
+  "t": 49.6,
+  "frame": 1488,
   "type": "enter",
   "label": "My"
  },
  {
-  "t": 45.4,
-  "frame": 1362,
+  "t": 49.6,
+  "frame": 1488,
   "type": "word",
   "label": "My"
  },
  {
-  "t": 45.7333,
-  "frame": 1372,
+  "t": 49.9333,
+  "frame": 1498,
   "type": "enter",
   "label": "Story"
  },
  {
-  "t": 45.7333,
-  "frame": 1372,
+  "t": 49.9333,
+  "frame": 1498,
   "type": "word",
   "label": "Story"
  },
  {
-  "t": 46.1333,
-  "frame": 1384,
+  "t": 50.3333,
+  "frame": 1510,
   "type": "enter",
   "label": "Time"
  },
  {
-  "t": 46.1333,
-  "frame": 1384,
+  "t": 50.3333,
+  "frame": 1510,
   "type": "word",
   "label": "Time"
  },
  {
-  "t": 46.7,
-  "frame": 1401,
+  "t": 51.3,
+  "frame": 1539,
   "type": "show",
   "label": "#per1"
  },
  {
-  "t": 46.7,
-  "frame": 1401,
+  "t": 51.3,
+  "frame": 1539,
   "type": "cut",
   "label": "per1"
  },
  {
-  "t": 46.9333,
-  "frame": 1408,
+  "t": 51.5333,
+  "frame": 1546,
   "type": "enter",
   "label": "As"
  },
  {
-  "t": 46.9333,
-  "frame": 1408,
+  "t": 51.5333,
+  "frame": 1546,
   "type": "word",
   "label": "As"
  },
  {
-  "t": 47.1667,
-  "frame": 1415,
+  "t": 51.7667,
+  "frame": 1553,
   "type": "enter",
   "label": "personal"
  },
  {
-  "t": 47.1667,
-  "frame": 1415,
+  "t": 51.7667,
+  "frame": 1553,
   "type": "word",
   "label": "personal"
  },
  {
-  "t": 47.6333,
-  "frame": 1429,
+  "t": 52.2333,
+  "frame": 1567,
   "type": "enter",
   "label": "as"
  },
  {
-  "t": 47.6333,
-  "frame": 1429,
+  "t": 52.2333,
+  "frame": 1567,
   "type": "word",
   "label": "as"
  },
  {
-  "t": 47.9667,
-  "frame": 1439,
+  "t": 52.5667,
+  "frame": 1577,
   "type": "enter",
   "label": "it"
  },
  {
-  "t": 47.9667,
-  "frame": 1439,
+  "t": 52.5667,
+  "frame": 1577,
   "type": "word",
   "label": "it"
  },
  {
-  "t": 48.7,
-  "frame": 1461,
+  "t": 53.3,
+  "frame": 1599,
   "type": "enter",
   "label": "gets."
  },
  {
-  "t": 48.7,
-  "frame": 1461,
+  "t": 53.3,
+  "frame": 1599,
   "type": "word",
   "label": "gets."
  },
  {
-  "t": 49.1333,
-  "frame": 1474,
+  "t": 54.2333,
+  "frame": 1627,
   "type": "show",
   "label": "#fam"
  },
  {
-  "t": 49.1333,
-  "frame": 1474,
+  "t": 54.2333,
+  "frame": 1627,
   "type": "cut",
   "label": "fam"
  },
  {
-  "t": 49.1667,
-  "frame": 1475,
+  "t": 54.2667,
+  "frame": 1628,
   "type": "enter",
   "label": "It"
  },
  {
-  "t": 49.1667,
-  "frame": 1475,
+  "t": 54.2667,
+  "frame": 1628,
   "type": "word",
   "label": "It"
  },
  {
-  "t": 49.4,
-  "frame": 1482,
+  "t": 54.5,
+  "frame": 1635,
   "type": "enter",
   "label": "starts"
  },
  {
-  "t": 49.4,
-  "frame": 1482,
+  "t": 54.5,
+  "frame": 1635,
   "type": "word",
   "label": "starts"
  },
  {
-  "t": 49.8,
-  "frame": 1494,
+  "t": 54.9,
+  "frame": 1647,
   "type": "enter",
   "label": "with"
  },
  {
-  "t": 49.8,
-  "frame": 1494,
+  "t": 54.9,
+  "frame": 1647,
   "type": "word",
   "label": "with"
  },
  {
-  "t": 50,
-  "frame": 1500,
+  "t": 55.1,
+  "frame": 1653,
   "type": "enter",
   "label": "his"
  },
  {
-  "t": 50,
-  "frame": 1500,
+  "t": 55.1,
+  "frame": 1653,
   "type": "word",
   "label": "his"
  },
  {
-  "t": 50.2,
-  "frame": 1506,
+  "t": 55.3,
+  "frame": 1659,
   "type": "enter",
   "label": "people."
  },
  {
-  "t": 50.2,
-  "frame": 1506,
+  "t": 55.3,
+  "frame": 1659,
   "type": "word",
   "label": "people."
  },
  {
-  "t": 52,
-  "frame": 1560,
+  "t": 57.5,
+  "frame": 1725,
   "type": "show",
   "label": "#slotDad"
  },
  {
-  "t": 52.2,
-  "frame": 1566,
+  "t": 57.7,
+  "frame": 1731,
   "type": "show",
   "label": "#nmBox"
  },
  {
-  "t": 52.3333,
-  "frame": 1570,
+  "t": 57.8333,
+  "frame": 1735,
   "type": "type",
   "label": "start"
  },
  {
-  "t": 52.3333,
-  "frame": 1570,
+  "t": 57.8333,
+  "frame": 1735,
   "type": "show",
   "label": "#nmTxt"
  },
  {
-  "t": 52.5333,
-  "frame": 1576,
+  "t": 58.0333,
+  "frame": 1741,
   "type": "type",
   "label": "end"
  },
  {
-  "t": 53.3667,
-  "frame": 1601,
+  "t": 58.8667,
+  "frame": 1766,
   "type": "type",
   "label": "start"
  },
  {
-  "t": 53.3667,
-  "frame": 1601,
+  "t": 58.8667,
+  "frame": 1766,
   "type": "show",
   "label": "#nmTxt2"
  },
  {
-  "t": 53.4333,
-  "frame": 1603,
+  "t": 58.9333,
+  "frame": 1768,
   "type": "show",
   "label": "#slotMom"
  },
  {
-  "t": 53.5667,
-  "frame": 1607,
+  "t": 59.0667,
+  "frame": 1772,
   "type": "type",
   "label": "end"
  },
  {
-  "t": 55.5,
-  "frame": 1665,
+  "t": 61.8,
+  "frame": 1854,
   "type": "enter",
   "label": "Even"
  },
  {
-  "t": 55.5,
-  "frame": 1665,
+  "t": 61.8,
+  "frame": 1854,
   "type": "word",
   "label": "Even"
  },
  {
-  "t": 55.8,
-  "frame": 1674,
+  "t": 62.1,
+  "frame": 1863,
   "type": "enter",
   "label": "Bo,"
  },
  {
-  "t": 55.8,
-  "frame": 1674,
+  "t": 62.1,
+  "frame": 1863,
   "type": "word",
   "label": "Bo,"
  },
  {
-  "t": 56.2,
-  "frame": 1686,
+  "t": 62.5,
+  "frame": 1875,
   "type": "enter",
   "label": "our"
  },
  {
-  "t": 56.2,
-  "frame": 1686,
+  "t": 62.5,
+  "frame": 1875,
   "type": "word",
   "label": "our"
  },
  {
-  "t": 56.5667,
-  "frame": 1697,
+  "t": 62.8667,
+  "frame": 1886,
   "type": "enter",
   "label": "dog."
  },
  {
-  "t": 56.5667,
-  "frame": 1697,
+  "t": 62.8667,
+  "frame": 1886,
   "type": "word",
   "label": "dog."
  },
  {
-  "t": 59.2333,
-  "frame": 1777,
+  "t": 66.1333,
+  "frame": 1984,
   "type": "enter",
   "label": "Looking"
  },
  {
-  "t": 59.2333,
-  "frame": 1777,
+  "t": 66.1333,
+  "frame": 1984,
   "type": "word",
   "label": "Looking"
  },
  {
-  "t": 59.5667,
-  "frame": 1787,
+  "t": 66.4667,
+  "frame": 1994,
   "type": "enter",
   "label": "like"
  },
  {
-  "t": 59.5667,
-  "frame": 1787,
+  "t": 66.4667,
+  "frame": 1994,
   "type": "word",
   "label": "like"
  },
  {
-  "t": 59.7333,
-  "frame": 1792,
+  "t": 66.6333,
+  "frame": 1999,
   "type": "enter",
   "label": "themselves."
  },
  {
-  "t": 59.7333,
-  "frame": 1792,
+  "t": 66.6333,
+  "frame": 1999,
   "type": "word",
   "label": "themselves."
  },
  {
-  "t": 60.7667,
-  "frame": 1823,
+  "t": 68.2667,
+  "frame": 2048,
   "type": "enter",
   "label": "No"
  },
  {
-  "t": 60.7667,
-  "frame": 1823,
+  "t": 68.2667,
+  "frame": 2048,
   "type": "word",
   "label": "No"
  },
  {
-  "t": 61,
-  "frame": 1830,
+  "t": 68.5,
+  "frame": 2055,
   "type": "enter",
   "label": "photo?"
  },
  {
-  "t": 61,
-  "frame": 1830,
+  "t": 68.5,
+  "frame": 2055,
   "type": "word",
   "label": "photo?"
  },
  {
-  "t": 61.4,
-  "frame": 1842,
+  "t": 68.9,
+  "frame": 2067,
   "type": "show",
   "label": "#dscBox"
  },
  {
-  "t": 61.7,
-  "frame": 1851,
+  "t": 69.2,
+  "frame": 2076,
   "type": "type",
   "label": "start"
  },
  {
-  "t": 62.3,
-  "frame": 1869,
+  "t": 69.8,
+  "frame": 2094,
   "type": "enter",
   "label": "Describe"
  },
  {
-  "t": 62.3,
-  "frame": 1869,
+  "t": 69.8,
+  "frame": 2094,
   "type": "word",
   "label": "Describe"
  },
  {
-  "t": 62.6333,
-  "frame": 1879,
+  "t": 70.1333,
+  "frame": 2104,
   "type": "enter",
   "label": "them."
  },
  {
-  "t": 62.6333,
-  "frame": 1879,
+  "t": 70.1333,
+  "frame": 2104,
   "type": "word",
   "label": "them."
  },
  {
-  "t": 63.1,
-  "frame": 1893,
+  "t": 70.6,
+  "frame": 2118,
   "type": "type",
   "label": "end"
  },
  {
-  "t": 63.3333,
-  "frame": 1900,
+  "t": 71.3333,
+  "frame": 2140,
   "type": "enter",
   "label": "Even"
  },
  {
-  "t": 63.3333,
-  "frame": 1900,
+  "t": 71.3333,
+  "frame": 2140,
   "type": "word",
   "label": "Even"
  },
  {
-  "t": 63.9667,
-  "frame": 1919,
+  "t": 71.9667,
+  "frame": 2159,
   "type": "enter",
   "label": "his"
  },
  {
-  "t": 63.9667,
-  "frame": 1919,
+  "t": 71.9667,
+  "frame": 2159,
   "type": "word",
   "label": "his"
  },
  {
-  "t": 64.2,
-  "frame": 1926,
+  "t": 72.2,
+  "frame": 2166,
   "type": "enter",
   "label": "teacher."
  },
  {
-  "t": 64.2,
-  "frame": 1926,
+  "t": 72.2,
+  "frame": 2166,
   "type": "word",
   "label": "teacher."
  },
  {
-  "t": 65,
-  "frame": 1950,
+  "t": 73.6,
+  "frame": 2208,
   "type": "show",
   "label": "#n9"
  },
  {
-  "t": 65,
-  "frame": 1950,
+  "t": 73.6,
+  "frame": 2208,
   "type": "cut",
   "label": "n9"
  },
  {
-  "t": 65.5,
-  "frame": 1965,
+  "t": 74.1,
+  "frame": 2223,
   "type": "enter",
   "label": "I"
  },
  {
-  "t": 65.5,
-  "frame": 1965,
+  "t": 74.1,
+  "frame": 2223,
   "type": "word",
   "label": "I"
- },
- {
-  "t": 65.7,
-  "frame": 1971,
-  "type": "enter",
-  "label": "told"
- },
- {
-  "t": 65.7,
-  "frame": 1971,
-  "type": "word",
-  "label": "told"
- },
- {
-  "t": 65.9333,
-  "frame": 1978,
-  "type": "enter",
-  "label": "it"
- },
- {
-  "t": 65.9333,
-  "frame": 1978,
-  "type": "word",
-  "label": "it"
- },
- {
-  "t": 66.0333,
-  "frame": 1981,
-  "type": "enter",
-  "label": "what"
- },
- {
-  "t": 66.0333,
-  "frame": 1981,
-  "type": "word",
-  "label": "what"
- },
- {
-  "t": 66.2,
-  "frame": 1986,
-  "type": "enter",
-  "label": "was"
- },
- {
-  "t": 66.2,
-  "frame": 1986,
-  "type": "word",
-  "label": "was"
- },
- {
-  "t": 66.3667,
-  "frame": 1991,
-  "type": "enter",
-  "label": "hard."
- },
- {
-  "t": 66.3667,
-  "frame": 1991,
-  "type": "word",
-  "label": "hard."
- },
- {
-  "t": 67.5,
-  "frame": 2025,
-  "type": "enter",
-  "label": "Pick"
- },
- {
-  "t": 67.5,
-  "frame": 2025,
-  "type": "word",
-  "label": "Pick"
- },
- {
-  "t": 67.6333,
-  "frame": 2029,
-  "type": "enter",
-  "label": "a"
- },
- {
-  "t": 67.6333,
-  "frame": 2029,
-  "type": "word",
-  "label": "a"
- },
- {
-  "t": 68.3,
-  "frame": 2049,
-  "type": "enter",
-  "label": "moment"
- },
- {
-  "t": 68.3,
-  "frame": 2049,
-  "type": "word",
-  "label": "moment"
- },
- {
-  "t": 72.3,
-  "frame": 2169,
-  "type": "enter",
-  "label": "Describe"
- },
- {
-  "t": 72.3,
-  "frame": 2169,
-  "type": "word",
-  "label": "Describe"
- },
- {
-  "t": 72.5667,
-  "frame": 2177,
-  "type": "enter",
-  "label": "it"
- },
- {
-  "t": 72.5667,
-  "frame": 2177,
-  "type": "word",
-  "label": "it"
- },
- {
-  "t": 73.7,
-  "frame": 2211,
-  "type": "enter",
-  "label": "the"
- },
- {
-  "t": 73.7,
-  "frame": 2211,
-  "type": "word",
-  "label": "the"
- },
- {
-  "t": 73.8,
-  "frame": 2214,
-  "type": "enter",
-  "label": "way"
- },
- {
-  "t": 73.8,
-  "frame": 2214,
-  "type": "word",
-  "label": "way"
- },
- {
-  "t": 73.9333,
-  "frame": 2218,
-  "type": "enter",
-  "label": "you’d"
- },
- {
-  "t": 73.9333,
-  "frame": 2218,
-  "type": "word",
-  "label": "you’d"
- },
- {
-  "t": 74.1333,
-  "frame": 2224,
-  "type": "enter",
-  "label": "tell"
- },
- {
-  "t": 74.1333,
-  "frame": 2224,
-  "type": "word",
-  "label": "tell"
  },
  {
   "t": 74.3,
   "frame": 2229,
   "type": "enter",
-  "label": "a"
+  "label": "told"
  },
  {
   "t": 74.3,
   "frame": 2229,
   "type": "word",
+  "label": "told"
+ },
+ {
+  "t": 74.5333,
+  "frame": 2236,
+  "type": "enter",
+  "label": "it"
+ },
+ {
+  "t": 74.5333,
+  "frame": 2236,
+  "type": "word",
+  "label": "it"
+ },
+ {
+  "t": 74.6333,
+  "frame": 2239,
+  "type": "enter",
+  "label": "what"
+ },
+ {
+  "t": 74.6333,
+  "frame": 2239,
+  "type": "word",
+  "label": "what"
+ },
+ {
+  "t": 74.8,
+  "frame": 2244,
+  "type": "enter",
+  "label": "was"
+ },
+ {
+  "t": 74.8,
+  "frame": 2244,
+  "type": "word",
+  "label": "was"
+ },
+ {
+  "t": 74.9667,
+  "frame": 2249,
+  "type": "enter",
+  "label": "hard."
+ },
+ {
+  "t": 74.9667,
+  "frame": 2249,
+  "type": "word",
+  "label": "hard."
+ },
+ {
+  "t": 76.6,
+  "frame": 2298,
+  "type": "enter",
+  "label": "Pick"
+ },
+ {
+  "t": 76.6,
+  "frame": 2298,
+  "type": "word",
+  "label": "Pick"
+ },
+ {
+  "t": 76.7333,
+  "frame": 2302,
+  "type": "enter",
   "label": "a"
  },
  {
-  "t": 74.3667,
-  "frame": 2231,
+  "t": 76.7333,
+  "frame": 2302,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 77.4,
+  "frame": 2322,
+  "type": "enter",
+  "label": "moment"
+ },
+ {
+  "t": 77.4,
+  "frame": 2322,
+  "type": "word",
+  "label": "moment"
+ },
+ {
+  "t": 81.9,
+  "frame": 2457,
+  "type": "enter",
+  "label": "Describe"
+ },
+ {
+  "t": 81.9,
+  "frame": 2457,
+  "type": "word",
+  "label": "Describe"
+ },
+ {
+  "t": 82.1667,
+  "frame": 2465,
+  "type": "enter",
+  "label": "it"
+ },
+ {
+  "t": 82.1667,
+  "frame": 2465,
+  "type": "word",
+  "label": "it"
+ },
+ {
+  "t": 82.7,
+  "frame": 2481,
+  "type": "type",
+  "label": "start"
+ },
+ {
+  "t": 83.3,
+  "frame": 2499,
+  "type": "enter",
+  "label": "the"
+ },
+ {
+  "t": 83.3,
+  "frame": 2499,
+  "type": "word",
+  "label": "the"
+ },
+ {
+  "t": 83.4,
+  "frame": 2502,
+  "type": "enter",
+  "label": "way"
+ },
+ {
+  "t": 83.4,
+  "frame": 2502,
+  "type": "word",
+  "label": "way"
+ },
+ {
+  "t": 83.5333,
+  "frame": 2506,
+  "type": "enter",
+  "label": "you’d"
+ },
+ {
+  "t": 83.5333,
+  "frame": 2506,
+  "type": "word",
+  "label": "you’d"
+ },
+ {
+  "t": 83.7333,
+  "frame": 2512,
+  "type": "enter",
+  "label": "tell"
+ },
+ {
+  "t": 83.7333,
+  "frame": 2512,
+  "type": "word",
+  "label": "tell"
+ },
+ {
+  "t": 83.9,
+  "frame": 2517,
+  "type": "enter",
+  "label": "a"
+ },
+ {
+  "t": 83.9,
+  "frame": 2517,
+  "type": "word",
+  "label": "a"
+ },
+ {
+  "t": 83.9667,
+  "frame": 2519,
   "type": "enter",
   "label": "friend"
  },
  {
-  "t": 74.3667,
-  "frame": 2231,
+  "t": 83.9667,
+  "frame": 2519,
   "type": "word",
   "label": "friend"
  },
  {
-  "t": 75.1,
-  "frame": 2253,
+  "t": 84.6333,
+  "frame": 2539,
+  "type": "type",
+  "label": "end"
+ },
+ {
+  "t": 85.4,
+  "frame": 2562,
   "type": "show",
   "label": "#n10"
  },
  {
-  "t": 75.1,
-  "frame": 2253,
+  "t": 85.4,
+  "frame": 2562,
   "type": "cut",
   "label": "n10"
  },
  {
-  "t": 76.1333,
-  "frame": 2284,
+  "t": 86.4333,
+  "frame": 2593,
   "type": "enter",
   "label": "Starring"
  },
  {
-  "t": 76.1333,
-  "frame": 2284,
+  "t": 86.4333,
+  "frame": 2593,
   "type": "word",
   "label": "Starring"
  },
  {
-  "t": 76.5333,
-  "frame": 2296,
+  "t": 86.8333,
+  "frame": 2605,
   "type": "enter",
   "label": "Ryan."
  },
  {
-  "t": 76.5333,
-  "frame": 2296,
+  "t": 86.8333,
+  "frame": 2605,
   "type": "word",
   "label": "Ryan."
  },
  {
-  "t": 78.3,
-  "frame": 2349,
+  "t": 89.2,
+  "frame": 2676,
   "type": "enter",
   "label": "His"
  },
  {
-  "t": 78.3,
-  "frame": 2349,
+  "t": 89.2,
+  "frame": 2676,
   "type": "word",
   "label": "His"
  },
  {
-  "t": 78.4333,
-  "frame": 2353,
+  "t": 89.3333,
+  "frame": 2680,
   "type": "enter",
   "label": "class."
  },
  {
-  "t": 78.4333,
-  "frame": 2353,
+  "t": 89.3333,
+  "frame": 2680,
   "type": "word",
   "label": "class."
  },
  {
-  "t": 79.1,
-  "frame": 2373,
+  "t": 90,
+  "frame": 2700,
   "type": "enter",
   "label": "His"
  },
  {
-  "t": 79.1,
-  "frame": 2373,
+  "t": 90,
+  "frame": 2700,
   "type": "word",
   "label": "His"
  },
  {
-  "t": 79.2333,
-  "frame": 2377,
+  "t": 90.1333,
+  "frame": 2704,
   "type": "enter",
   "label": "teacher."
  },
  {
-  "t": 79.2333,
-  "frame": 2377,
+  "t": 90.1333,
+  "frame": 2704,
   "type": "word",
   "label": "teacher."
  },
  {
-  "t": 80.3667,
-  "frame": 2411,
+  "t": 92.1667,
+  "frame": 2765,
   "type": "enter",
   "label": "His"
  },
  {
-  "t": 80.3667,
-  "frame": 2411,
+  "t": 92.1667,
+  "frame": 2765,
   "type": "word",
   "label": "His"
  },
  {
-  "t": 80.5333,
-  "frame": 2416,
+  "t": 92.3333,
+  "frame": 2770,
   "type": "enter",
   "label": "favorite"
  },
  {
-  "t": 80.5333,
-  "frame": 2416,
+  "t": 92.3333,
+  "frame": 2770,
   "type": "word",
   "label": "favorite"
  },
  {
-  "t": 80.9667,
-  "frame": 2429,
+  "t": 92.7667,
+  "frame": 2783,
   "type": "enter",
   "label": "art"
  },
  {
-  "t": 80.9667,
-  "frame": 2429,
+  "t": 92.7667,
+  "frame": 2783,
   "type": "word",
   "label": "art"
  },
  {
-  "t": 81.1667,
-  "frame": 2435,
+  "t": 92.9667,
+  "frame": 2789,
   "type": "enter",
   "label": "style"
  },
  {
-  "t": 81.1667,
-  "frame": 2435,
+  "t": 92.9667,
+  "frame": 2789,
   "type": "word",
   "label": "style"
  },
  {
-  "t": 81.7333,
-  "frame": 2452,
+  "t": 93.5333,
+  "frame": 2806,
   "type": "enter",
   "label": "A"
  },
  {
-  "t": 81.7333,
-  "frame": 2452,
+  "t": 93.5333,
+  "frame": 2806,
   "type": "word",
   "label": "A"
  },
  {
-  "t": 81.9,
-  "frame": 2457,
+  "t": 93.7,
+  "frame": 2811,
   "type": "enter",
   "label": "world"
  },
  {
-  "t": 81.9,
-  "frame": 2457,
+  "t": 93.7,
+  "frame": 2811,
   "type": "word",
   "label": "world"
  },
  {
-  "t": 82.3333,
-  "frame": 2470,
+  "t": 94.1333,
+  "frame": 2824,
   "type": "enter",
   "label": "he"
  },
  {
-  "t": 82.3333,
-  "frame": 2470,
+  "t": 94.1333,
+  "frame": 2824,
   "type": "word",
   "label": "he"
  },
  {
-  "t": 82.5333,
-  "frame": 2476,
+  "t": 94.3333,
+  "frame": 2830,
   "type": "enter",
   "label": "loves"
  },
  {
-  "t": 82.5333,
-  "frame": 2476,
+  "t": 94.3333,
+  "frame": 2830,
   "type": "word",
   "label": "loves"
  },
  {
-  "t": 83.2333,
-  "frame": 2497,
+  "t": 95.8333,
+  "frame": 2875,
   "type": "show",
   "label": "#n11"
  },
  {
-  "t": 83.2333,
-  "frame": 2497,
+  "t": 95.8333,
+  "frame": 2875,
   "type": "cut",
   "label": "n11"
  },
  {
-  "t": 83.3,
-  "frame": 2499,
+  "t": 95.9,
+  "frame": 2877,
   "type": "enter",
   "label": "When"
  },
  {
-  "t": 83.3,
-  "frame": 2499,
+  "t": 95.9,
+  "frame": 2877,
   "type": "word",
   "label": "When"
  },
  {
-  "t": 83.3333,
-  "frame": 2500,
+  "t": 95.9333,
+  "frame": 2878,
   "type": "enter",
   "label": "the"
  },
  {
-  "t": 83.3333,
-  "frame": 2500,
+  "t": 95.9333,
+  "frame": 2878,
   "type": "word",
   "label": "the"
  },
  {
-  "t": 83.3667,
-  "frame": 2501,
+  "t": 95.9667,
+  "frame": 2879,
   "type": "enter",
   "label": "alarm"
  },
  {
-  "t": 83.3667,
-  "frame": 2501,
+  "t": 95.9667,
+  "frame": 2879,
   "type": "word",
   "label": "alarm"
  },
  {
-  "t": 83.4,
-  "frame": 2502,
+  "t": 96,
+  "frame": 2880,
   "type": "enter",
   "label": "rings,"
  },
  {
-  "t": 83.4,
-  "frame": 2502,
+  "t": 96,
+  "frame": 2880,
   "type": "word",
   "label": "rings,"
  },
  {
-  "t": 83.4333,
-  "frame": 2503,
+  "t": 96.0333,
+  "frame": 2881,
   "type": "enter",
   "label": "I"
  },
  {
-  "t": 83.4333,
-  "frame": 2503,
+  "t": 96.0333,
+  "frame": 2881,
   "type": "word",
   "label": "I"
  },
  {
-  "t": 83.4667,
-  "frame": 2504,
+  "t": 96.0667,
+  "frame": 2882,
   "type": "enter",
   "label": "walk"
  },
  {
-  "t": 83.4667,
-  "frame": 2504,
+  "t": 96.0667,
+  "frame": 2882,
   "type": "word",
   "label": "walk"
  },
  {
-  "t": 83.5,
-  "frame": 2505,
+  "t": 96.1,
+  "frame": 2883,
   "type": "enter",
   "label": "outside"
  },
  {
-  "t": 83.5,
-  "frame": 2505,
+  "t": 96.1,
+  "frame": 2883,
   "type": "word",
   "label": "outside"
  },
  {
-  "t": 83.5333,
-  "frame": 2506,
+  "t": 96.1333,
+  "frame": 2884,
   "type": "enter",
   "label": "with"
  },
  {
-  "t": 83.5333,
-  "frame": 2506,
+  "t": 96.1333,
+  "frame": 2884,
   "type": "word",
   "label": "with"
  },
  {
-  "t": 83.5667,
-  "frame": 2507,
+  "t": 96.1667,
+  "frame": 2885,
   "type": "enter",
   "label": "my"
  },
  {
-  "t": 83.5667,
-  "frame": 2507,
+  "t": 96.1667,
+  "frame": 2885,
   "type": "word",
   "label": "my"
  },
  {
-  "t": 83.6,
-  "frame": 2508,
+  "t": 96.2,
+  "frame": 2886,
   "type": "enter",
   "label": "class."
  },
  {
-  "t": 83.6,
-  "frame": 2508,
+  "t": 96.2,
+  "frame": 2886,
   "type": "word",
   "label": "class."
  },
  {
-  "t": 83.6333,
-  "frame": 2509,
+  "t": 96.2333,
+  "frame": 2887,
   "type": "enter",
   "label": "Listen"
  },
  {
-  "t": 83.6333,
-  "frame": 2509,
+  "t": 96.2333,
+  "frame": 2887,
   "type": "word",
   "label": "Listen"
  },
  {
-  "t": 84.2333,
-  "frame": 2527,
+  "t": 96.8333,
+  "frame": 2905,
   "type": "enter",
   "label": "in"
  },
  {
-  "t": 84.2333,
-  "frame": 2527,
+  "t": 96.8333,
+  "frame": 2905,
   "type": "word",
   "label": "in"
  },
  {
-  "t": 84.3667,
-  "frame": 2531,
+  "t": 96.9667,
+  "frame": 2909,
   "type": "enter",
   "label": "my"
  },
  {
-  "t": 84.3667,
-  "frame": 2531,
+  "t": 96.9667,
+  "frame": 2909,
   "type": "word",
   "label": "my"
  },
  {
-  "t": 84.6,
-  "frame": 2538,
+  "t": 97.2,
+  "frame": 2916,
   "type": "enter",
   "label": "voice"
  },
  {
-  "t": 84.6,
-  "frame": 2538,
+  "t": 97.2,
+  "frame": 2916,
   "type": "word",
   "label": "voice"
  },
  {
-  "t": 85.6333,
-  "frame": 2569,
+  "t": 98.7333,
+  "frame": 2962,
   "type": "enter",
   "label": "Follow"
  },
  {
-  "t": 85.6333,
-  "frame": 2569,
+  "t": 98.7333,
+  "frame": 2962,
   "type": "word",
   "label": "Follow"
  },
  {
-  "t": 86.4333,
-  "frame": 2593,
+  "t": 99.5333,
+  "frame": 2986,
   "type": "enter",
   "label": "highlighted"
  },
  {
-  "t": 86.4333,
-  "frame": 2593,
+  "t": 99.5333,
+  "frame": 2986,
   "type": "word",
   "label": "highlighted"
  },
  {
-  "t": 87,
-  "frame": 2610,
+  "t": 100.1,
+  "frame": 3003,
   "type": "enter",
   "label": "words"
  },
  {
-  "t": 87,
-  "frame": 2610,
+  "t": 100.1,
+  "frame": 3003,
   "type": "word",
   "label": "words"
  },
  {
-  "t": 87.5667,
-  "frame": 2627,
+  "t": 100.6667,
+  "frame": 3020,
   "type": "enter",
   "label": "or"
  },
  {
-  "t": 87.5667,
-  "frame": 2627,
+  "t": 100.6667,
+  "frame": 3020,
   "type": "word",
   "label": "or"
  },
  {
-  "t": 87.9,
-  "frame": 2637,
+  "t": 101,
+  "frame": 3030,
   "type": "enter",
   "label": "read"
  },
  {
-  "t": 87.9,
-  "frame": 2637,
+  "t": 101,
+  "frame": 3030,
   "type": "word",
   "label": "read"
  },
  {
-  "t": 88.2333,
-  "frame": 2647,
+  "t": 101.3333,
+  "frame": 3040,
   "type": "enter",
   "label": "at"
  },
  {
-  "t": 88.2333,
-  "frame": 2647,
+  "t": 101.3333,
+  "frame": 3040,
   "type": "word",
   "label": "at"
  },
  {
-  "t": 88.3667,
-  "frame": 2651,
+  "t": 101.4667,
+  "frame": 3044,
   "type": "enter",
   "label": "his"
  },
  {
-  "t": 88.3667,
-  "frame": 2651,
+  "t": 101.4667,
+  "frame": 3044,
   "type": "word",
   "label": "his"
  },
  {
-  "t": 88.5333,
-  "frame": 2656,
+  "t": 101.6333,
+  "frame": 3049,
   "type": "enter",
   "label": "own"
  },
  {
-  "t": 88.5333,
-  "frame": 2656,
+  "t": 101.6333,
+  "frame": 3049,
   "type": "word",
   "label": "own"
  },
  {
-  "t": 88.7667,
-  "frame": 2663,
+  "t": 101.8667,
+  "frame": 3056,
   "type": "enter",
   "label": "pace."
  },
  {
-  "t": 88.7667,
-  "frame": 2663,
+  "t": 101.8667,
+  "frame": 3056,
   "type": "word",
   "label": "pace."
  },
  {
-  "t": 89.3667,
-  "frame": 2681,
+  "t": 103.0667,
+  "frame": 3092,
   "type": "show",
   "label": "#n12"
  },
  {
-  "t": 89.3667,
-  "frame": 2681,
+  "t": 103.0667,
+  "frame": 3092,
   "type": "cut",
   "label": "n12"
  },
  {
-  "t": 90.5667,
-  "frame": 2717,
+  "t": 104.2667,
+  "frame": 3128,
   "type": "enter",
   "label": "Saved"
  },
  {
-  "t": 90.5667,
-  "frame": 2717,
+  "t": 104.2667,
+  "frame": 3128,
   "type": "word",
   "label": "Saved"
  },
  {
-  "t": 90.9,
-  "frame": 2727,
+  "t": 104.6,
+  "frame": 3138,
   "type": "enter",
   "label": "to"
  },
  {
-  "t": 90.9,
-  "frame": 2727,
+  "t": 104.6,
+  "frame": 3138,
   "type": "word",
   "label": "to"
  },
  {
-  "t": 91,
-  "frame": 2730,
+  "t": 104.7,
+  "frame": 3141,
   "type": "enter",
   "label": "his"
  },
  {
-  "t": 91,
-  "frame": 2730,
+  "t": 104.7,
+  "frame": 3141,
   "type": "word",
   "label": "his"
  },
  {
-  "t": 91.1667,
-  "frame": 2735,
+  "t": 104.8667,
+  "frame": 3146,
   "type": "enter",
   "label": "library"
  },
  {
-  "t": 91.1667,
-  "frame": 2735,
+  "t": 104.8667,
+  "frame": 3146,
   "type": "word",
   "label": "library"
  },
  {
-  "t": 92.2,
-  "frame": 2766,
+  "t": 105.9,
+  "frame": 3177,
   "type": "enter",
   "label": "to"
  },
  {
-  "t": 92.2,
-  "frame": 2766,
+  "t": 105.9,
+  "frame": 3177,
   "type": "word",
   "label": "to"
  },
  {
-  "t": 92.3667,
-  "frame": 2771,
+  "t": 106.0667,
+  "frame": 3182,
   "type": "enter",
   "label": "read"
  },
  {
-  "t": 92.3667,
-  "frame": 2771,
+  "t": 106.0667,
+  "frame": 3182,
   "type": "word",
   "label": "read"
  },
  {
-  "t": 92.9333,
-  "frame": 2788,
+  "t": 106.6333,
+  "frame": 3199,
   "type": "enter",
   "label": "again"
  },
  {
-  "t": 92.9333,
-  "frame": 2788,
+  "t": 106.6333,
+  "frame": 3199,
   "type": "word",
   "label": "again"
  },
  {
-  "t": 93.2333,
-  "frame": 2797,
+  "t": 106.9333,
+  "frame": 3208,
   "type": "enter",
   "label": "and"
  },
  {
-  "t": 93.2333,
-  "frame": 2797,
+  "t": 106.9333,
+  "frame": 3208,
   "type": "word",
   "label": "and"
  },
  {
-  "t": 93.6333,
-  "frame": 2809,
+  "t": 107.3333,
+  "frame": 3220,
   "type": "enter",
   "label": "again"
  },
  {
-  "t": 93.6333,
-  "frame": 2809,
+  "t": 107.3333,
+  "frame": 3220,
   "type": "word",
   "label": "again"
  },
  {
-  "t": 94.2667,
-  "frame": 2828,
+  "t": 108.4667,
+  "frame": 3254,
   "type": "show",
   "label": "#s9"
  },
  {
-  "t": 94.2667,
-  "frame": 2828,
+  "t": 108.4667,
+  "frame": 3254,
   "type": "cut",
   "label": "s9"
  },
  {
-  "t": 94.9333,
-  "frame": 2848,
+  "t": 109.1333,
+  "frame": 3274,
   "type": "enter",
   "label": "Every"
  },
  {
-  "t": 94.9333,
-  "frame": 2848,
+  "t": 109.1333,
+  "frame": 3274,
   "type": "word",
   "label": "Every"
  },
  {
-  "t": 95.1667,
-  "frame": 2855,
+  "t": 109.3667,
+  "frame": 3281,
   "type": "enter",
   "label": "night"
  },
  {
-  "t": 95.1667,
-  "frame": 2855,
+  "t": 109.3667,
+  "frame": 3281,
   "type": "word",
   "label": "night"
  },
  {
-  "t": 95.5,
-  "frame": 2865,
+  "t": 109.7,
+  "frame": 3291,
   "type": "enter",
   "label": "that"
  },
  {
-  "t": 95.5,
-  "frame": 2865,
+  "t": 109.7,
+  "frame": 3291,
   "type": "word",
   "label": "that"
  },
  {
-  "t": 95.6333,
-  "frame": 2869,
+  "t": 109.8333,
+  "frame": 3295,
   "type": "enter",
   "label": "week."
  },
  {
-  "t": 95.6333,
-  "frame": 2869,
+  "t": 109.8333,
+  "frame": 3295,
   "type": "word",
   "label": "week."
  },
  {
-  "t": 96.4333,
-  "frame": 2893,
+  "t": 111.0333,
+  "frame": 3331,
   "type": "show",
   "label": "#s10"
  },
  {
-  "t": 96.4333,
-  "frame": 2893,
+  "t": 111.0333,
+  "frame": 3331,
   "type": "cut",
   "label": "s10"
  },
  {
-  "t": 96.4333,
-  "frame": 2893,
+  "t": 111.0333,
+  "frame": 3331,
   "type": "enter",
   "label": "At"
  },
  {
-  "t": 96.4333,
-  "frame": 2893,
+  "t": 111.0333,
+  "frame": 3331,
   "type": "word",
   "label": "At"
  },
  {
-  "t": 96.5667,
-  "frame": 2897,
+  "t": 111.1667,
+  "frame": 3335,
   "type": "enter",
   "label": "the"
  },
  {
-  "t": 96.5667,
-  "frame": 2897,
+  "t": 111.1667,
+  "frame": 3335,
   "type": "word",
   "label": "the"
  },
  {
-  "t": 96.7,
-  "frame": 2901,
+  "t": 111.3,
+  "frame": 3339,
   "type": "enter",
   "label": "next"
  },
  {
-  "t": 96.7,
-  "frame": 2901,
+  "t": 111.3,
+  "frame": 3339,
   "type": "word",
   "label": "next"
  },
  {
-  "t": 96.9333,
-  "frame": 2908,
+  "t": 111.5333,
+  "frame": 3346,
   "type": "enter",
   "label": "fire"
  },
  {
-  "t": 96.9333,
-  "frame": 2908,
+  "t": 111.5333,
+  "frame": 3346,
   "type": "word",
   "label": "fire"
  },
  {
-  "t": 97.2333,
-  "frame": 2917,
+  "t": 111.8333,
+  "frame": 3355,
   "type": "enter",
   "label": "drill,"
  },
  {
-  "t": 97.2333,
-  "frame": 2917,
+  "t": 111.8333,
+  "frame": 3355,
   "type": "word",
   "label": "drill,"
  },
  {
-  "t": 97.9,
-  "frame": 2937,
+  "t": 112.5,
+  "frame": 3375,
   "type": "enter",
   "label": "he"
  },
  {
-  "t": 97.9,
-  "frame": 2937,
+  "t": 112.5,
+  "frame": 3375,
   "type": "word",
   "label": "he"
  },
  {
-  "t": 98.1333,
-  "frame": 2944,
+  "t": 112.7333,
+  "frame": 3382,
   "type": "enter",
   "label": "walked"
  },
  {
-  "t": 98.1333,
-  "frame": 2944,
+  "t": 112.7333,
+  "frame": 3382,
   "type": "word",
   "label": "walked"
  },
  {
-  "t": 98.5667,
-  "frame": 2957,
+  "t": 113.1667,
+  "frame": 3395,
   "type": "enter",
   "label": "outside"
  },
  {
-  "t": 98.5667,
-  "frame": 2957,
+  "t": 113.1667,
+  "frame": 3395,
   "type": "word",
   "label": "outside"
  },
  {
-  "t": 98.9333,
-  "frame": 2968,
+  "t": 113.5333,
+  "frame": 3406,
   "type": "enter",
   "label": "with"
  },
  {
-  "t": 98.9333,
-  "frame": 2968,
+  "t": 113.5333,
+  "frame": 3406,
   "type": "word",
   "label": "with"
  },
  {
-  "t": 99.1333,
-  "frame": 2974,
+  "t": 113.7333,
+  "frame": 3412,
   "type": "enter",
   "label": "his"
  },
  {
-  "t": 99.1333,
-  "frame": 2974,
+  "t": 113.7333,
+  "frame": 3412,
   "type": "word",
   "label": "his"
  },
  {
-  "t": 99.5,
-  "frame": 2985,
+  "t": 114.1,
+  "frame": 3423,
   "type": "enter",
   "label": "class."
  },
  {
-  "t": 99.5,
-  "frame": 2985,
+  "t": 114.1,
+  "frame": 3423,
   "type": "word",
   "label": "class."
  },
  {
-  "t": 99.9667,
-  "frame": 2999,
+  "t": 115.0667,
+  "frame": 3452,
   "type": "show",
   "label": "#s11"
  },
  {
-  "t": 99.9667,
-  "frame": 2999,
+  "t": 115.0667,
+  "frame": 3452,
   "type": "cut",
   "label": "s11"
  },
  {
-  "t": 100.2,
-  "frame": 3006,
+  "t": 115.3,
+  "frame": 3459,
   "type": "enter",
   "label": "It"
  },
  {
-  "t": 100.2,
-  "frame": 3006,
+  "t": 115.3,
+  "frame": 3459,
   "type": "word",
   "label": "It"
  },
  {
-  "t": 100.3667,
-  "frame": 3011,
+  "t": 115.4667,
+  "frame": 3464,
   "type": "enter",
   "label": "doesn’t"
  },
  {
-  "t": 100.3667,
-  "frame": 3011,
+  "t": 115.4667,
+  "frame": 3464,
   "type": "word",
   "label": "doesn’t"
  },
  {
-  "t": 100.6,
-  "frame": 3018,
+  "t": 115.7,
+  "frame": 3471,
   "type": "enter",
   "label": "replace"
  },
  {
-  "t": 100.6,
-  "frame": 3018,
+  "t": 115.7,
+  "frame": 3471,
   "type": "word",
   "label": "replace"
  },
  {
-  "t": 101.1,
-  "frame": 3033,
+  "t": 116.2,
+  "frame": 3486,
   "type": "enter",
   "label": "his"
  },
  {
-  "t": 101.1,
-  "frame": 3033,
+  "t": 116.2,
+  "frame": 3486,
   "type": "word",
   "label": "his"
  },
  {
-  "t": 101.2333,
-  "frame": 3037,
+  "t": 116.3333,
+  "frame": 3490,
   "type": "enter",
   "label": "therapist."
  },
  {
-  "t": 101.2333,
-  "frame": 3037,
+  "t": 116.3333,
+  "frame": 3490,
   "type": "word",
   "label": "therapist."
  },
  {
-  "t": 102.3,
-  "frame": 3069,
+  "t": 117.8,
+  "frame": 3534,
   "type": "enter",
   "label": "It"
  },
  {
-  "t": 102.3,
-  "frame": 3069,
+  "t": 117.8,
+  "frame": 3534,
   "type": "word",
   "label": "It"
  },
  {
-  "t": 102.4,
-  "frame": 3072,
+  "t": 117.9,
+  "frame": 3537,
   "type": "enter",
   "label": "gives"
  },
  {
-  "t": 102.4,
-  "frame": 3072,
+  "t": 117.9,
+  "frame": 3537,
   "type": "word",
   "label": "gives"
  },
  {
-  "t": 102.7,
-  "frame": 3081,
+  "t": 118.2,
+  "frame": 3546,
   "type": "enter",
   "label": "him"
  },
  {
-  "t": 102.7,
-  "frame": 3081,
+  "t": 118.2,
+  "frame": 3546,
   "type": "word",
   "label": "him"
  },
  {
-  "t": 102.8333,
-  "frame": 3085,
+  "t": 118.3333,
+  "frame": 3550,
   "type": "enter",
   "label": "the"
  },
  {
-  "t": 102.8333,
-  "frame": 3085,
+  "t": 118.3333,
+  "frame": 3550,
   "type": "word",
   "label": "the"
  },
  {
-  "t": 103.1333,
-  "frame": 3094,
+  "t": 118.6333,
+  "frame": 3559,
   "type": "enter",
   "label": "words"
  },
  {
-  "t": 103.1333,
-  "frame": 3094,
+  "t": 118.6333,
+  "frame": 3559,
   "type": "word",
   "label": "words"
  },
  {
-  "t": 103.5667,
-  "frame": 3107,
+  "t": 119.0667,
+  "frame": 3572,
   "type": "enter",
   "label": "before"
  },
  {
-  "t": 103.5667,
-  "frame": 3107,
+  "t": 119.0667,
+  "frame": 3572,
   "type": "word",
   "label": "before"
  },
  {
-  "t": 103.9,
-  "frame": 3117,
+  "t": 119.4,
+  "frame": 3582,
   "type": "enter",
   "label": "he"
  },
  {
-  "t": 103.9,
-  "frame": 3117,
+  "t": 119.4,
+  "frame": 3582,
   "type": "word",
   "label": "he"
  },
  {
-  "t": 104.0333,
-  "frame": 3121,
+  "t": 119.5333,
+  "frame": 3586,
   "type": "enter",
   "label": "needs"
  },
  {
-  "t": 104.0333,
-  "frame": 3121,
+  "t": 119.5333,
+  "frame": 3586,
   "type": "word",
   "label": "needs"
  },
  {
-  "t": 104.3667,
-  "frame": 3131,
+  "t": 119.8667,
+  "frame": 3596,
   "type": "enter",
   "label": "them."
  },
  {
-  "t": 104.3667,
-  "frame": 3131,
+  "t": 119.8667,
+  "frame": 3596,
   "type": "word",
   "label": "them."
  },
  {
-  "t": 104.9667,
-  "frame": 3149,
+  "t": 120.9667,
+  "frame": 3629,
   "type": "show",
   "label": "#n14"
  },
  {
-  "t": 104.9667,
-  "frame": 3149,
+  "t": 120.9667,
+  "frame": 3629,
   "type": "cut",
   "label": "n14"
  },
  {
-  "t": 105,
-  "frame": 3150,
+  "t": 121,
+  "frame": 3630,
   "type": "enter",
   "label": "Make"
  },
  {
-  "t": 105,
-  "frame": 3150,
+  "t": 121,
+  "frame": 3630,
   "type": "word",
   "label": "Make"
  },
  {
-  "t": 105.2333,
-  "frame": 3157,
+  "t": 121.2333,
+  "frame": 3637,
   "type": "enter",
   "label": "it"
  },
  {
-  "t": 105.2333,
-  "frame": 3157,
+  "t": 121.2333,
+  "frame": 3637,
   "type": "word",
   "label": "it"
  },
  {
-  "t": 105.5,
-  "frame": 3165,
+  "t": 121.5,
+  "frame": 3645,
   "type": "enter",
   "label": "their"
  },
  {
-  "t": 105.5,
-  "frame": 3165,
+  "t": 121.5,
+  "frame": 3645,
   "type": "word",
   "label": "their"
  },
  {
-  "t": 105.8,
-  "frame": 3174,
+  "t": 121.8,
+  "frame": 3654,
   "type": "enter",
   "label": "story."
  },
  {
-  "t": 105.8,
-  "frame": 3174,
+  "t": 121.8,
+  "frame": 3654,
   "type": "word",
   "label": "story."
  },
  {
-  "t": 106.7,
-  "frame": 3201,
+  "t": 123.1,
+  "frame": 3693,
   "type": "enter",
   "label": "See"
  },
  {
-  "t": 106.7,
-  "frame": 3201,
+  "t": 123.1,
+  "frame": 3693,
   "type": "word",
   "label": "See"
  },
  {
-  "t": 106.8333,
-  "frame": 3205,
+  "t": 123.2333,
+  "frame": 3697,
   "type": "enter",
   "label": "your"
  },
  {
-  "t": 106.8333,
-  "frame": 3205,
+  "t": 123.2333,
+  "frame": 3697,
   "type": "word",
   "label": "your"
  },
  {
-  "t": 107.1667,
-  "frame": 3215,
+  "t": 123.5667,
+  "frame": 3707,
   "type": "enter",
   "label": "child’s"
  },
  {
-  "t": 107.1667,
-  "frame": 3215,
+  "t": 123.5667,
+  "frame": 3707,
   "type": "word",
   "label": "child’s"
  },
  {
-  "t": 107.6,
-  "frame": 3228,
+  "t": 124,
+  "frame": 3720,
   "type": "enter",
   "label": "first"
  },
  {
-  "t": 107.6,
-  "frame": 3228,
+  "t": 124,
+  "frame": 3720,
   "type": "word",
   "label": "first"
  },
  {
-  "t": 107.9333,
-  "frame": 3238,
+  "t": 124.3333,
+  "frame": 3730,
   "type": "enter",
   "label": "story"
  },
  {
-  "t": 107.9333,
-  "frame": 3238,
+  "t": 124.3333,
+  "frame": 3730,
   "type": "word",
   "label": "story"
  },
  {
-  "t": 108.2,
-  "frame": 3246,
+  "t": 124.6,
+  "frame": 3738,
   "type": "enter",
   "label": "free"
  },
  {
-  "t": 108.2,
-  "frame": 3246,
+  "t": 124.6,
+  "frame": 3738,
   "type": "word",
   "label": "free"
  }

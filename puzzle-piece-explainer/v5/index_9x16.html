@@ -310,8 +310,8 @@ green cardigan, warm smile.</span><span id="dscCar" class="abs" style="left:18px
   <div id="cam_n10" class="cam">
     <div id="h10a" class="abs hd ctr" style="top:150px;font-size:116px">Starring <span class="it mkY">Ryan.</span></div>
     <div id="h10d" class="abs hd ctr" style="top:160px;font-size:78px;white-space:nowrap">His class. <span class="it mkY">His teacher.</span></div>
-    <div id="h10b" class="abs hd ctr" style="top:150px;font-size:100px">His favorite <span class="it mkY">art style</span></div>
-    <div id="h10c" class="abs hd ctr" style="top:150px;font-size:116px">A world <span class="it mkY">he loves</span></div>
+    <div id="h10b" class="abs hd ctr" style="top:160px;font-size:80px;white-space:nowrap">His favorite <span class="it mkY">art style</span></div>
+    <div id="h10c" class="abs hd ctr" style="top:150px;font-size:96px;white-space:nowrap">A world <span class="it mkY">he loves</span></div>
     <div class="step3" style="top:310px">
       <div id="pill10" class="abs" style="left:0;top:0;width:200px;height:76px;border-radius:38px;background:#eec86b"></div>
       <div class="s"><div class="n">1</div>Cast</div><span style="color:#9aa39b">—</span><div class="s"><div class="n">2</div>Style</div><span style="color:#9aa39b">—</span><div class="s"><div class="n">3</div>Theme</div>
@@ -421,11 +421,13 @@ green cardigan, warm smile.</span><span id="dscCar" class="abs" style="left:18px
 <script src="./runtime/vendor/gsap.min.js"></script>
 <script src="./runtime/motion.js"></script>
 <script>
-const OFF = 0.4, FPS = 30, END = 3318;
+const OFF = 0.4, FPS = 30, END = 3810;
 let TM = t => t;
-const F = t => Math.round((TM(t) + OFF) * FPS);
-const Fr = t => Math.round((t + OFF) * FPS);
-const M = Motion.film({ fps: FPS, duration: 110.6, width: 1080, height: 1920, clock: 'smooth' });
+const GAPS = [[6.88, 0.25], [10.5, 0.25], [11.8, 0.35], [17.55, 0.25], [20.96, 0.4], [27.3, 0.4], [30.12, 0.3], [33.4, 0.5], [36.75, 0.4], [39.5, 0.6], [42.97, 0.5], [46.23, 0.4], [48.65, 0.5], [50.38, 0.4], [53.32, 0.4], [54.92, 0.4], [56.58, 0.6], [60.22, 0.6], [62.55, 0.5], [64.48, 0.6], [66.58, 0.5], [70.99, 0.5], [74.57, 0.7], [76.68, 0.6], [79.44, 0.9], [82.74, 0.8], [84.85, 0.5], [88.9, 0.6], [93.72, 0.5], [95.88, 0.4], [99.46, 0.5], [101.58, 0.4], [104.34, 0.5], [106.03, 0.4]];
+const G = t => { let o = t; for (const [p, g] of GAPS) if (t > p) o += g; return o; };
+const F = t => Math.round((G(TM(t)) + OFF) * FPS);
+const Fr = t => Math.round((G(t) + OFF) * FPS);
+const M = Motion.film({ fps: FPS, duration: 127.0, width: 1080, height: 1920, clock: 'smooth' });
 let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 const ICON = {
   talk: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
@@ -780,16 +782,16 @@ function build() {
   { const [a, b] = W(12);
     const pill = $('#pill10'), st = [...document.querySelectorAll('.step3 .s')];
     const pos = st.map(e => [e.offsetLeft, e.offsetWidth]);
-    const moves = [[74.8, 0], [79.6, 1], [81.24, 2]];
+    const moves = [[74.8, 0], [79.44, 1], [81.24, 2]];
     key(pill, 'x', 0, pos[0][0]); key(pill, 'width', 0, pos[0][1]);
-    for (const k of [1, 2]) { const [t, i] = moves[k]; key(pill, 'x', F(t) - 8, pos[i - 1][0]); key(pill, 'x', F(t), pos[i][0], 'snapSettle'); key(pill, 'width', F(t) - 8, pos[i - 1][1]); key(pill, 'width', F(t), pos[i][1], 'snapSettle'); }
+    for (const k of [1, 2]) { const [t, i] = moves[k]; const ft = F(t) + (k === 1 ? 18 : 0); key(pill, 'x', ft - 8, pos[i - 1][0]); key(pill, 'x', ft, pos[i][0], 'snapSettle'); key(pill, 'width', ft - 8, pos[i - 1][1]); key(pill, 'width', ft, pos[i][1], 'snapSettle'); }
     pop('#q1', a, { s0: .9, dy: 300, frames: 16, ease: 'softLand' });
     say('#h10a', [75.76, 76.16], { dist: 40 }); out('#h10a', F(77.6), { dy: -30, frames: 6 });
-    say('#h10d', [77.92, 78.08, 78.72, 78.88], { dist: 40 }); out('#h10d', F(79.45), { dy: -30, frames: 6 });
+    say('#h10d', [77.92, 78.08, 78.72, 78.88], { dist: 40 }); out('#h10d', F(79.44) + 4, { dy: -30, frames: 6 });
     say('#h10b', [80.0, 80.16, 80.6, 80.8], { dist: 40 }); out('#h10b', F(81.16), { dy: -30, frames: 6 });
     say('#h10c', [81.36, 81.52, 81.96, 82.16], { dist: 40 });
-    key('#strip', 'x', F(79.45), 0); key('#strip', 'x', F(79.45) + 14, -680, 'whip'); key('#strip', 'x', F(81.1), -680); key('#strip', 'x', F(81.1) + 14, -1360, 'whip');
-    [['#q1', 79.45, 'out'], ['#q2', 79.45, 'in'], ['#q2', 81.1, 'out'], ['#q3', 81.1, 'in']].forEach(([q, t, d]) => { const f = F(t);
+    key('#strip', 'x', F(79.44) + 10, 0); key('#strip', 'x', F(79.44) + 24, -680, 'whip'); key('#strip', 'x', F(81.1), -680); key('#strip', 'x', F(81.1) + 14, -1360, 'whip');
+    [['#q1', 79.44, 'out'], ['#q2', 79.44, 'in'], ['#q2', 81.1, 'out'], ['#q3', 81.1, 'in']].forEach(([q, t, d]) => { const f = F(t) + (t === 79.44 ? 10 : 0);
       key(q, 'opacity', f, d === 'in' ? .55 : 1); key(q, 'opacity', f + 14, d === 'in' ? 1 : .55, 'softInOut'); });
     key('#q2', 'opacity', 0, .55); key('#q3', 'opacity', 0, .55);
     key('#q3', 'scale', F(82.16), 1); key('#q3', 'scale', F(82.16) + 8, 1.04, 'softInOut'); key('#q3', 'scale', F(82.16) + 18, 1, 'softInOut');
@@ -801,8 +803,8 @@ function build() {
     pop('#ckD', F(76.5) + 1, { s0: .2, frames: 10 }); pop('#ckM', F(77.05) + 1, { s0: .2, frames: 10 });
     $('#strip').insertAdjacentHTML('beforeend', CHIP('chC2', 'firedrill.png', 'His class', 110, 660) + CHIP('chC1', 'av_teacher.png', 'His teacher', 400, 800));
     pop('#chC2', F(78.08), { s0: .5, dx: -80, rot: -8, rot1: -3, frames: 14 }); pop('#chC1', F(78.72), { s0: .5, dx: 80, rot: 8, rot1: 3, frames: 14 });
-    out('#chC1', F(79.4), { frames: 6 }); out('#chC2', F(79.4), { frames: 6 });
-    key('#q1', 'y', F(74.7) + 16, 0); key('#q1', 'y', F(79.4), -40, 'softInOut'); }
+    out('#chC1', F(79.44) + 4, { frames: 6 }); out('#chC2', F(79.44) + 4, { frames: 6 });
+    key('#q1', 'y', F(74.7) + 16, 0); key('#q1', 'y', F(79.44) + 10, -40, 'softInOut'); }
 
   // ===== N11  in my voice / highlighted words / own pace
   { const [a, b] = W(13);
