@@ -56,6 +56,7 @@ img { display: block; }
 .scard .im b { position: absolute; left: 30px; bottom: 22px; font: 800 44px/1.05 Inter, sans-serif; color: #fff; text-shadow: 0 3px 14px rgba(0,0,0,.45); letter-spacing: -.01em; }
 .scard .im::after { content: ""; position: absolute; inset: 40% 0 0 0; background: linear-gradient(rgba(20,40,30,0), rgba(20,40,30,.7)); }
 .scard .im b { z-index: 2; }
+.scard .im.nog::after { display: none; }
 .scard .ft { height: 100px; display: flex; align-items: center; gap: 18px; padding: 0 26px; font-size: 30px; font-weight: 700; color: #1f2b26; }
 .scard .ft .av { width: 62px; height: 62px; border-radius: 50%; overflow: hidden; background: #e8efe0; flex: none; }
 .scard .ft .av img { width: 100%; height: 100%; object-fit: cover; }
@@ -269,7 +270,7 @@ green cardigan, warm smile.</span><span id="dscCar" class="abs" style="left:18px
     <div id="fF" class="abs" style="left:850px;top:960px;width:180px;text-align:center">
       <div class="round" style="position:relative;width:170px;height:170px;margin:0 auto;background:#efe9df;border:7px solid #fff;box-shadow:0 14px 30px rgba(40,50,35,.18)"><img src="img/av_teacher.png" style="width:100%;height:100%;object-fit:cover"></div>
       <div style="font-size:30px;font-weight:700;color:#2d3832;margin-top:12px">Teacher</div></div>
-    <div id="sty5" class="scard" style="left:160px;top:760px"><div class="im"><img src="img/firedrill.png"><b>RYAN'S FIRE<br>DRILL DAY</b></div>
+    <div id="sty5" class="scard" style="left:160px;top:700px"><div class="im nog" style="height:424px"><img id="sty5im" src="img/family_room.jpg" style="transform-origin:45% 55%"></div>
       <div class="ft" style="gap:10px"><div class="av"><img src="img/ryan_ref.png"></div><div class="av"><img src="img/av_dad.png"></div><div class="av"><img src="img/av_mom.png"></div><div class="av"><img src="img/av_evan.png"></div><div class="av"><img src="img/av_sam.png"></div><div class="av"><img src="img/av_bo.png"></div><span style="margin-left:12px;font-size:26px;color:#59615b">in this story</span></div></div>
   </div>
 </section>
@@ -729,6 +730,7 @@ function build() {
     ['#fA', '#fB', '#fC', '#fD', '#fE'].forEach((e, i) => { key(e, 'opacity', F(56.8) + i, 1); key(e, 'opacity', F(57.1) + i, 0); key(e, 'opacity', F(60.2), 0); key(e, 'opacity', F(60.5), 1); });
     pop('#sty5', F(57.3), { s0: .9, s1: 1.18, dy: 400, rot: 6, rot1: 0, frames: 18, ease: 'softLand' });
     out('#sty5', F(60.15), { dy: -80, frames: 8 });
+    key('#sty5im', 'scale', 0, 1); key('#sty5im', 'scale', F(57.3), 1); key('#sty5im', 'scale', F(60.3), 1.09, 'linear');
     say('#hf3', [58.88, 59.2, 59.36], { dist: 40 }); out('#hf3', F(60.3), { dy: -30, frames: 6 });
     // "No photo? You can just describe them." then the teacher
     say('#hf4', [60.4, 60.64, 61.92, 62.28], { dist: 40 }); out('#hf4', F(62.7), { dy: -30, frames: 6 });
