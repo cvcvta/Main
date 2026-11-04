@@ -309,7 +309,7 @@ green cardigan, warm smile.</span><span id="dscCar" class="abs" style="left:18px
   <div class="pat"></div>
   <div id="cam_n10" class="cam">
     <div id="h10a" class="abs hd ctr" style="top:150px;font-size:116px">Starring <span class="it mkY">Ryan.</span></div>
-    <div id="h10d" class="abs hd ctr" style="top:150px;font-size:100px">His class. <span class="it mkY">His teacher.</span></div>
+    <div id="h10d" class="abs hd ctr" style="top:160px;font-size:78px;white-space:nowrap">His class. <span class="it mkY">His teacher.</span></div>
     <div id="h10b" class="abs hd ctr" style="top:150px;font-size:100px">His favorite <span class="it mkY">art style</span></div>
     <div id="h10c" class="abs hd ctr" style="top:150px;font-size:116px">A world <span class="it mkY">he loves</span></div>
     <div class="step3" style="top:310px">
@@ -655,7 +655,7 @@ function build() {
   const [a11, b11] = W(17);
   pop('#rp11', a11, { s0: .7, frames: 14 });
   for (let i = 0; i < 6; i++) pop('#ob' + i, a11 + 4 + i * 2, { s0: .2, frames: 12 });
-  key('#orbit', 'rotation', a11, 0); key('#orbit', 'rotation', b11, 50);
+  key('#orbit', 'rotation', a11, 0); key('#orbit', 'rotation', b11, 150, 'linear');
   say('#t11a', [49.76, 49.92, 50.16, 50.64, 50.8], { dist: 26 });
   key('#t11a', 'opacity', F(51.7), 1); key('#t11a', 'opacity', F(51.7) + 10, .5);
   say('#t11b', [51.84, 51.96, 52.24, 52.4, 52.68, 53.12, 53.44, 53.6, 53.92], { dist: 50 });
@@ -691,7 +691,10 @@ function build() {
     pop('#tgG', F(36.2), { s0: .5, dy: 20, frames: 12 });
     key('#lnP', 'strokeDashoffset', 0, 1); key('#lnP', 'strokeDashoffset', F(36.96), 1); key('#lnP', 'strokeDashoffset', F(38.7), 0, 'softInOut');
     pop('#tgP', F(38.9), { s0: .5, dy: 20, frames: 12 });
-    drift('#cam_sci2', a, b, 1, 1.03); }
+    drift('#cam_sci2', a, b, 1, 1.03);
+    key('#study', 'rotation', F(33.5) + 18, 0); key('#study', 'rotation', F(36.9), -1.2, 'softInOut'); key('#study', 'rotation', b, .6, 'softInOut');
+    key('#tgG', 'x', F(36.6), 0); [6, -6, 4, -3, 0].forEach((v, i) => key('#tgG', 'x', F(36.6) + 2 + i * 2, v, 'softInOut'));
+    key('#tgP', 'rotation', F(38.9) + 12, 0); key('#tgP', 'rotation', F(38.9) + 18, -4, 'softInOut'); key('#tgP', 'rotation', F(38.9) + 26, 0, 'snapSettle'); }
 
   // ===== PER1  as personal as it gets
   { const [a, b] = W(9);
@@ -739,6 +742,7 @@ function build() {
     say('#hf5', [62.96, 63.6, 63.84], { dist: 40 });
     drift('#cam_fam', a, b, 1, 1.03); }
 
+  let TAP, tapPath;
   // ===== N9  I told it what was hard / pick a moment / describe it
   { const [a, b] = W(11);
     say('#h9p', [65.12, 65.32, 65.56, 65.68, 65.84, 66.0], { dist: 40 }); out('#h9p', F(66.6), { dy: -30, frames: 6 });
@@ -750,7 +754,27 @@ function build() {
     pop('#pB', F(71.5), { s0: .9, dy: 700, rot: 10, rot1: 4, frames: 18, ease: 'softLand' });
     say('#h9b', [71.92, 72.2], { dist: 40 });
     say('#h9c', [73.32, 73.44, 73.56, 73.76, 73.92, 74.0], { dist: 24 });
-    drift('#cam_n9', a, b, 1, 1.04); }
+    drift('#cam_n9', a, b, 1, 1.04);
+    TAP = id => `<div id="${id}" class="abs" style="left:0;top:0;width:96px;height:96px;margin:-48px 0 0 -48px;z-index:20"><div id="${id}r" class="abs round" style="inset:0;border:5px solid rgba(255,255,255,.95);box-shadow:0 0 0 3px rgba(34,54,47,.25)"></div><div class="abs round" style="left:22px;top:22px;width:52px;height:52px;background:rgba(255,255,255,.92);box-shadow:0 6px 18px rgba(0,0,0,.28)"></div></div>`;
+    // moves the tap dot along a path and pulses it on each tap; pts = [[t, x, y, tap?], ...]
+    tapPath = (id, pts, tin, tout) => { const r = '#' + id + 'r';
+      key('#' + id, 'opacity', 0, 0); key('#' + id, 'opacity', F(tin), 0); key('#' + id, 'opacity', F(tin) + 5, 1); key('#' + id, 'opacity', F(tout), 1); key('#' + id, 'opacity', F(tout) + 6, 0);
+      key(r, 'opacity', 0, 0); key(r, 'scale', 0, 1);
+      pts.forEach(([t, x, y, tp], i) => { key('#' + id, 'x', F(t), x, i ? 'softInOut' : undefined); key('#' + id, 'y', F(t), y, i ? 'softInOut' : undefined);
+        if (tp) { const f = F(t); key('#' + id, 'scale', f - 3, 1); key('#' + id, 'scale', f, .78, 'softInOut'); key('#' + id, 'scale', f + 5, 1, 'snapSettle');
+          key(r, 'opacity', f - 1, 0); key(r, 'opacity', f, 1); key(r, 'opacity', f + 12, 0); key(r, 'scale', f - 1, 1); key(r, 'scale', f + 12, 2.1, 'softLand'); } }); };
+    $('#pA').insertAdjacentHTML('beforeend', TAP('tpA'));
+    tapPath('tpA', [[68.2, 420, 980], [68.88, 137, 567, 1], [69.9, 150, 600], [70.48, 137, 822, 1], [71.2, 200, 860]], 68.2, 71.1);
+    // the tapped tile presses in
+    [['#rgH', 68.88], ['#rgW', 70.48]].forEach(([r, t]) => { const f = F(t); key(r, 'opacity', f + 1, 1); });
+    // phone A breathes while held
+    key('#pA', 'y', F(65.5) + 18, 0); key('#pA', 'y', F(68.0), -14, 'softInOut'); key('#pA', 'y', F(70.0), 6, 'softInOut'); key('#pA', 'y', b, -10, 'softInOut');
+    // phone B: tap the mic, the parent's words type into a bubble
+    $('#pB').insertAdjacentHTML('beforeend', TAP('tpB') + `<div id="bub9" class="abs" style="left:26px;top:660px;width:448px;padding:26px 28px;border-radius:28px 28px 28px 8px;background:#fff;box-shadow:0 18px 40px rgba(30,40,30,.22);z-index:15"><div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div class="round" style="width:40px;height:40px;background:#2e5a4d;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4" stroke="#fff" stroke-width="2" fill="none"/></svg></div><div style="font:700 22px Inter;color:#2e5a4d">Listening…</div></div><div id="bub9t" style="font:500 30px/1.35 Inter;color:#1f2b26">The fire alarm scares Ryan.\nHe covers his ears and\nwon't line up.</div><span id="bub9c" style="display:inline-block;width:3px;height:30px;background:#2e5a4d;vertical-align:middle"></span></div>`);
+    tapPath('tpB', [[72.0, 420, 960], [72.4, 260, 590, 1], [72.9, 330, 620]], 72.0, 72.8);
+    pop('#bub9', F(72.55), { s0: .7, dy: 30, frames: 12 });
+    M.type('#bub9t', { at: F(72.7), style: 'prompt', seed: 4, caret: '#bub9c', caretGap: 2 });
+    key('#pB', 'y', F(71.5) + 18, 0); key('#pB', 'y', b, -18, 'softInOut'); }
 
   // ===== N10  starring Ryan / his class, his teacher / art style / a world he loves
   { const [a, b] = W(12);
@@ -769,7 +793,16 @@ function build() {
       key(q, 'opacity', f, d === 'in' ? .55 : 1); key(q, 'opacity', f + 14, d === 'in' ? 1 : .55, 'softInOut'); });
     key('#q2', 'opacity', 0, .55); key('#q3', 'opacity', 0, .55);
     key('#q3', 'scale', F(82.16), 1); key('#q3', 'scale', F(82.16) + 8, 1.04, 'softInOut'); key('#q3', 'scale', F(82.16) + 18, 1, 'softInOut');
-    drift('#cam_n10', a, b, 1, 1.03); }
+    drift('#cam_n10', a, b, 1, 1.03);
+    const CK = (id, x, y) => `<div id="${id}" class="abs round" style="left:${x - 26}px;top:${y - 26}px;width:52px;height:52px;background:#22362f;display:flex;align-items:center;justify-content:center;z-index:12"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
+    const CHIP = (id, img, label, x, y) => `<div id="${id}" class="abs" style="left:${x}px;top:${y}px;height:96px;padding:0 30px 0 12px;border-radius:48px;background:#fff;box-shadow:0 16px 36px rgba(30,40,30,.22);display:flex;align-items:center;gap:16px;font:750 34px Inter;color:#1f2b26;z-index:14;white-space:nowrap"><div class="round" style="width:72px;height:72px;overflow:hidden;background:#e8efe0"><img src="img/${img}" style="width:100%;height:100%;object-fit:cover"></div>${label}<div class="round" style="width:40px;height:40px;background:#22362f;display:flex;align-items:center;justify-content:center;margin-left:6px"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>`;
+    $('#q1').insertAdjacentHTML('beforeend', TAP('tpC') + CK('ckD', 529, 923) + CK('ckM', 529, 1016));
+    tapPath('tpC', [[76.0, 470, 1120], [76.5, 529, 923, 1], [77.05, 529, 1016, 1], [77.5, 470, 1100]], 76.0, 77.45);
+    pop('#ckD', F(76.5) + 1, { s0: .2, frames: 10 }); pop('#ckM', F(77.05) + 1, { s0: .2, frames: 10 });
+    $('#strip').insertAdjacentHTML('beforeend', CHIP('chC2', 'firedrill.png', 'His class', 110, 660) + CHIP('chC1', 'av_teacher.png', 'His teacher', 400, 800));
+    pop('#chC2', F(78.08), { s0: .5, dx: -80, rot: -8, rot1: -3, frames: 14 }); pop('#chC1', F(78.72), { s0: .5, dx: 80, rot: 8, rot1: 3, frames: 14 });
+    out('#chC1', F(79.4), { frames: 6 }); out('#chC2', F(79.4), { frames: 6 });
+    key('#q1', 'y', F(74.7) + 16, 0); key('#q1', 'y', F(79.4), -40, 'softInOut'); }
 
   // ===== N11  in my voice / highlighted words / own pace
   { const [a, b] = W(13);
@@ -784,7 +817,9 @@ function build() {
     key('#night11', 'opacity', 0, 0); key('#night11', 'opacity', F(87.2), 0); key('#night11', 'opacity', F(87.2) + 8, 1);
     say('#h11c', [87.2, 87.52, 87.88, 88.0, 88.16, 88.4], { dist: 40 });
     key('#rd', 'y', F(87.2), 0); key('#rd', 'y', b, 30);
-    drift('#cam_n11', a, b, 1, 1.03); }
+    drift('#cam_n11', a, b, 1, 1.03);
+    const ri = document.querySelector('#rd img'); key(ri, 'x', a, 0); key(ri, 'x', F(87.2), 150, 'softInOut'); key(ri, 'x', b, 220);
+    key(ri, 'scale', a, 1); key(ri, 'scale', b, 1.08); }
 
   // ===== N12  library
   { const [a, b] = W(14);
@@ -797,6 +832,9 @@ function build() {
     key('#rep12', 'rotation', F(92.56), 0); key('#rep12', 'rotation', F(92.56) + 14, 360, 'softInOut'); key('#rep12', 'rotation', F(93.28), 360); key('#rep12', 'rotation', F(93.28) + 14, 720, 'softInOut');
     [92.56, 93.28].forEach(t => { key('#lc1', 'y', F(t), 0); key('#lc1', 'y', F(t) + 5, -24, 'softLand'); key('#lc1', 'y', F(t) + 12, 0, 'softInOut'); });
     drift('#cam_n12', a, b, 1, 1.04); }
+
+  // ===== S11 extra: the hero piece floats
+  { const [a, b] = W(17); for (let f = a + 14, k = 0; f < b; f += 24, k++) key('#rp11', 'y', f, k % 2 ? -18 : 6, 'softInOut'); }
 
   // ===== N14  Make it their story
   { const [a] = W(18);
