@@ -1,3 +1,5 @@
 __pycache__/
 *.egg-info/
 .env
+ads/persona-os-mo/build/out/
+ads/persona-os-mo/build/frames/
