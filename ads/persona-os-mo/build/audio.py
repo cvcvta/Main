@@ -1,6 +1,6 @@
 """Synthesise the music bed + SFX and mix them under the VO.
 
-Usage: python audio.py <timeline.json> <scenes.json> <vo_tight.wav> <out.wav>
+Usage: python audio.py <timeline.json> <scenes.json> <vo_tight.wav> <out.wav> [events.json]
 Everything here is generated from scratch with numpy (no samples).
 """
 import json, subprocess, sys, wave
@@ -116,6 +116,9 @@ def riser(dur):
     return s * (t / dur) ** 2
 
 
+EVENTS_PATH = None
+
+
 def main(tl_path, sc_path, vo_path, out_path):
     tl = json.load(open(tl_path)); sc = json.load(open(sc_path))
     P = tl['phrases']; dur = tl['duration']
@@ -175,22 +178,35 @@ def main(tl_path, sc_path, vo_path, out_path):
             i = int(t0 * SR); j = min(N, i + len(kd)); duck[i:j] = np.minimum(duck[i:j], kd[: j - i])
     music = drums * 0.9 + bass * 0.55 * duck + pad * duck
 
-    # SFX on scene changes and beats
-    for name in ['costs', 'quit', 'roles', 'cal', 'match', 'plans', 'always', 'nos', 'spot']:
-        place(sfx, whoosh(0.4), sc[name] - 0.28, 0.55)
-    place(sfx, boom(), sc['brand'], 0.8)
-    place(sfx, whoosh(0.5, up=False), sc['brand'] - 0.05, 0.5)
-    place(sfx, riser(1.6), sc['plans'] - 1.6, 0.6)
-    place(sfx, boom(), sc['cta'], 0.6)
-    place(sfx, riser(1.2), sc['cta'] - 1.2, 0.5)
-    for i in (8, 9, 10, 11):
-        place(sfx, pop(), P[i]['start'], 0.8)
-    place(sfx, pop(), P[11]['words'][-1]['t'], 0.8)
-    for d in range(31):
-        if (np.sin(d * 3.1 * 127.1) * 43758.5453) % 1 >= 0.28:
-            place(sfx, tick(), sc['cal'] + 0.25 + d / 31 * ((sc['match'] - sc['cal']) * 0.7))
-    for i in (15, 16, 17):
-        place(sfx, pop(), P[i]['words'][-1]['t'], 0.6)
+    # SFX: placed on picture events exported by the renderer (events.json), else the v1 defaults
+    if EVENTS_PATH:
+        def thud():
+            n = int(0.35 * SR); t = np.arange(n) / SR
+            return np.sin(2 * np.pi * np.cumsum(70 + 80 * np.exp(-t / 0.03)) / SR) * env(n, 0.001, 0.12) * 0.8
+        def ding():
+            n = int(0.9 * SR)
+            return (tone(1318.5, 0.9) * 0.6 + tone(1975.5, 0.9) * 0.3) * env(n, 0.002, 0.25) * 0.22
+        def bubble():
+            n = int(0.09 * SR); t = np.arange(n) / SR
+            return np.sin(2 * np.pi * np.cumsum(900 + 700 * (t / 0.09)) / SR) * env(n, 0.001, 0.03) * 0.3
+        def cut():
+            n = int(0.12 * SR)
+            return RNG.standard_normal(n) * env(n, 0.0005, 0.02) * 0.35 + thud()[:n] * 0.6
+        make = {
+            'whoosh': lambda e: whoosh(0.4), 'whooshUp': lambda e: whoosh(0.45), 'whooshDown': lambda e: whoosh(0.4, up=False),
+            'swish': lambda e: whoosh(0.28), 'thud': lambda e: thud(), 'cut': lambda e: cut(), 'fall': lambda e: whoosh(0.34, up=False),
+            'boom': lambda e: boom(), 'riser': lambda e: riser(e.get('dur', 1.0)), 'tick': lambda e: tick() * 2.5,
+            'pop': lambda e: pop(), 'ding': lambda e: ding(), 'bubble': lambda e: bubble(),
+        }
+        lead = {'whoosh': 0.2, 'whooshUp': 0.2, 'whooshDown': 0.2, 'swish': 0.14, 'fall': 0.0, 'riser': 0.0}
+        for e in json.load(open(EVENTS_PATH)):
+            place(sfx, make[e['kind']](e), e['t'] - lead.get(e['kind'], 0.0), e.get('gain', 0.6))
+    else:
+        for name in ['costs', 'quit', 'roles', 'cal', 'match', 'plans', 'always', 'nos', 'spot']:
+            place(sfx, whoosh(0.4), sc[name] - 0.28, 0.55)
+        place(sfx, boom(), sc['brand'], 0.8)
+        place(sfx, riser(1.6), sc['plans'] - 1.6, 0.6)
+        place(sfx, boom(), sc['cta'], 0.6)
 
     # VO + ducking
     with wave.open(vo_path) as w:
@@ -214,4 +230,6 @@ def main(tl_path, sc_path, vo_path, out_path):
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 5:
+        EVENTS_PATH = sys.argv[5]
     main(*sys.argv[1:5])

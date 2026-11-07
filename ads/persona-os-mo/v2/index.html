@@ -1,0 +1,625 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Persona OS — Hire Mo (v2)</title>
+<style>
+:root{--ink:#111116;--paper:#FAFAF7;--purple:#6938F5;--lilac:#B9A3FF;--lav:#EAE6F0;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
+body{font-family:"Inter",sans-serif;-webkit-font-smoothing:antialiased}
+#stage{position:absolute;inset:0;overflow:hidden;background:#000}
+.layer{position:absolute;inset:0;overflow:hidden;display:none}
+.abs{position:absolute}
+.plate{position:absolute;inset:0;transform-origin:50% 50%;will-change:transform}
+.plate img{position:absolute;left:0;top:50%;width:1080px;transform:translateY(-50%)}
+/* kinetic type */
+.cap{position:absolute;left:0;width:1080px;text-align:center;font-family:"Inter Display","Inter",sans-serif;font-weight:600;letter-spacing:-0.035em}
+.cap .ln{display:block;white-space:nowrap}
+.cap .mk{display:inline-block;overflow:hidden;vertical-align:top;padding:0.06em 0.02em 0.16em;margin:-0.06em 0 -0.16em}
+.cap .in{display:inline-block;will-change:transform}
+/* Mo */
+.mo{position:absolute;left:0;top:0;width:400px;height:400px;margin:-200px 0 0 -200px;transform-origin:50% 50%;will-change:transform}
+.mo .glow{position:absolute;inset:-60px;border-radius:50%;background:radial-gradient(circle,rgba(140,100,255,.55) 35%,rgba(140,100,255,0) 70%)}
+.mo .body{position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  background:radial-gradient(circle at 34% 30%,#fff 0%,#F1ECFF 22%,#D6C6FF 55%,#A98BFF 86%,#8E6BFF 100%)}
+.mo .sw{position:absolute;border-radius:50%;filter:blur(26px)}
+.mo .rim{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0) 78%,rgba(255,255,255,.75) 99%)}
+.mo .spec{position:absolute;left:78px;top:70px;width:92px;height:44px;border-radius:50%;background:rgba(255,255,255,.92);filter:blur(4px);transform:rotate(-34deg)}
+.mo .eye{position:absolute;width:34px;height:62px;border-radius:50%;background:#121018}
+.mo .eye i{position:absolute;left:8px;top:10px;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.9)}
+.moShadow{position:absolute;left:0;top:0;width:400px;height:90px;margin:-45px 0 0 -200px;border-radius:50%;background:radial-gradient(closest-side,rgba(40,20,90,.45),rgba(40,20,90,0));}
+/* UI fragments */
+.card{position:absolute;border-radius:36px;background:#fff;box-shadow:0 40px 90px rgba(40,18,110,.28),0 6px 18px rgba(40,18,110,.12);overflow:hidden;color:var(--ink)}
+.serif{font-family:"Bitstream Charter","Caladea",serif}
+.mono{font-family:"JetBrains Mono",monospace}
+.chip{display:inline-flex;align-items:center;gap:12px;border-radius:999px;font-weight:600}
+.sp{display:inline-block;width:28px;height:28px}
+#grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.10}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 46%,rgba(0,0,0,0) 55%,rgba(0,0,0,.28) 100%)}
+</style></head>
+<body><div id="stage"></div>
+<script>
+// =====================================================================================
+//  Every frame is a pure function of t: window.renderFrame(t). No CSS transitions.
+// =====================================================================================
+const W = 1080, H = 1920;
+const $ = (tag, cls, parent, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.appendChild(e); return e; };
+const css = (e, o) => { for (const k in o) e.style[k] = o[k]; return e; };
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const eOut = k => (k = clamp(k)) >= 1 ? 1 : 1 - Math.pow(2, -10 * k);           // land: decelerate
+const eIn = k => (k = clamp(k)) <= 0 ? 0 : Math.pow(2, 10 * (k - 1));            // leave: accelerate
+const eIO = k => { k = clamp(k); return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+const sine = k => 0.5 - 0.5 * Math.cos(Math.PI * clamp(k));
+const spring = k => { k = Math.max(0, k); return 1 - Math.exp(-7 * k) * Math.cos(11 * k); };   // the one spring
+// piecewise track: [[t, v, ease?], ...] ease applies on the segment ending at that key
+function track(t, keys) {
+  if (t <= keys[0][0]) return keys[0][1];
+  for (let i = 1; i < keys.length; i++) {
+    const [t1, v1, ez] = keys[i], [t0, v0] = keys[i - 1];
+    if (t <= t1) { const k = (t - t0) / (t1 - t0); return lerp(v0, v1, (ez || eIO)(k)); }
+  }
+  return keys[keys.length - 1][1];
+}
+function hash(n) { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+let TL, B = {}, LAYERS = {}, CAPS = [], UPD = [];
+const P = i => TL.phrases[i];
+function wt(i, w, k = 0) {
+  const n = s => s.toLowerCase().replace(/[^a-z0-9$']/g, '');
+  let c = 0; for (const x of P(i).words) if (n(x.w) === n(w)) { if (c === k) return x.t; c++; }
+  throw new Error(`word ${w} not in phrase ${i}`);
+}
+
+// ---------------------------------- kinetic captions ----------------------------------
+// lines: [{size, color, weight, words:[[text, t, colorOverride?]]}], words unmask upward from a line mask.
+function caption(parent, { y, lines, out, lh = 1.06, x = 0 }) {
+  const root = $('div', 'cap', parent); css(root, { top: y + 'px', left: x + 'px' });
+  const items = [];
+  lines.forEach(L => {
+    const ln = $('div', 'ln', root);
+    css(ln, { fontSize: L.size + 'px', lineHeight: lh, color: L.color || '#111116', fontWeight: L.weight || 600 });
+    L.words.forEach(([txt, t, col], j) => {
+      const mk = $('span', 'mk', ln); const inn = $('span', 'in', mk, txt);
+      if (col) inn.style.color = col;
+      if (j < L.words.length - 1) ln.appendChild(document.createTextNode(' '));
+      items.push({ inn, t, idx: items.length });
+    });
+  });
+  const c = { root, items, out };
+  c.update = t => {
+    let any = false;
+    for (const it of c.items) {
+      const k = (t - (it.t - 0.07)) / 0.40;                   // lands ~2f before it's heard
+      let y = (1 - eOut(k)) * 112, r = (1 - eOut(k)) * 4;
+      if (k < 0) { y = 112; r = 4; }
+      if (c.out != null) { const ke = (t - c.out - it.idx * 0.022) / 0.26; if (ke > 0) { y = -eIn(ke) * 112; r = -eIn(ke) * 3; } }
+      it.inn.style.transform = `translateY(${y}%) rotate(${r}deg)`;
+      if (k > 0) any = true;
+    }
+    c.root.style.display = any ? 'block' : 'none';
+  };
+  CAPS.push(c); return c;
+}
+
+// ---------------------------------- Mo ----------------------------------
+function makeMo(parent) {
+  const sh = $('div', 'moShadow', parent);
+  const m = $('div', 'mo', parent);
+  const glow = $('div', 'glow', m);
+  const body = $('div', 'body', m);
+  const sws = [['#7C4DFF', .75, 220, 150, 70, 150], ['#F06BB0', .45, 170, 120, 160, 210], ['#6938F5', .6, 140, 110, 130, 90]].map(([c, a, w, h, x, y]) => css($('div', 'sw', body), { background: c, opacity: a, width: w + 'px', height: h + 'px', left: x + 'px', top: y + 'px' }));
+  $('div', 'rim', body); $('div', 'spec', m);
+  const eyes = [css($('div', 'eye', m), { left: '232px', top: '178px' }), css($('div', 'eye', m), { left: '300px', top: '172px' })];
+  eyes.forEach(e => $('i', '', e));
+  const o = { m, sh, glow, sws, eyes };
+  o.set = ({ x, y, r, sx = 1, sy = 1, rot = 0, look = 0, blink = 1, glowA = 0, shadow = 0, floorY = null, t = 0, z = 5, vis = true }) => {
+    m.style.display = sh.style.display = vis && r > 0.5 ? 'block' : 'none';
+    if (!vis) return;
+    const s = r / 200;
+    m.style.zIndex = z; sh.style.zIndex = z - 1;
+    m.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg) scale(${s * sx},${s * sy})`;
+    glow.style.opacity = glowA;
+    sws.forEach((e, i) => e.style.transform = `translate(${Math.sin(t * .9 + i * 2) * 22}px,${Math.cos(t * .7 + i) * 18}px) rotate(${t * 25 + i * 60}deg)`);
+    eyes.forEach(e => e.style.transform = `translateX(${look * 16}px) scaleY(${blink})`);
+    if (shadow > 0 && floorY != null) {
+      const lift = clamp((floorY - (y + r)) / 600);
+      sh.style.transform = `translate(${x}px,${floorY}px) scale(${s * (1 - lift * .5)},${s * (1 - lift * .5)})`;
+      sh.style.opacity = shadow * (1 - lift);
+    } else sh.style.opacity = 0;
+  };
+  return o;
+}
+const blinkAt = (t, at) => { const k = (t - at) / 0.2; return k < 0 || k > 1 ? 1 : Math.max(0.08, Math.abs(Math.cos(k * Math.PI))); };
+
+// ---------------------------------- brand mark ----------------------------------
+const SPARK = c => `<svg viewBox="-10 -10 20 20" width="100%" height="100%"><path d="M0,-10 Q1.2,-1.2 10,0 Q1.2,1.2 0,10 Q-1.2,1.2 -10,0 Q-1.2,-1.2 0,-10Z" fill="${c}"/></svg>`;
+function wordmark(parent, size, color, accent) {
+  const e = $('div', 'abs', parent);
+  css(e, { display: 'flex', alignItems: 'center', gap: size * .28 + 'px', fontFamily: 'Inter', fontWeight: 600, fontSize: size + 'px', letterSpacing: '-0.035em', color, whiteSpace: 'nowrap', transformOrigin: '50% 50%' });
+  const s = $('span', '', e, SPARK(accent)); css(s, { width: size * .8 + 'px', height: size * .8 + 'px', display: 'inline-block' });
+  $('span', '', e, 'personaos');
+  return e;
+}
+
+// ---------------------------------- UI fragments (content from personaos.com) ----------------------------------
+function fragWebsite(p) {
+  const c = $('div', 'card', p); css(c, { width: '880px', height: '760px', background: '#EEE8DE' });
+  c.innerHTML = `
+   <div style="display:flex;justify-content:space-between;align-items:center;padding:40px 52px 0;font-size:26px;color:#3b3530">
+     <span class="serif" style="font-size:40px;letter-spacing:-.5px">stone &amp; oak</span>
+     <span style="display:flex;gap:34px">Our work<span>Services</span><span>Contact</span></span></div>
+   <div style="padding:70px 52px 0">
+     <div style="font-size:20px;letter-spacing:4px;color:#8a7f72;font-weight:600">BATHROOMS + FLOORS / AUSTIN, TX</div>
+     <div class="serif" style="font-size:92px;line-height:1.0;margin-top:22px;letter-spacing:-2px;color:#2a2521">Better spaces.<br>Better mornings.</div>
+     <div style="font-size:30px;color:#6b6157;margin-top:26px">Thoughtfully remodeled. Beautifully yours.</div>
+     <div style="display:inline-block;margin-top:40px;padding:22px 34px;background:#2a2521;color:#EEE8DE;border-radius:999px;font-size:24px;font-weight:600;letter-spacing:2px">EXPLORE OUR WORK</div></div>
+   <div style="position:absolute;right:-60px;bottom:-60px;width:360px;height:300px;border-radius:30px;transform:rotate(-8deg);
+     background:repeating-linear-gradient(90deg,#d9cfc1 0 86px,#cfc3b3 86px 90px),#d9cfc1;box-shadow:0 20px 50px rgba(0,0,0,.12)">
+     <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,0) 0 86px,rgba(120,100,80,.25) 86px 90px)"></div></div>`;
+  return c;
+}
+function fragGuide(p) {
+  const c = $('div', 'card', p); css(c, { width: '860px', height: '700px', padding: '56px' });
+  c.innerHTML = `
+   <div class="chip" style="background:#EAE6F0;color:#6938F5;font-size:26px;padding:14px 26px"><span class="sp">${SPARK('#6938F5')}</span>New guide published</div>
+   <div style="font-size:22px;letter-spacing:4px;color:#9a97a6;font-weight:600;margin-top:46px">THE FLOOR GUIDE</div>
+   <div class="serif" style="font-size:78px;line-height:1.02;letter-spacing:-1.5px;margin-top:16px">Good floors start<br>below the surface.</div>
+   <div style="font-size:30px;line-height:1.45;color:#55525f;margin-top:30px">Before the tile goes down, the subfloor decides how long it lasts. Here’s what to check first.</div>`;
+  return c;
+}
+function fragSEO(p) {
+  const c = $('div', 'card', p); css(c, { width: '880px', height: '560px', padding: '52px 56px' });
+  c.innerHTML = `
+   <div style="display:flex;align-items:center;gap:20px;padding:18px 28px;border-radius:999px;background:#F3F2F6;font-size:30px;color:#3b3946">
+     <svg width="30" height="30" viewBox="0 0 24 24"><circle cx="10" cy="10" r="7" stroke="#6a6878" stroke-width="2.6" fill="none"/><path d="M15 15l6 6" stroke="#6a6878" stroke-width="2.6" stroke-linecap="round"/></svg>
+     bathroom remodel austin</div>
+   <div style="margin-top:44px;font-size:24px;color:#55525f">stoneandoak.com › bathrooms</div>
+   <div style="font-size:42px;color:#2b4fd8;margin-top:8px;font-weight:500;letter-spacing:-.5px">Bathroom remodels in Austin | Stone &amp; Oak</div>
+   <div style="font-size:28px;line-height:1.45;color:#55525f;margin-top:12px">Walk-in showers, tile and floors. Thoughtfully remodeled, expertly installed.</div>
+   <div class="chip" style="position:absolute;right:48px;bottom:44px;background:#6938F5;color:#fff;font-size:26px;padding:14px 26px">SEO updated
+     <svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`;
+  return c;
+}
+function fragPost(p) {
+  const c = $('div', 'card', p); css(c, { width: '760px', height: '980px' });
+  c.innerHTML = `
+   <div style="display:flex;align-items:center;gap:18px;padding:30px 34px">
+     <div style="width:62px;height:62px;border-radius:50%;background:#2a2521;color:#EEE8DE;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700">S</div>
+     <div style="font-size:30px;font-weight:600">stoneandoak</div></div>
+   <div style="position:relative;height:640px;display:flex">
+     <div style="flex:1;background:linear-gradient(160deg,#b9b2a8,#8f877d)"><div style="position:absolute;left:26px;top:24px;font-size:22px;font-weight:700;letter-spacing:3px;color:#fff;background:rgba(0,0,0,.35);padding:8px 14px;border-radius:10px">BEFORE</div></div>
+     <div style="flex:1;background:repeating-linear-gradient(90deg,#f3eee6 0 92px,#e3dbcf 92px 96px)"><div style="position:absolute;right:26px;top:24px;font-size:22px;font-weight:700;letter-spacing:3px;color:#2a2521;background:rgba(255,255,255,.75);padding:8px 14px;border-radius:10px">AFTER</div></div>
+     <div style="position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:#fff"></div></div>
+   <div style="padding:30px 34px;font-size:30px;line-height:1.4"><b>stoneandoak</b> Same room. New feeling. A bathroom transformed, from the floor up.</div>`;
+  return c;
+}
+function fragAd(p) {
+  const c = $('div', 'card', p); css(c, { width: '820px', height: '600px', padding: '44px 50px' });
+  c.innerHTML = `
+   <div style="font-size:24px;color:#8a8798">Sponsored · Stone &amp; Oak</div>
+   <div class="serif" style="font-size:72px;line-height:1.04;letter-spacing:-1.5px;margin-top:26px">Bathroom remodels.<br>Beautifully done.</div>
+   <div style="font-size:30px;color:#55525f;margin-top:22px">Thoughtfully designed. Expertly installed.</div>
+   <div style="position:absolute;left:50px;right:50px;bottom:44px;padding:26px;border-radius:20px;background:#6938F5;color:#fff;text-align:center;font-size:30px;font-weight:600">Book a free design visit</div>`;
+  return c;
+}
+const POSTS = { 1: ['STATIC', 'Project reveal'], 2: ['VIDEO', 'The process'], 4: ['MEME', 'Weekend plans'], 6: ['STATIC', 'Floor details'], 7: ['MEME', 'Just a faucet'], 9: ['VIDEO', 'Before + after'], 12: ['STATIC', 'Finishing touches'], 14: ['VIDEO', 'Tile tips'], 16: ['MEME', 'Friday feeling'], 18: ['STATIC', 'The floor guide'], 20: ['MEME', 'Renovation mood'], 22: ['VIDEO', 'Bathroom reveal'], 24: ['STATIC', 'Weekend project'], 26: ['MEME', 'Homeowner life'], 28: ['STATIC', 'Tile choices'], 30: ['VIDEO', 'Month in review'] };
+const TYPE_COL = { STATIC: ['#EAE6F0', '#6938F5'], VIDEO: ['#6938F5', '#fff'], MEME: ['#FBDCEC', '#B0367A'] };
+function fragCalendar(p) {
+  const c = $('div', 'card', p); css(c, { width: '1240px', height: '1180px', padding: '54px 54px' });
+  const head = $('div', '', c); css(head, { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' });
+  head.innerHTML = `<div><div style="font-size:24px;color:#8a8798">mo / Social workspace</div>
+     <div style="font-size:76px;font-weight:700;letter-spacing:-2px;margin-top:6px">October <span style="color:#b6b3c2;font-weight:500">2026</span></div>
+     <div style="font-size:26px;color:#55525f;margin-top:4px">Stone &amp; Oak · Bathrooms + floors</div></div>`;
+  const status = $('div', 'chip', head); css(status, { fontSize: '26px', padding: '16px 28px', marginTop: '20px', background: '#EAE6F0', color: '#6938F5', letterSpacing: '1px' });
+  const grid = $('div', '', c); css(grid, { display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: '12px', marginTop: '40px' });
+  ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'].forEach(d => css($('div', '', grid, d), { fontSize: '20px', color: '#9a97a6', fontWeight: 600, letterSpacing: '2px', paddingLeft: '8px' }));
+  const cells = [];
+  for (let d = 1; d <= 35; d++) {
+    const cell = $('div', '', grid); css(cell, { height: '158px', borderRadius: '18px', background: d <= 31 ? '#F6F4FA' : 'transparent', position: 'relative', padding: '12px' });
+    if (d <= 31) css($('div', '', cell, String(d)), { fontSize: '22px', color: '#9a97a6', fontWeight: 500 });
+    const post = POSTS[d];
+    if (post) {
+      const [ty, title] = post, [bg, fg] = TYPE_COL[ty];
+      const chip = $('div', '', cell); css(chip, { position: 'absolute', left: '10px', right: '10px', bottom: '10px', borderRadius: '12px', background: bg, color: fg, padding: '10px 12px', transformOrigin: '50% 100%' });
+      chip.innerHTML = `<div style="font-size:15px;font-weight:700;letter-spacing:1.5px">${ty}</div><div style="font-size:19px;font-weight:600;margin-top:2px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${title}</div>`;
+      const tick = $('div', '', cell); css(tick, { position: 'absolute', right: '12px', top: '12px', width: '34px', height: '34px', borderRadius: '50%', background: '#6938F5' });
+      tick.innerHTML = `<svg width="34" height="34" viewBox="0 0 24 24"><path d="M6.5 12.5l3.5 3.5 7.5-8" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      cells.push({ d, chip, tick });
+    }
+  }
+  c.status = status; c.cells = cells; return c;
+}
+function fragNotif(p) {
+  const c = $('div', 'card', p); css(c, { width: '900px', height: '470px', padding: '40px 46px', background: 'rgba(255,255,255,.96)' });
+  c.innerHTML = `
+   <div style="display:flex;justify-content:space-between;align-items:center;padding-left:96px">
+     <div><div style="font-size:30px;font-weight:700">Mo</div><div style="font-size:24px;color:#8a8798">New comment · Instagram</div></div>
+     <div style="font-size:24px;color:#8a8798">2:14 AM</div></div>
+   <div style="font-size:40px;line-height:1.3;margin-top:34px;letter-spacing:-.5px">“Do you do bathrooms in Austin? We’d love a quote for ours.”</div>
+   <div class="chip" style="margin-top:34px;background:#6938F5;color:#fff;font-size:26px;padding:14px 26px">Potential customer · Flagged for you</div>`;
+  return c;
+}
+function bubble(p, txt, mine) {
+  const b = $('div', 'abs', p, txt);
+  css(b, { maxWidth: '700px', padding: '28px 36px', fontSize: '36px', lineHeight: 1.3, borderRadius: mine ? '40px 40px 12px 40px' : '40px 40px 40px 12px',
+    background: mine ? '#6938F5' : '#fff', color: mine ? '#fff' : '#111116', boxShadow: '0 20px 50px rgba(0,0,0,.25)', letterSpacing: '-.3px' });
+  if (mine) b.style.right = '90px'; else b.style.left = '90px';
+  return b;
+}
+function fragConfirm(p) {
+  const c = $('div', 'card', p); css(c, { width: '900px', height: '420px', padding: '46px 52px', display: 'flex', gap: '44px', alignItems: 'center' });
+  c.innerHTML = `
+   <div style="width:200px;height:240px;border-radius:30px;background:#6938F5;color:#fff;text-align:center;padding-top:30px;flex:none">
+     <div style="font-size:26px;font-weight:700;letter-spacing:3px">FRIDAY</div><div style="font-size:120px;font-weight:700;line-height:1;letter-spacing:-4px">23</div><div style="font-size:24px;letter-spacing:3px;opacity:.85">OCTOBER</div></div>
+   <div><div style="font-size:24px;letter-spacing:3px;color:#6938F5;font-weight:700">DESIGN VISIT CONFIRMED</div>
+     <div style="font-size:58px;font-weight:700;letter-spacing:-1.5px;margin-top:10px;line-height:1.05">Sarah M.<br>10:00 AM</div>
+     <div style="font-size:28px;color:#55525f;margin-top:16px">On your calendar. Handled by Mo.</div></div>`;
+  return c;
+}
+
+// ---------------------------------- grain ----------------------------------
+let GRAIN, grainTiles = [];
+function makeGrain() {
+  for (let i = 0; i < 8; i++) {
+    const g = document.createElement('canvas'); g.width = 540; g.height = 960; const x = g.getContext('2d');
+    const d = x.createImageData(540, 960); let s = i * 9973 + 1;
+    for (let p = 0; p < d.data.length; p += 4) { s = (s * 16807) % 2147483647; const v = (s / 2147483647) * 255; d.data[p] = d.data[p + 1] = d.data[p + 2] = v; d.data[p + 3] = 255; }
+    x.putImageData(d, 0, 0); grainTiles.push(g.toDataURL('image/png'));
+  }
+}
+
+// =====================================================================================
+//  BUILD
+// =====================================================================================
+let MO, L = {};
+function build() {
+  const st = document.getElementById('stage');
+  const lay = n => (L[n] = $('div', 'layer', st));
+
+  // ---- A: the office (hook, costs, quit, brand) — one continuous push ----
+  const A = lay('office');
+  L.plate = $('div', 'plate', A);
+  L.desk = $('img', '', L.plate); L.desk.src = '../build/plates/desk.jpg';
+  L.empty = $('img', '', L.plate); L.empty.src = '../build/plates/empty.jpg';
+  L.grade = css($('div', 'abs', A), { inset: '0', background: 'linear-gradient(180deg,rgba(20,10,60,0) 40%,rgba(20,10,60,.35) 100%)' });
+  L.dim = css($('div', 'abs', A), { inset: '0', background: '#1a1530', opacity: 0 });
+  L.officeMoLayer = css($('div', 'abs', A), { inset: '0' });
+  L.capA = css($('div', 'abs', A), { inset: '0' });
+  const ink = '#111116', pur = '#6938F5', wh = '#FFFFFF', li = '#C9B6FF';
+  caption(L.capA, { y: 250, out: P(1).start - 0.02, lines: [
+    { size: 104, color: ink, words: [['Still', wt(0, 'Still')], ['trying', wt(0, 'trying')], ['to', wt(0, 'to')], ['hire', wt(0, 'hire')]] },
+    { size: 104, color: pur, words: [['a', wt(0, 'a')], ['marketer?', wt(0, 'marketer?')]] }] });
+  caption(L.capA, { y: 250, out: B.costs + 0.05, lines: [
+    { size: 104, color: ink, words: [['Mo', wt(1, 'Mo'), pur], ['starts', wt(1, 'starts')], ['today.', wt(1, 'today.')]] }] });
+  caption(L.capA, { y: 250, out: P(5).start - 0.25, lines: [
+    { size: 92, color: ink, words: [['Add', wt(2, 'Add')], ['up', wt(2, 'up')], ['what', wt(2, 'what')], ['one', wt(2, 'one')], ['hire', wt(2, 'hire')]] },
+    { size: 92, color: pur, words: [['really', wt(2, 'really')], ['costs', wt(2, 'costs')], ['you.', wt(2, 'you.')]] }] });
+  // costs land as a stack on his chest
+  const costs = [['Salary.', wt(3, 'Salary.')], ['Benefits.', wt(4, 'Benefits.')], ['Months of ramp-up.', wt(4, 'Months')]];
+  costs.forEach(([txt, t], j) => caption(L.capA, { y: 1180 + j * 112, out: P(5).start - 0.25 + j * 0.03, lines: [{ size: 88, color: wh, words: txt.split(' ').map((w, q) => [w, t + q * 0.09]) }] }));
+  caption(L.capA, { y: 250, out: P(7).start - 0.05, lines: [
+    { size: 96, color: ink, words: [['And', wt(5, 'And')], ['when', wt(5, 'when')], ['they', wt(5, 'they')], ['quit', wt(5, 'quit')]] },
+    { size: 96, color: pur, words: [['mid-campaign?', wt(5, 'mid-campaign?')]] }] });
+  caption(L.capA, { y: 1420, out: P(7).start - 0.05, lines: [
+    { size: 84, color: wh, words: [['Back', wt(6, 'Back')], ['to', wt(6, 'to')], ['square', wt(6, 'square')], ['one.', wt(6, 'one.')]] }] });
+  L.wm = wordmark(L.capA, 96, ink, pur);
+  caption(L.capA, { y: 420, out: B.roles - 0.32, lines: [
+    { size: 84, color: ink, words: [['A', wt(7, 'a')], ['whole', wt(7, 'whole')], ['marketing', wt(7, 'marketing')], ['team', wt(7, 'team')]] },
+    { size: 84, color: pur, words: [['in', wt(7, 'into')], ['one', wt(7, 'one')], ['AI.', wt(7, 'AI.')]] }] });
+
+  // ---- C: Mo's world (roles + calendar) ----
+  const Cw = lay('world');
+  L.worldBg = css($('div', 'abs', Cw), { inset: '0', background: 'radial-gradient(ellipse at 50% 40%,#EEE7FF 0%,#D4C3FF 45%,#A88BFF 100%)' });
+  L.blobs = [0, 1, 2].map(i => css($('div', 'abs', Cw), { width: '900px', height: '900px', borderRadius: '50%', filter: 'blur(90px)', background: ['#F7B6DA', '#8E6BFF', '#FFFFFF'][i], opacity: [.45, .5, .6][i] }));
+  L.cam = css($('div', 'abs', Cw), { left: '0', top: '0', width: '1080px', height: '1920px', transformOrigin: '540px 960px', perspective: '2200px' });
+  L.track = css($('div', 'abs', L.cam), { left: '0', top: '0', transformStyle: 'preserve-3d' });
+  const frags = [fragWebsite(L.track), fragGuide(L.track), fragSEO(L.track), fragPost(L.track), fragAd(L.track)];
+  // positions along a descending zig-zag (world coords = centre of each fragment)
+  L.fpos = [[540, 900, -4], [600, 2050, 3], [480, 3100, -2.5], [600, 4300, 3.5], [470, 5450, -3]];
+  frags.forEach((f, i) => { const [x, y, r] = L.fpos[i]; f.dataset.w = parseFloat(f.style.width); f.dataset.h = parseFloat(f.style.height); css(f, { left: (x - f.dataset.w / 2) + 'px', top: (y - f.dataset.h / 2) + 'px', transform: `rotate(${r}deg)` }); });
+  L.frags = frags;
+  L.cal = fragCalendar(L.track); css(L.cal, { left: (560 - 620) + 'px', top: (6900 - 590) + 'px' });
+  L.capC = css($('div', 'abs', Cw), { inset: '0' });
+  const roleLines = [[8, ['A', 'designer.']], [9, ['A', 'writer.']], [10, ['An', 'SEO', 'specialist.']], [11, ['Social', 'and', 'ads.']]];
+  roleLines.forEach(([pi, ws], j) => {
+    const next = j < 3 ? P(pi + 1).start - 0.06 : B.cal - 0.05;
+    caption(L.capC, { y: 1640, out: next, lines: [{ size: 92, color: ink, words: ws.map((w, q) => [w, wt(pi, w), q === ws.length - 1 ? pur : null]) }] });
+  });
+  caption(L.capC, { y: 210, out: B.match - 0.32, lines: [
+    { size: 96, color: ink, words: [['Every', wt(12, 'Every')], ['month:', wt(12, 'month:')]] },
+    { size: 80, color: pur, words: [['planned,', wt(13, 'planned,')], ['made', wt(13, 'made,')], ['and', wt(13, 'and')], ['posted.', wt(13, 'posted.')]] }] });
+  L.worldMask = Cw;
+
+  // ---- E: the dark stage (match, plans, 24/7, thread) ----
+  const E = lay('stageDark');
+  L.darkBg = css($('div', 'abs', E), { inset: '0' });
+  L.sats = css($('div', 'abs', E), { inset: '0' });
+  const mk = (fn, s) => { const f = fn(L.sats); f.style.transformOrigin = '50% 50%'; f.dataset.s = s; return f; };
+  L.satItems = [
+    { f: mk(fragWebsite, .34), step: 0, a0: -0.4 }, { f: mk(fragGuide, .3), step: 0, a0: 2.6 },
+    { f: mk(fragPost, .3), step: 1, a0: 1.2 }, { f: mk(fragSEO, .3), step: 1, a0: 4.0 },
+    { f: mk(fragAd, .32), step: 2, a0: 0.4 }, { f: mk(fragConfirm, .32), step: 2, a0: 3.3 },
+  ];
+  L.notif = fragNotif(E); L.notif.style.transformOrigin = '50% 50%';
+  L.thread = css($('div', 'abs', E), { left: '0', top: '0', width: '1080px', height: '1920px' });
+  L.bubbles = [
+    [bubble(L.thread, 'Hi Sarah, thanks for reaching out. Bathroom or floors?', true), wt(19, 'No', 0) - 0.12],
+    [bubble(L.thread, 'The bathroom. Do you do walk-in showers?', false), wt(19, 'complaints.') - 0.25],
+    [bubble(L.thread, 'We do. Would Friday at 10 am work?', true), wt(19, 'No', 2) - 0.05],
+    [bubble(L.thread, 'Friday at 10 works!', false), wt(19, 'chase.') - 0.05],
+  ];
+  L.confirm = fragConfirm(E); L.confirm.style.transformOrigin = '50% 50%';
+  L.capE = css($('div', 'abs', E), { inset: '0' });
+  caption(L.capE, { y: 300, out: B.plans - 0.04, lines: [
+    { size: 92, color: wh, words: [["And", wt(14, 'And')], ["here's", wt(14, "here's")], ['what', wt(14, 'what')]] },
+    { size: 92, color: li, words: [['no', wt(14, 'no')], ['hire', wt(14, 'hire')], ['can', wt(14, 'can')], ['match.', wt(14, 'match.')]] }] });
+  const planCaps = [[15, ['Start', 'with', 'your', 'website.'], 'Website + SEO · $49/mo'], [16, ['Add', 'social', 'when', "you're", 'ready.'], 'Website + SEO + Social · $99/mo'], [17, ['Go', 'full', 'CMO', 'when', 'you', 'grow.'], 'Your complete AI CMO · $499/mo']];
+  planCaps.forEach(([pi, ws, price], j) => {
+    const out = j < 2 ? P(pi + 1).start - 0.08 : B.always - 0.06;
+    caption(L.capE, { y: 250, out, lines: [
+      { size: 80, color: wh, words: ws.map(w => [w, wt(pi, w)]) },
+      { size: 44, color: li, weight: 500, words: price.split(' ').map((w, q) => [w, wt(pi, ws[ws.length - 1]) + 0.06 + q * 0.03]) }] });
+  });
+  caption(L.capE, { y: 1660, out: B.nos - 0.06, lines: [
+    { size: 92, color: wh, words: [['On', wt(18, 'On')], ['the', wt(18, 'the')], ['job,', wt(18, 'job,')], ['24/7.', wt(18, 'twenty-four'), li]] }] });
+  [['No', 'raises.'], ['No', 'complaints.'], ['No', 'agency', 'to', 'chase.']].forEach((ws, j) => {
+    const out = j < 2 ? wt(19, 'No', j + 1) - 0.08 : B.spot - 0.04;
+    caption(L.capE, { y: 1700, out, lines: [{ size: 76, color: wh, words: ws.map((w, q) => [w, q === 0 ? wt(19, 'No', j) : wt(19, w), q === 0 ? li : null]) }] });
+  });
+
+  // ---- I: spotlight ----
+  const I = lay('spot');
+  L.spotPlate = $('div', 'plate', I); $('img', '', L.spotPlate).src = '../build/plates/spot.jpg';
+  css($('div', 'abs', I), { left: '0', right: '0', top: '0', height: '700px', background: 'linear-gradient(180deg,rgba(0,0,0,.6),rgba(0,0,0,0))' });
+  L.capI = css($('div', 'abs', I), { inset: '0' });
+  caption(L.capI, { y: 200, out: null, lines: [
+    { size: 88, color: wh, words: [['If', wt(20, 'If')], ['your', wt(20, 'your')], ['marketing', wt(20, 'marketing')], ['keeps', wt(20, 'keeps')]] },
+    { size: 88, color: li, words: [['getting', wt(20, 'getting')], ['pushed', wt(20, 'pushed')], ['to', wt(20, 'to')], ['next', wt(20, 'next')], ['week…', wt(20, 'week...')]] }] });
+
+  // ---- J: CTA ----
+  const J = lay('cta');
+  L.ctaPlate = $('div', 'plate', J); $('img', '', L.ctaPlate).src = '../build/plates/cta.jpg';
+  L.ctaMoLayer = css($('div', 'abs', J), { inset: '0' });
+  L.capJ = css($('div', 'abs', J), { inset: '0' });
+  L.wmEnd = wordmark(L.capJ, 52, ink, pur);
+  caption(L.capJ, { y: 1150, out: null, lines: [
+    { size: 92, color: wh, words: [['Tap', wt(21, 'Tap')], ['below', wt(21, 'below,')], ['to', wt(21, 'and')], ['hire', wt(21, 'hire')], ['Mo.', wt(21, 'Mo'), li]] },
+    { size: 60, color: '#E4DCFF', weight: 500, words: [['From', wt(21, 'from')], ['$49', wt(21, 'forty-nine')], ['a', wt(21, 'a')], ['month.', wt(21, 'month.')]] }] });
+
+  // global Mo + finish
+  L.moLayer = css($('div', 'abs', st), { inset: '0', zIndex: 20 });
+  MO = makeMo(L.moLayer);
+  L.capTop = css($('div', 'abs', st), { inset: '0', zIndex: 30 }); // reserved
+  GRAIN = css($('div', '', st), {}); GRAIN.id = 'grain'; GRAIN.style.zIndex = 40;
+  const v = $('div', '', st); v.id = 'vig'; v.style.zIndex = 39;
+}
+
+// =====================================================================================
+//  RENDER
+// =====================================================================================
+const show = (n, on) => { L[n].style.display = on ? 'block' : 'none'; };
+function moOff() { MO.set({ vis: false }); }
+
+window.renderFrame = function (t) {
+  for (const n of ['office', 'world', 'stageDark', 'spot', 'cta']) show(n, false);
+  moOff();
+  if (t < B.roles) office(t);
+  else if (t < B.match) world(t);
+  else if (t < B.spot) dark(t);
+  else if (t < B.cta) spot(t);
+  else cta(t);
+  for (const c of CAPS) c.update(t);
+  GRAIN.style.backgroundImage = `url(${grainTiles[Math.floor(t * 30) % 8]})`;
+  GRAIN.style.backgroundSize = '1080px 1920px';
+};
+
+// ---------------- office: one push from 0 to the dive ----------------
+function office(t) {
+  show('office', true);
+  const tq = wt(5, 'quit');
+  // camera: slow continuous push, a bump on every cost, then the dive into Mo
+  let s = 1.02 + 0.13 * sine(t / B.brand);
+  let ty = -20 * sine(t / B.brand);
+  for (const tc of [wt(3, 'Salary.'), wt(4, 'Benefits.'), wt(4, 'Months')]) { const k = (t - tc) / 0.5; if (k > 0 && k < 1) s += 0.018 * Math.sin(Math.PI * k) * (1 - k); }
+  // after "quit": empty desk
+  const empty = t >= tq;
+  L.desk.style.display = empty ? 'none' : 'block';
+  L.empty.style.display = empty ? 'block' : 'none';
+  // grade: each cost greys the room a step; the empty room is cool and quiet
+  let gs = 0; [wt(3, 'Salary.'), wt(4, 'Benefits.'), wt(4, 'Months')].forEach((tc, j) => gs += 0.22 * eOut((t - tc) / 0.3));
+  if (empty) gs = lerp(0.55, 0.0, eOut((t - P(7).start + 0.2) / 0.8));
+  L.plate.style.filter = `grayscale(${gs}) brightness(${1 - gs * 0.25})`;
+  L.dim.style.opacity = 0;
+  // Mo: streaks in on "Mo", sits on the desk, leaves up-frame on "Add up"
+  const tMo = wt(1, 'Mo') - 0.12, tLeave = B.costs - 0.05;
+  const deskY = 1640;
+  if (t > tMo - 0.05 && t < tLeave + 0.5) {
+    const k = (t - tMo) / 0.55, kl = (t - tLeave) / 0.4;
+    let x = lerp(1500, 860, eOut(k)), y = lerp(900, deskY - 92, eOut(k)), r = lerp(260, 88, eOut(k));
+    if (kl > 0) { x += eIn(kl) * 300; y -= eIn(kl) * 1500; r = lerp(88, 120, eIn(kl)); }
+    MO.set({ x, y, r, rot: lerp(-30, 0, eOut(k)), look: -0.8, blink: blinkAt(t, wt(1, 'today.') + 0.15), shadow: .8, floorY: deskY, t, glowA: 0 });
+  }
+  // brand: Mo falls into the empty chair (the one spring), then the dive
+  const tFall = P(7).start - 0.32, tLand = tFall + 0.34, tDive = B.roles - 0.42;
+  const seat = { x: 540, y: 1255 };
+  if (t > tFall) {
+    let y, sx = 1, sy = 1, r = 170;
+    if (t < tLand) { const k = (t - tFall) / (tLand - tFall); y = lerp(-300, seat.y, k * k); r = lerp(240, 170, k); sy = 1 + 0.12 * k; sx = 1 - 0.08 * k; }
+    else { const k = (t - tLand) / 0.6; y = seat.y; const sq = (1 - spring(k)) ; sx = 1 - sq * 0.22; sy = 1 + sq * 0.22; y += -sq * 40; }
+    let x = seat.x;
+    // dive: camera accelerates into Mo
+    if (t > tDive) { const k = (t - tDive) / (B.roles - tDive); const g = eIn(k); r = lerp(170, 2600, g); y = lerp(seat.y, 960, g); s *= lerp(1, 7, g); }
+    MO.set({ x, y, r, sx, sy, look: Math.sin(t * 1.3) * .3, blink: blinkAt(t, wt(7, 'team') + 0.1), shadow: 1, floorY: seat.y + 175, t, glowA: 0 });
+  }
+  const ox = t > tDive ? 0 : 0;
+  L.plate.style.transform = `translate(${ox}px,${ty}px) scale(${s})`;
+  // wordmark arrives from oversize, centred over the wall
+  const kw = (t - wt(7, 'Persona') + 0.06) / 0.5;
+  if (kw > 0) {
+    const kx = (t - (B.roles - 0.32)) / 0.25;
+    const sc = lerp(2.6, 1, eOut(kw)) * (kx > 0 ? lerp(1, 0.6, eIn(kx)) : 1);
+    const yy = 270 - (kx > 0 ? eIn(kx) * 500 : 0);
+    css(L.wm, { display: 'flex', left: '540px', top: yy + 'px', transform: `translate(-50%,-50%) scale(${sc})`, filter: `blur(${(1 - eOut(kw)) * 14}px)`, opacity: clamp(kw * 4) });
+  } else L.wm.style.display = 'none';
+}
+
+// ---------------- Mo's world: track past the work, then the calendar ----------------
+function world(t) {
+  show('world', true);
+  const t0 = B.roles, tCal = B.cal, tEnd = B.match;
+  // camera keys: arrive at each fragment just before its word
+  const tf = [t0, wt(9, 'writer.') - 0.28, wt(10, 'SEO') - 0.28, wt(11, 'Social') - 0.28, wt(11, 'ads.') - 0.22];
+  const keys = [[t0 - 0.001, L.fpos[0][1] + 260]];
+  keys.push([t0 + 0.55, L.fpos[0][1], eOut]);
+  for (let i = 1; i < 5; i++) { keys.push([tf[i] - 0.02, L.fpos[i - 1][1] + 40]); keys.push([tf[i] + 0.42, L.fpos[i][1], eIO]); }
+  keys.push([tCal - 0.1, L.fpos[4][1] + 60]); keys.push([tCal + 0.5, 6820, eIO]);
+  const keysX = [[t0, 540]]; for (let i = 1; i < 5; i++) { keysX.push([tf[i] - 0.02, L.fpos[i - 1][0]]); keysX.push([tf[i] + 0.42, L.fpos[i][0], eIO]); }
+  keysX.push([tCal - 0.1, L.fpos[4][0]]); keysX.push([tCal + 0.5, 600, eIO]); keysX.push([tEnd, 700, x => x]);
+  const cy = track(t, keys), cx = track(t, keysX);
+  // zoom: opens at 1.35 (still diving), settles to 1; calendar is magnified and drifts
+  let z = track(t, [[t0, 1.45], [t0 + 0.6, 1.0, eOut], [tCal - 0.1, 1.0], [tCal + 0.5, 0.86, eIO], [tEnd - 0.3, 0.92, x => x]]);
+  const rz = track(t, [[t0, 4], [t0 + 0.6, 0, eOut], [tCal - 0.1, 0], [tCal + 0.5, -2, eIO], [tEnd, -1, x => x]]);
+  // exit: the whole world collapses back into Mo's glass
+  const tCol = tEnd - 0.34; let clip = 1600, cs = 1;
+  if (t > tCol) { const k = eIn((t - tCol) / (tEnd - tCol)); clip = lerp(1600, 150, k); cs = lerp(1, 0.18, k); }
+  L.cam.style.transform = `scale(${z * cs}) rotate(${rz}deg) translate(${540 - cx}px,${960 - cy}px)`;
+  L.worldMask.style.clipPath = clip < 1590 ? `circle(${clip}px at 540px 960px)` : 'none';
+  L.worldMask.style.background = '#0d0a1a';
+  // depth: neighbours soft, active sharp
+  L.frags.forEach((f, i) => { const d = Math.abs(cy - L.fpos[i][1]) / 900; f.style.filter = `blur(${clamp(d - 0.25, 0, 1) * 10}px)`; });
+  L.cal.style.filter = `blur(${clamp(Math.abs(cy - 6820) / 900 - 0.25, 0, 1) * 10}px)`;
+  // blobs drift
+  L.blobs.forEach((b, i) => css(b, { left: (100 + 300 * Math.sin(t * .4 + i * 2)) + 'px', top: (300 + 500 * i + 200 * Math.cos(t * .3 + i)) + 'px' }));
+  // calendar: chips cascade in, status flips, ticks on "posted"
+  const tP = wt(13, 'planned,'), tM = wt(13, 'made,'), tPo = wt(13, 'posted.');
+  L.cal.status.textContent = t >= tP ? 'PLAN READY' : 'PLANNING…';
+  css(L.cal.status, { background: t >= tP ? '#6938F5' : '#EAE6F0', color: t >= tP ? '#fff' : '#6938F5' });
+  L.cal.cells.forEach((c, j) => {
+    const at = tCal + 0.15 + j * 0.055, k = (t - at) / 0.32;
+    c.chip.style.transform = `translateY(${(1 - eOut(k)) * 40}px) scale(${k <= 0 ? 0.0001 : lerp(1.25, 1, eOut(k))})`;
+    c.chip.style.opacity = k <= 0 ? 0 : 1;
+    const kt = (t - (tPo - 0.05 + j * 0.022)) / 0.25;
+    c.tick.style.transform = `scale(${kt <= 0 ? 0.0001 : lerp(1.8, 1, eOut(kt))})`;
+    c.tick.style.opacity = kt <= 0 ? 0 : 1;
+    c.chip.style.filter = t > tM ? 'saturate(1.15)' : 'none';
+  });
+}
+
+// ---------------- dark stage: breath, plans, night, the booking ----------------
+function dark(t) {
+  show('stageDark', true);
+  const t0 = B.match, tPl = B.plans, tNight = B.always, tNos = B.nos;
+  // light: violet stage -> night navy
+  const night = eIO((t - tNight + 0.25) / 0.5);
+  const gA = lerp(0.55, 0.22, night);
+  L.darkBg.style.background = `radial-gradient(ellipse at 50% 46%,rgba(105,56,245,${gA}) 0%,rgba(50,25,120,${gA * 0.4}) 40%,rgba(0,0,0,0) 72%),${night > 0.5 ? '#06081A' : '#0B0A12'}`;
+  // Mo size per plan step (camera feels like it pulls back as Mo grows)
+  const steps = [P(15).start, P(16).start, P(17).start];
+  let r = track(t, [[t0, 150], [t0 + 0.4, 170, eOut], [steps[0] - 0.05, 170], [steps[0] + 0.45, 120, eOut], [steps[1] - 0.05, 120], [steps[1] + 0.45, 150, eOut], [steps[2] - 0.05, 150], [steps[2] + 0.45, 185, eOut], [tNight - 0.2, 185]]);
+  let x = 540, y = track(t, [[t0, 960], [steps[0], 960], [steps[0] + 0.45, 1040, eOut]]);
+  y += Math.sin((t - t0) * 2.2) * 8;
+  // night: Mo shrinks into the notification avatar
+  const tN = tNight - 0.15, nk = eOut((t - tN) / 0.55);
+  const notifY = track(t, [[tN, 1500], [tN + 0.55, 820, eOut], [tNos - 0.05, 790], [tNos + 0.5, 360, eIO]]);
+  if (t > tN) { const scr = track(t, [[P(19).start, 0], [wt(19, 'chase.') + 0.2, -150, eIO]]); x = lerp(540, 158, nk); y = lerp(y, notifY - 168 + scr, nk); r = lerp(r, 44, nk); }
+  MO.set({ x, y, r, look: t < tN ? Math.sin((t - t0) * 1.1) * 0.6 : 0, blink: Math.min(blinkAt(t, t0 + 0.75), blinkAt(t, steps[2] + 0.6)), glowA: lerp(1, 0, nk), t });
+  // satellites: what Mo handles orbits in, step by step
+  const exitK = eIn((t - (tNight - 0.25)) / 0.35);
+  L.satItems.forEach((it, i) => {
+    const at = steps[it.step] + 0.08 + (i % 2) * 0.12, k = (t - at) / 0.5;
+    if (k <= 0 || exitK >= 1) { it.f.style.display = 'none'; return; }
+    it.f.style.display = 'block';
+    const ang = it.a0 + (t - t0) * 0.55;
+    const R = lerp(900, 360, eOut(k)) + exitK * 900, rx = R * 1.05, ry = R * 0.55;
+    const px = 540 + Math.cos(ang) * rx, py = y + Math.sin(ang) * ry, depth = Math.sin(ang);
+    const sc = parseFloat(it.f.dataset.s) * (1 + depth * 0.25);
+    const w = parseFloat(it.f.style.width), h = parseFloat(it.f.style.height);
+    css(it.f, { left: (px - w / 2) + 'px', top: (py - h / 2) + 'px', transform: `scale(${sc}) rotate(${Math.cos(ang) * 6}deg)`, zIndex: depth > 0 ? 25 : 10, filter: `blur(${depth < 0 ? -depth * 5 : 0}px) brightness(${1 + depth * 0.08})` });
+  });
+  // notification lands from below, then the thread pushes it up
+  if (t > tN) {
+    const k = (t - tN) / 0.55;
+    const scr = track(t, [[P(19).start, 0], [wt(19, 'chase.') + 0.2, -150, eIO]]);
+    css(L.notif, { display: 'block', left: '90px', top: (notifY - 235 + scr) + 'px', transform: `scale(${lerp(1.18, 1, eOut(k))}) rotate(${(1 - eOut(k)) * -3}deg)` });
+  } else L.notif.style.display = 'none';
+  // thread
+  if (t > tNos - 0.1) {
+    L.thread.style.display = 'block';
+    let yy = 720; const scroll = track(t, [[P(19).start, 0], [wt(19, 'chase.') + 0.2, -150, eIO]]);
+    L.bubbles.forEach(([b, at], j) => {
+      const k = (t - at) / 0.4; if (k <= 0) { b.style.display = 'none'; return; }
+      b.style.display = 'block';
+      b.style.top = (yy + scroll) + 'px';
+      b.style.transform = `translateY(${(1 - eOut(k)) * 80}px) scale(${lerp(0.9, 1, eOut(k))})`;
+      b.style.transformOrigin = b.style.right ? '100% 100%' : '0% 100%';
+      yy += b.offsetHeight + 26;
+    });
+    const tc = wt(19, 'chase.') + 0.1, kc = (t - tc) / 0.5;
+    if (kc > 0) css(L.confirm, { display: 'flex', left: '90px', top: (yy + scroll + 10) + 'px', transform: `scale(${lerp(1.3, 1, eOut(kc))})`, transformOrigin: '50% 30%' });
+    else L.confirm.style.display = 'none';
+  } else { L.thread.style.display = 'none'; L.confirm.style.display = 'none'; }
+  // exit: the camera keeps rising as we cut to the spotlight
+  const ke = eIn((t - (B.spot - 0.3)) / 0.3);
+  L.stageDark.style.transform = `translateY(${-ke * 260}px)`;
+}
+
+// ---------------- spotlight ----------------
+function spot(t) {
+  show('spot', true);
+  const k = (t - B.spot) / (B.cta - B.spot);
+  // starts already moving (continues the upward camera), settles into a slow push
+  const ty = lerp(220, 0, eOut(k * 2.2));
+  const s = 1.06 + 0.07 * k + (1 - eOut(k * 2.2)) * 0.08;
+  L.spotPlate.style.transform = `translateY(${ty}px) scale(${s})`;
+  const ke = eIn((t - (B.cta - 0.22)) / 0.22);
+  L.spotPlate.style.transform += ` scale(${1 + ke * 0.25})`;
+}
+
+// ---------------- CTA ----------------
+function cta(t) {
+  show('cta', true);
+  const k = (t - B.cta) / (TL.duration - B.cta);
+  const s = lerp(1.22, 1.04, eOut((t - B.cta) / 0.7)) + 0.03 * k;
+  L.ctaPlate.style.transform = `scale(${s})`;
+  // wordmark arrives first, quietly
+  const kw = (t - B.cta - 0.1) / 0.5;
+  css(L.wmEnd, { display: kw > 0 ? 'flex' : 'none', left: '540px', top: '200px', transform: `translate(-50%,-50%) scale(${lerp(1.8, 1, eOut(kw))})`, filter: `blur(${(1 - eOut(kw)) * 10}px)`, opacity: clamp(kw * 4) });
+  // Mo flies in and settles between his hands
+  const tm = wt(21, 'Mo') - 0.35, km = (t - tm) / 0.7;
+  const table = 1700;
+  if (km > 0) {
+    const x = lerp(1400, 540, eOut(km)), y = lerp(700, table - 96, eOut(km)), r = lerp(330, 96, eOut(km));
+    MO.set({ x, y, r, rot: lerp(40, 0, eOut(km)), look: track(t, [[tm, -1], [tm + 0.9, 0.2], [TL.duration, 0]]), blink: blinkAt(t, TL.duration - 0.75), shadow: 1, floorY: table, t, glowA: 0 });
+  }
+}
+
+window.init = async function (timeline) {
+  TL = timeline;
+  const s = i => P(i).start;
+  B = { hook: 0, costs: s(2) - 0.42, quit: s(5) - 0.12, brand: s(7) - 0.22, roles: s(8) - 0.16, cal: s(12) - 0.16, match: s(14) - 0.16, plans: s(15) - 0.12, always: s(18) - 0.12, nos: s(19) - 0.14, spot: s(20) - 0.16, cta: s(21) - 0.16, end: TL.duration };
+  await Promise.all(['Inter Display', 'Inter', 'Bitstream Charter'].flatMap(f => [400, 500, 600, 700].map(w => document.fonts.load(`${w} 40px "${f}"`))));
+  makeGrain();
+  build();
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  // events for the sound pass
+  window.EVENTS = [
+    { t: wt(1, 'Mo') - 0.12, kind: 'whoosh', gain: .6 }, { t: wt(1, 'Mo') + 0.2, kind: 'pop', gain: .9 },
+    { t: B.costs, kind: 'whooshUp', gain: .5 },
+    ...[wt(3, 'Salary.'), wt(4, 'Benefits.'), wt(4, 'Months')].map(t => ({ t, kind: 'thud', gain: .7 })),
+    { t: wt(5, 'quit'), kind: 'cut', gain: .8 },
+    { t: s(7) - 0.32, kind: 'fall', gain: .6 }, { t: s(7) + 0.02, kind: 'boom', gain: .9 },
+    { t: B.roles - 0.45, kind: 'riser', dur: 0.45, gain: .7 }, { t: B.roles, kind: 'whoosh', gain: .7 },
+    ...[wt(9, 'writer.'), wt(10, 'SEO'), wt(11, 'Social'), wt(11, 'ads.')].map(t => ({ t: t - 0.28, kind: 'swish', gain: .45 })),
+    { t: B.cal, kind: 'whoosh', gain: .5 },
+    ...Array.from({ length: 16 }, (_, j) => ({ t: B.cal + 0.15 + j * 0.055, kind: 'tick', gain: .5 })),
+    { t: wt(13, 'posted.'), kind: 'pop', gain: .7 },
+    { t: B.match - 0.34, kind: 'whooshDown', gain: .7 },
+    ...[15, 16, 17].map(i => ({ t: s(i), kind: 'pop', gain: .5 })),
+    { t: B.always, kind: 'whoosh', gain: .5 }, { t: B.always + 0.2, kind: 'ding', gain: .6 },
+    ...L.bubbles.map(([, at]) => ({ t: at, kind: 'bubble', gain: .6 })),
+    { t: wt(19, 'chase.') + 0.1, kind: 'boom', gain: .6 },
+    { t: B.spot, kind: 'cut', gain: .6 }, { t: B.cta, kind: 'whoosh', gain: .5 },
+    { t: wt(21, 'Mo') - 0.35, kind: 'whoosh', gain: .5 }, { t: wt(21, 'Mo') + 0.3, kind: 'pop', gain: .8 },
+  ];
+  return { B, EVENTS: window.EVENTS };
+};
+</script></body></html>
