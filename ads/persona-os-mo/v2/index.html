@@ -285,7 +285,7 @@ function build() {
   L.officeMoLayer = css($('div', 'abs', A), { inset: '0' });
   L.capA = css($('div', 'abs', A), { inset: '0' });
   const ink = '#111116', pur = '#6938F5', wh = '#FFFFFF', li = '#C9B6FF';
-  caption(L.capA, { y: 250, out: P(1).start - 0.02, lines: [
+  caption(L.capA, { y: 250, out: P(1).start - 0.34, lines: [
     { size: 104, color: ink, words: [['Still', wt(0, 'Still')], ['trying', wt(0, 'trying')], ['to', wt(0, 'to')], ['hire', wt(0, 'hire')]] },
     { size: 104, color: pur, words: [['a', wt(0, 'a')], ['marketer?', wt(0, 'marketer?')]] }] });
   caption(L.capA, { y: 250, out: B.costs + 0.05, lines: [
@@ -321,7 +321,7 @@ function build() {
   L.capC = css($('div', 'abs', Cw), { inset: '0' });
   const roleLines = [[8, ['A', 'designer.']], [9, ['A', 'writer.']], [10, ['An', 'SEO', 'specialist.']], [11, ['Social', 'and', 'ads.']]];
   roleLines.forEach(([pi, ws], j) => {
-    const next = j < 3 ? P(pi + 1).start - 0.06 : B.cal - 0.05;
+    const next = j < 3 ? P(pi + 1).start - 0.30 : B.cal - 0.05;
     caption(L.capC, { y: 1640, out: next, lines: [{ size: 92, color: ink, words: ws.map((w, q) => [w, wt(pi, w), q === ws.length - 1 ? pur : null]) }] });
   });
   caption(L.capC, { y: 210, out: B.match - 0.32, lines: [
@@ -349,12 +349,12 @@ function build() {
   ];
   L.confirm = fragConfirm(E); L.confirm.style.transformOrigin = '50% 50%';
   L.capE = css($('div', 'abs', E), { inset: '0' });
-  caption(L.capE, { y: 300, out: B.plans - 0.04, lines: [
+  caption(L.capE, { y: 300, out: P(15).start - 0.36, lines: [
     { size: 92, color: wh, words: [["And", wt(14, 'And')], ["here's", wt(14, "here's")], ['what', wt(14, 'what')]] },
     { size: 92, color: li, words: [['no', wt(14, 'no')], ['hire', wt(14, 'hire')], ['can', wt(14, 'can')], ['match.', wt(14, 'match.')]] }] });
   const planCaps = [[15, ['Start', 'with', 'your', 'website.'], 'Website + SEO · $49/mo'], [16, ['Add', 'social', 'when', "you're", 'ready.'], 'Website + SEO + Social · $99/mo'], [17, ['Go', 'full', 'CMO', 'when', 'you', 'grow.'], 'Your complete AI CMO · $499/mo']];
   planCaps.forEach(([pi, ws, price], j) => {
-    const out = j < 2 ? P(pi + 1).start - 0.08 : B.always - 0.06;
+    const out = j < 2 ? P(pi + 1).start - 0.32 : B.always - 0.06;
     caption(L.capE, { y: 250, out, lines: [
       { size: 80, color: wh, words: ws.map(w => [w, wt(pi, w)]) },
       { size: 44, color: li, weight: 500, words: price.split(' ').map((w, q) => [w, wt(pi, ws[ws.length - 1]) + 0.06 + q * 0.03]) }] });
@@ -362,7 +362,7 @@ function build() {
   caption(L.capE, { y: 1660, out: B.nos - 0.06, lines: [
     { size: 92, color: wh, words: [['On', wt(18, 'On')], ['the', wt(18, 'the')], ['job,', wt(18, 'job,')], ['24/7.', wt(18, 'twenty-four'), li]] }] });
   [['No', 'raises.'], ['No', 'complaints.'], ['No', 'agency', 'to', 'chase.']].forEach((ws, j) => {
-    const out = j < 2 ? wt(19, 'No', j + 1) - 0.08 : B.spot - 0.04;
+    const out = j < 2 ? wt(19, 'No', j + 1) - 0.32 : B.spot - 0.04;
     caption(L.capE, { y: 1700, out, lines: [{ size: 76, color: wh, words: ws.map((w, q) => [w, q === 0 ? wt(19, 'No', j) : wt(19, w), q === 0 ? li : null]) }] });
   });
 
@@ -539,7 +539,7 @@ function dark(t) {
   if (t > tN) {
     const k = (t - tN) / 0.55;
     const scr = track(t, [[P(19).start, 0], [wt(19, 'chase.') + 0.2, -150, eIO]]);
-    css(L.notif, { display: 'block', left: '90px', top: (notifY - 235 + scr) + 'px', transform: `scale(${lerp(1.18, 1, eOut(k))}) rotate(${(1 - eOut(k)) * -3}deg)` });
+    css(L.notif, { display: 'block', left: '90px', top: (notifY - 235 + scr - (t - tN) * 18) + 'px', transform: `scale(${lerp(1.18, 1, eOut(k)) * (1 + (t - tN) * 0.012)}) rotate(${(1 - eOut(k)) * -3}deg)` });
   } else L.notif.style.display = 'none';
   // thread
   if (t > tNos - 0.1) {

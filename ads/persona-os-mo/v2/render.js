@@ -1,4 +1,4 @@
-// node render.js <timeline.json> <out_dir> [--stills t1,t2] [--sub 4] [--shard k/n]
+// node render.js <timeline.json> <out_dir> [--stills t1,t2] [--sub 4] [--shard k/n] [--from s --to s]
 // Full mode writes out_dir/s%06d.jpg at fps*sub; average with ffmpeg tmix for a 180°-ish shutter.
 const { chromium } = require('playwright');
 const fs = require('fs'), path = require('path');
@@ -26,8 +26,10 @@ const fs = require('fs'), path = require('path');
   else {
     const n = Math.round(tl.duration * tl.fps * sub);
     // shutter: samples spread over half a frame, centred on the frame time
+    const from = Number(arg('--from') || 0), to = Number(arg('--to') || 1e9);
     for (let i = shard; i < n; i += shards) {
       const f = Math.floor(i / sub), s = i % sub;
+      if (f / tl.fps < from || f / tl.fps > to) continue;
       const t = f / tl.fps + (s / sub - 0.5 + 0.5 / sub) * 0.5 / tl.fps;
       await shot(Math.max(0, t), path.join(outDir, `s${String(i).padStart(6, '0')}.jpg`));
       if (i % 600 === 0) console.log('sample', i, '/', n);
